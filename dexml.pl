@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+# TODO: all output as lower case. 
 
 use warnings;
 use strict; 

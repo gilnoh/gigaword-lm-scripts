@@ -28,7 +28,7 @@ while(<FILEIN>)
 	open FILEOUT, ">", ($filename . "." . $ext) ; 
 
     }
-    print FILEOUT $_; 
+    print FILEOUT lc($_); 
 }
 
 close FILEOUT; 
