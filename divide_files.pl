@@ -8,9 +8,12 @@ use warnings;
 
 # read 
 die "need an argument (file output from splitta with tokenizing)" unless ($ARGV[0]); 
+die "need the output dir (where each sentence splitted news story will be unpacked)" unless ($ARGV[1]); 
 die "unable to read file $ARGV[0]"  unless (-r $ARGV[0]); 
+die "unable to access directory $ARGV[1]" unless (-d $ARGV[1]); 
 
 open FILEIN, "<$ARGV[0]"; 
+my $outputdir = $ARGV[1]; 
 
 while(<FILEIN>)
 {
@@ -18,14 +21,13 @@ while(<FILEIN>)
     if (/^<DOC id=/)
     {
 	
-	# TODO: skip a non-news (non-story) articles? 
 	close FILEOUT; 
 	/type= " (\S+) "/; 
 	my $ext = $1; 
 
 	s/<DOC id= " (\S+) ".+?>//; 
 	my $filename = $1; 
-	open FILEOUT, ">", ($filename . "." . $ext) ; 
+	open FILEOUT, ">", ($outputdir . "/" . $filename . "." . $ext) ; 
 
     }
     print FILEOUT lc($_); 

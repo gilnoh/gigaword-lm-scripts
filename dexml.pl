@@ -1,10 +1,9 @@
 #!/usr/bin/perl
-# TODO: all output as lower case. 
 
 use warnings;
 use strict; 
 
-die "Usage: perl dexml.pl [giga word file]" unless ($ARGV[0] and -r $ARGV[0]); 
+die "Usage: perl dexml.pl [giga word file]" unless ($ARGV[0] and -e $ARGV[0]); 
 
 my $infile = $ARGV[0]; 
 if ($infile =~ /\.gz$/)
