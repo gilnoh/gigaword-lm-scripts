@@ -1,5 +1,10 @@
 #!/usr/bin/perl 
 
+# TODO: 
+# - get input as mulitple gz (Gigaword) files. 
+# - ... and process and store them on a (set of?) directory(-ies)
+# - ... also calls ngram LM tools on them
+
 use warnings; 
 use strict; 
 use File::Basename; 
@@ -9,11 +14,12 @@ die "Need two arguments: 1) gigaword file name, 2) output dir" unless ($ARGV[1])
 die "Unable to read file $ARGV[0]" unless (-e $ARGV[0]); 
 die "Unable to access dir $ARGV[1]" unless (-d $ARGV[1]); 
 
+my $temp_dir = "./temp/"; 
 my $file_path = $ARGV[0]; 
 #my $file_basename; 
 my $file_basename = fileparse($ARGV[0]); 
 my $output_dir = $ARGV[1]; 
-my $temp_dir = "./temp/"; 
+
 
 die "Need to be run on the script dir" unless (-r "dexml.pl"); 
 
@@ -32,6 +38,7 @@ print STDERR "Sentence Splitter Done, dividing into per document files\n";
 
 ## divide it into doc per file, on output dir 
 #perl divide_files.pl ./temp/t.splitted ../inputdata/afp_eng_2010/
+`perl divide_files.pl $splitted_output $output_dir`; 
 
-#### 
-#run LM tools - 
+#####
+#run LM tools - In a separate script. 

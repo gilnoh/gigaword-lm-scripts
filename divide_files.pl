@@ -14,13 +14,13 @@ die "unable to access directory $ARGV[1]" unless (-d $ARGV[1]);
 
 open FILEIN, "<$ARGV[0]"; 
 my $outputdir = $ARGV[1]; 
-
+my $count=0; 
 while(<FILEIN>)
 {
     # check DOC mark 
     if (/^<DOC id=/)
     {
-	
+	$count++; 
 	close FILEOUT; 
 	/type= " (\S+) "/; 
 	my $ext = $1; 
@@ -34,3 +34,5 @@ while(<FILEIN>)
 }
 
 close FILEOUT; 
+$count++; 
+print STDERR "$count files generated in $outputdir\n"; 
