@@ -1,9 +1,8 @@
 #!/usr/bin/perl 
 
 # TODO: 
-# - get input as mulitple gz (Gigaword) files. 
+# - get input one gigaword gz (Gigaword) file. 
 # - ... and process and store them on a directory
-# - (ANOTHER SCRIPT: ... also calls ngram LM tools on them) 
 
 use warnings; 
 use strict; 
