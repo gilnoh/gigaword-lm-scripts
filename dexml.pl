@@ -1,4 +1,7 @@
 #!/usr/bin/perl
+# This small script de-xml a GigaWord news-month XML document. 
+# Mainly for sentence split input, and for LM making. 
+
 
 use warnings;
 use strict; 

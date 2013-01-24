@@ -1,7 +1,7 @@
 #!/usr/bin/perl 
 
-# read in the output file of splitta,  
-# 
+# read in the output file of a news-month (after) splitta,   
+# and splits the monthly document into per-news documents 
 
 use strict; 
 use warnings; 
