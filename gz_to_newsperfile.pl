@@ -10,19 +10,17 @@ use File::Basename;
 
 die "Need two arguments: 1) gigaword file name, 2) output dir" unless ($ARGV[1]); 
 
-die "Unable to read file $ARGV[0]" unless (-e $ARGV[0]); 
-die "Unable to access dir $ARGV[1]" unless (-d $ARGV[1]); 
-
 my $temp_dir = "./temp/"; 
 my $file_path = $ARGV[0]; 
-#my $file_basename; 
-my $file_basename = fileparse($ARGV[0]); 
 my $output_dir = $ARGV[1]; 
 
-
-die "Need to be run on the script dir" unless (-r "dexml.pl"); 
+die "Unable to read file $ARGV[0]" unless (-e $file_path); 
+die "Unable to access dir $ARGV[1]" unless (-d $output_dir); 
+die "Unable to access ./temp/" unless (-d $temp_dir); 
+die "Need to be run on the script dir" unless (-r "gigaword_dexml.pl"); 
 
 ## 
+my $file_basename = fileparse($ARGV[0]); 
 print STDERR "Working on $file_basename\n"; 
 
 ## dexml, save it as .dexml 
