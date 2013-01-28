@@ -1,7 +1,22 @@
 
 * List of Things to Fix 
-** TODO FN: splitta outputs the last "." concatted to the last Word. 
+** TODO splitta outputs the last "." concatted to the last Word. 
 
 
 * List of Things to Do 
+
+
+
+* Parameters and things like that ... 
+
+** 
+
+
+* Some notes 
+- "-bayes 0" mix-model is generally what I would expect from simple
+  summation: simple (lambda * model 1 prob) + ((1-lamba) * model 2
+  prob), for each word point. (Well if you ask me what -bayes non-zero
+  means ... I don't) 
+- 
+
 
