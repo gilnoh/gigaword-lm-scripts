@@ -1,0 +1,7 @@
+
+* List of Things to Fix 
+** TODO FN: splitta outputs the last "." concatted to the last Word. 
+
+
+* List of Things to Do 
+
