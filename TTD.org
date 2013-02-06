@@ -1,22 +1,56 @@
+==== 
+
+* Things to Do 
+** Collection Model 
+
+*** TODO (run) Get "target" news files (target corpus) all in one folder 
+*** TODO (write script) catall and generate collection LM model 
+
+** Document Model 
+*** TODO (write script) For each file, make each LM model
+
+** Produce single sentence prob. (t) 
+*** TODO (write matlab script) weighted-sum 
+- input: weight (doc prob), sentence prob, of each document 
+- output: weighted average. 
+- 
+
+*** TODO (write scripts) P(t) prob 
+(Perl side) 
+- get P_coll (t) (with -debug 3)
+- get for each pure P_d(t) (with -debug 3), on all doc 
+- calculate lamda*P_d + (1-lamda)*P_coll for each. (octave? perl?) 
+(Octave side) 
+- do the weighted-sum of the values, with uniform weight 
+- (need): weighted-sum input format (simple matrix)
+- (need): weighted-sum matlab code 
+(Perl side?) 
+- store the result for each P_d(t). 
+- store the one reulst P(t). 
+
+** Produce conditional prob. 
+*** TODO (write scripts) P(h | t) prob 
+(perl side) 
+- get P(h), using previous section 
+- get P_d(t) for each doc. 
+(Octave side) 
+- do the weighted-sum of the P_d(h) values, with (P_d(t) /
+  sigma(P_d(t))) as weight for each d. 
+
+*** TODO write script "evidence calculation code" 
+
+===
+===
+===
 
 * List of Things to Fix 
 ** TODO splitta outputs the last "." concatted to the last Word. 
 
-
-* List of Things to Do 
-
-
-
-* Parameters and things like that ... 
-
-** 
-
-
-* Some notes 
+* Additional notes 
 - "-bayes 0" mix-model is generally what I would expect from simple
   summation: simple (lambda * model 1 prob) + ((1-lamba) * model 2
   prob), for each word point. (Well if you ask me what -bayes non-zero
   means ... I don't) 
-- 
+- (like parameters) 
 
 
