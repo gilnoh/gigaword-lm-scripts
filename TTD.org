@@ -15,7 +15,7 @@
 *** DONE (run) catall and generate collection LM model 
 
 ** Document Model 
-*** TODO (write script) For each file, make each LM model
+*** DONE (write script) For each file, make each LM model
 
 ** Produce single sentence prob. (t) 
 *** TODO (write matlab script) weighted-sum 
@@ -50,6 +50,16 @@
 ===
 ===
 ===
+
+* Some Questions 
+
+** Discount related questions
+- "Warning: count of count x is zero -- lowering maxcount" 
+- "Warning: discount coeff n is out of range: 0" 
+It seems that both related to sparseness. Not critical, but affecting
+(e.g. less good smoothing?)  
+
+*** TODO Know what are the basic smoothing method, in DEFAULT (no opt) 
 
 * call parameters 
 
