@@ -1,10 +1,18 @@
+* List of Things to Fix 
+** TODO [#A] bug splitta outputs the last "." concatted to the last Word.    
+** TODO [#C] feature catall.pl "do not print a file size less than X" 
+
+* Status Memo 
+** Current corpus: 
+- AFP 2010, as "small" test. 
+
 ==== 
 
 * Things to Do 
 ** Collection Model 
 
-*** TODO (run) Get "target" news files (target corpus) all in one folder 
-*** TODO (write script) catall and generate collection LM model 
+*** DONE (run) Get "target" news files (target corpus) all in one folder 
+*** DONE (run) catall and generate collection LM model 
 
 ** Document Model 
 *** TODO (write script) For each file, make each LM model
@@ -43,8 +51,8 @@
 ===
 ===
 
-* List of Things to Fix 
-** TODO splitta outputs the last "." concatted to the last Word. 
+* call parameters 
+
 
 * Additional notes 
 - "-bayes 0" mix-model is generally what I would expect from simple
