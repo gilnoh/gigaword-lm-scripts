@@ -1,3 +1,6 @@
+* Preparation
+** TODO [#B] Install SRILM on NFS home/bin 
+
 * List of Things to Fix 
 ** TODO [#A] bug splitta outputs the last "." concatted to the last Word.    
 ** TODO [#C] feature catall.pl "do not print a file size less than X" 
@@ -13,25 +16,31 @@
 
 *** DONE (run) Get "target" news files (target corpus) all in one folder 
 *** DONE (run) catall and generate collection LM model 
+*** [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
 
 ** Document Model 
 *** DONE (write script) For each file, make each LM model
 
 ** Produce single sentence prob. (t) 
-*** TODO (write matlab script) weighted-sum 
+*** DONE (write matlab script) weighted-sum 
 - input: weight (doc prob), sentence prob, of each document 
 - output: weighted average. 
-- 
 
-*** TODO (write scripts) P(t) prob 
-(Perl side) 
-- get P_coll (t) (with -debug 3)
-- get for each pure P_d(t) (with -debug 3), on all doc 
-- calculate lamda*P_d + (1-lamda)*P_coll for each. (octave? perl?) 
+*** (write scripts) P(t) prob 
+**** DONE (write debug3 reader) read log_prob
+**** TODO (write octave caller) weighted sum 
 (Octave side) 
 - do the weighted-sum of the values, with uniform weight 
 - (need): weighted-sum input format (simple matrix)
-- (need): weighted-sum matlab code 
+- (already have): weighted-sum matlab code 
+**** TODO (write octave caller) lambda sum (interpolate) 
+**** TODO calc P_coll 
+- check collection model file 
+- get P_coll (t) (with -debug 3)
+**** TODO each P_doc(t) 
+- get for each pure P_d(t) (with -debug 3), on all doc 
+- calculate lamda*P_d + (1-lamda)*P_coll for each by call octave
+**** TODO calc P_(t) by weighted sum 
 (Perl side?) 
 - store the result for each P_d(t). 
 - store the one reulst P(t). 
