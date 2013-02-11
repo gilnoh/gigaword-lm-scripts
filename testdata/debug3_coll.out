@@ -1,0 +1,29 @@
+we can not say yet if there will be an agreement , " said Merkel on her way into the summit .
+	p( we | <s> ) 	= [2gram] 0.00689495 [ -2.16147 ] / 1
+	p( can | we ...) 	= [3gram] 0.022706 [ -1.64386 ] / 1
+	p( not | can ...) 	= [3gram] 0.174757 [ -0.757565 ] / 1
+	p( say | not ...) 	= [3gram] 0.0217703 [ -1.66214 ] / 1
+	p( yet | say ...) 	= [3gram] 0.000981942 [ -3.00791 ] / 1
+	p( if | yet ...) 	= [2gram] 0.00108294 [ -2.96539 ] / 1
+	p( there | if ...) 	= [2gram] 0.0191428 [ -1.718 ] / 1
+	p( will | there ...) 	= [3gram] 0.00737462 [ -2.13226 ] / 1
+	p( be | will ...) 	= [3gram] 0.8427 [ -0.0743271 ] / 1
+	p( an | be ...) 	= [3gram] 0.00837764 [ -2.07688 ] / 1
+	p( agreement | an ...) 	= [3gram] 0.00264625 [ -2.57737 ] / 1
+	p( , | agreement ...) 	= [3gram] 0.0621762 [ -1.20638 ] / 1
+	p( " | , ...) 	= [3gram] 0.256859 [ -0.590305 ] / 1
+	p( said | " ...) 	= [3gram] 0.186959 [ -0.728254 ] / 1
+	p( <unk> | said ...) 	= [OOV] 0 [ -inf ] / 1
+	p( on | <unk> ...) 	= [1gram] 0.009274 [ -2.03273 ] / 1
+	p( her | on ...) 	= [2gram] 0.00308538 [ -2.51069 ] / 1
+	p( way | her ...) 	= [3gram] 0.0817282 [ -1.08763 ] / 1
+	p( into | way ...) 	= [3gram] 0.0835655 [ -1.07797 ] / 1
+	p( the | into ...) 	= [3gram] 0.638507 [ -0.194834 ] / 1
+	p( summit | the ...) 	= [3gram] 0.000291074 [ -3.536 ] / 1
+	p( . | summit ...) 	= [1gram] 2.08803e-05 [ -4.68026 ] / 1
+	p( </s> | . ...) 	= [2gram] 0.980241 [ -0.00866698 ] / 1
+1 sentences, 22 words, 1 OOVs
+0 zeroprobs, logprob= -38.4309 ppl= 55.8288 ppl1= 67.6149
+
+file test.txt: 1 sentences, 22 words, 1 OOVs
+0 zeroprobs, logprob= -38.4309 ppl= 55.8288 ppl1= 67.6149

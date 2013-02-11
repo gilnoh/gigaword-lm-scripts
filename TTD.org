@@ -27,13 +27,14 @@
 - output: weighted average. 
 
 *** (write scripts) P(t) prob 
-**** DONE (write debug3 reader) read log_prob
+**** DONE (write debug3 reader) read_log_prob, read_prob
+**** DONE (write octave caller) lambda sum (interpolate) 
+
+**** TODO check code for get seq_prob to lambda sum 
 **** TODO (write octave caller) weighted sum 
-(Octave side) 
 - do the weighted-sum of the values, with uniform weight 
-- (need): weighted-sum input format (simple matrix)
+- (need): weighted-sum input format (simple matrix)?
 - (already have): weighted-sum matlab code 
-**** TODO (write octave caller) lambda sum (interpolate) 
 **** TODO calc P_coll 
 - check collection model file 
 - get P_coll (t) (with -debug 3)

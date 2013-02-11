@@ -7,4 +7,6 @@ seq_prob = vectorL * lambda + vectorR * (1 - lambda);
 log_prob = sum(log10(seq_prob));  
 
 % any of 0 in seq_prob will result in -INF. 
-% -INF is not removed in this function. Calling side should check this 
+% TODO: 
+% For now, -INF is not removed in this function. 
+% (Maybe Calling side should check this, remove any 0,0 pairs?) 
