@@ -29,8 +29,11 @@
 *** (write scripts) P(t) prob 
 **** DONE (write debug3 reader) read_log_prob, read_prob
 **** DONE (write octave caller) lambda sum (interpolate) 
-
-**** TODO check code for get seq_prob to lambda sum 
+**** DONE check code for get seq_prob to lambda sum 
+**** TODO (srilm caller) write ngram runner
+- model 
+- options  
+- sentence (input) 
 **** TODO (write octave caller) weighted sum 
 - do the weighted-sum of the values, with uniform weight 
 - (need): weighted-sum input format (simple matrix)?

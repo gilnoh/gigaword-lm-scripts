@@ -14,6 +14,8 @@ sub lambda_sum($@@)
 {
     # gets lambda, two list of log probability 
     # (same length, each per token) 
+    # returns one log probability, summed with lambda and then 
+    # producted (log-summed) to make single probability. 
    
     my $lambda = $_[0]; 
     my $left_aref = $_[1]; # log probability of P_doc, on each token
@@ -54,8 +56,9 @@ sub lambda_sum($@@)
     my $call_line = "lambda_sum(l,a,b)"; 
     my $command = $OCTAVE_COMMAND . $OCTAVE_EVAL_OPTION . '"' . $l_line . $a_line . $b_line . $call_line . '"';  
 
-    print STDERR $command, "\n"; 
+    #print STDERR $command, "\n"; 
     my $ans = `$command`; 
+    #print STDERR $ans, "\n"; 
     $ans =~ /ans = (.+)$/; 
     return $1; 
 }
