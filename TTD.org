@@ -1,9 +1,9 @@
 * Preparation
-** TODO [#B] Install SRILM on NFS home/bin 
+** DONE [#B] Install SRILM on NFS home/bin 
 
 * List of Things to Fix 
 ** TODO [#A] bug splitta outputs the last "." concatted to the last Word.    
-** TODO [#C] feature catall.pl "do not print a file size less than X" 
+** TODO [#C] [??] feature catall.pl "do not print a file size less than X" 
 
 * Status Memo 
 ** Current corpus: 
@@ -30,7 +30,7 @@
 **** DONE (write debug3 reader) read_log_prob, read_prob
 **** DONE (write octave caller) lambda sum (interpolate) 
 **** DONE check code for get seq_prob to lambda sum 
-**** TODO (srilm caller) write ngram runner
+**** DONE (srilm caller) write ngram runner
 - model 
 - options  
 - sentence (input) 
