@@ -26,7 +26,7 @@ print STDERR "Working on $file_basename\n";
 ## dexml, save it as .dexml 
 my $redirect_output = "$temp_dir" .  $file_basename . ".dexml"; 
 `perl gigaword_dexml.pl $file_path > $redirect_output`; 
-print STDERR "Unzipped and de-XMLed. Calling sentence splitter+tagger\n"; 
+print STDERR "Unzipped and de-XMLed. Calling sentence splitter+tokenizer\n"; 
 
 ## run sentence splitter (+ tokenier), save it .splitted 
 my $splitted_output = "$temp_dir" . $file_basename . ".splitted"; 

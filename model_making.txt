@@ -1,0 +1,50 @@
+=== 
+0. PREREQUISITE  
+- SRILM binaries must be in PATH. (ngram-count and ngram) 
+- Perl 5.8 or later needed.  
+- Python needed (for the sentence splitter). 
+
+=== 
+1. Unpack (the selected) GigaWord target gz files, and run splitta to
+do tokenization & sentence splitting. This will form your corpus. 
+
+Commands to run: 
+> perl gzset_runner.pl [list of gigaword gz file] 
+
+Note: output folder is defined in the script. For now, let's assume
+this is /output/newsarticles/. (actual may differ). This process will
+take some time, according to the corpus size. 
+
+
+===
+2. Generate "collection" LM on all of the "story" (actual news
+article) files.  
+
+Commands to run: 
+1) > perl catall.pl "./output/newsarticles/*.story" > output/collection.txt
+
+2) > ngram-count -text ./output/collection.txt -lm ./output/collection.model 
+
+Note: 1) generates single big collection file of news articles,for
+      SRILM ngram modeller. 2) runs SRILM ngram model on the big text,
+      and saves the resulting model on output/colleciton.model. 
+Note: If you use some other options (like order n), those should also
+      be reflected on the next step. 
+
+=== 
+3. Generate "per document" LM on each of the "story". 
+
+Commands to run: 
+> perl perstory_runner.pl "./output/newsarticles/*.story" 
+
+Note: The model files (*.model) will be generated in the newsarticle
+dir, with the same name to each .story document file names. 
+Note: This also takes some time, according to the corpus size. 
+
+===
+4. Now the model files are ready. Collection-wide model on
+/output/collection.model, and per-document models are at
+/output/newsarticles/[newsname].model 
+
+ See calc_cond_prob.txt for how to use the scripts to use them to
+ calculate conditional probability.  
