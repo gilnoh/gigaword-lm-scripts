@@ -3,6 +3,9 @@ function probsum = weighted_sum (X)
 % column 1: document_prob 
 % column 2: sequence_prob within that document.
 
+%% TODO? this is a "for loop" function. Can't we do this 
+%% somehow in matrix operation? hmm. 
+
 result = 0; % careful not to pass this to logprob_sum. 
 
 for i=X' % for each row 

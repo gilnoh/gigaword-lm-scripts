@@ -3,12 +3,48 @@
 
 require Exporter;
 @ISA = qw(Exporter); 
-@EXPORT = qw(lambda_sum); 
+@EXPORT = qw(lambda_sum weighted_sum); 
 
 my $OCTAVE_COMMAND="octave -q "; 
 my $OCTAVE_EVAL_OPTION = "--eval "; 
 
+my $MATFILE = "matrix4_weightedsum.csv"; 
+
 # all calculation will call the corresponding octave code...  
+
+
+sub weighted_sum(@@) 
+{
+    # weighted_sum(\@doc_logprob, \@seq_logprob) 
+    # gets two (same-size) array of log prob.
+    # @doc_loprob, @sequence_log_prob. 
+    # Calls octave to do the weighted sum in logarithm. 
+    
+    my @doc_logprob = @{$_[0]};
+    my @seq_logprob = @{$_[1]}; 
+    die unless (scalar (@doc_logprob) == scalar (@seq_logprob)); 
+
+    # write matrix that can be loaded in Octve by 
+    # load ("file", "options", "variablename") 
+    open FILE, ">", $MATFILE; #"matrix_4_weighted_sum.csv"; 
+    for (my $i=0; $i < @doc_logprob; $i++)
+    {
+	print FILE "$doc_logprob[$i],$seq_logprob[$i]\n"; 
+    }
+    close FILE; 
+
+    # run Octave, load that data and call function 
+    my $call_line = "X = csvread(\'$MATFILE\'); weighted_sum(X)"; 
+    my $command = $OCTAVE_COMMAND . $OCTAVE_EVAL_OPTION . '"' . $l_line . $a_line . $b_line . $call_line . '"';  
+
+    #print STDERR $command, "\n"; 
+    my $ans = `$command`; 
+    #print STDERR $ans, "\n"; 
+    $ans =~ /ans = (.+)$/; 
+
+    # delte the file 
+    return $1; 
+}
 
 sub lambda_sum($@@)
 {
@@ -62,4 +98,5 @@ sub lambda_sum($@@)
     $ans =~ /ans = (.+)$/; 
     return $1; 
 }
+
 1; 

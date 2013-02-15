@@ -1,13 +1,15 @@
+* Status Memo 
+** Current corpus 
+- AFP 2010, as "small" test. 
+
+
 * Preparation
 ** DONE [#B] Install SRILM on NFS home/bin 
 
-* List of Things to Fix 
+* List of Things to Fix/Improve 
 ** TODO [#A] bug splitta outputs the last "." concatted to the last Word.    
 ** TODO [#C] [??] feature catall.pl "do not print a file size less than X" 
-
-* Status Memo 
-** Current corpus: 
-- AFP 2010, as "small" test. 
+** TODO [#C] [Possible?] Matrix-ize weighted_sum Octave code. 
 
 ==== 
 
@@ -34,8 +36,7 @@
 - model 
 - options  
 - sentence (input) 
-**** TODO (write octave caller) weighted sum 
-- do the weighted-sum of the values, with uniform weight 
+**** DONE (write octave caller) weighted sum 
 - (need): weighted-sum input format (simple matrix)?
 - (already have): weighted-sum matlab code 
 **** TODO calc P_coll 
@@ -45,7 +46,7 @@
 - get for each pure P_d(t) (with -debug 3), on all doc 
 - calculate lamda*P_d + (1-lamda)*P_coll for each by call octave
 **** TODO calc P_(t) by weighted sum 
-(Perl side?) 
+- do the weighted-sum of the values, with uniform weight 
 - store the result for each P_d(t). 
 - store the one reulst P(t). 
 
