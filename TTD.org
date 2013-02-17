@@ -2,12 +2,11 @@
 ** Current corpus 
 - AFP 2010, as "small" test. 
 
-
 * Preparation
 ** DONE [#B] Install SRILM on NFS home/bin 
 
 * List of Things to Fix/Improve 
-** TODO [#A] bug splitta outputs the last "." concatted to the last Word.    
+** DONE [#A] bug splitta outputs the last "." concatted to the last Word.    
 ** TODO [#C] [??] feature catall.pl "do not print a file size less than X" 
 ** TODO [#C] [Possible?] Matrix-ize weighted_sum Octave code. 
 
@@ -64,6 +63,12 @@
 ===
 ===
 ===
+
+* Consider
+** Splitta tokenization errors are post-processed for now. 
+- But maybe, use it only for sentence split, and not for tokenization,
+  and use another tokenization run? 
+- Not for now. Just keep an eye, for further problem, if happenes. 
 
 * Some Questions 
 
