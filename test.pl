@@ -9,7 +9,7 @@ my $l = 0.9;
 my @left = (0.1, 0.2); 
 my @right = (0.02, 0.03); 
 my $result = lambda_sum($l, \@left, \@right); 
-ok($result == -1.7738); 
+ok($result == -1.7738, "calling lambda sum on OCTAVE"); 
 
 #2 read_debug3_p 
 open FILE_C, "<", "./testdata/debug3_coll.out"; 
@@ -22,7 +22,7 @@ my @d_prob_seq = read_debug3_p(@d);
 my $lambda = 0.5; 
 $result = lambda_sum($lambda, \@d_prob_seq, \@c_prob_seq); 
 #print ($result); 
-ok(($result - (-42.5641)) < 0.001); # the value from very slow ngram mix-model output (debug3_interpolate.out) 
+ok(($result - (-42.5641)) < 0.001, "reading debug3 output of SRILM ngram ouput"); # the value from very slow ngram mix-model output (debug3_interpolate.out) 
 close FILE_C; 
 close FILE_D; 
 
@@ -36,13 +36,14 @@ for(my $i=0; $i < scalar(@prob_seq); $i++)
 {
     $all_identical = 0 if ($prob_seq[$i] != $d_prob_seq[$i]);  
 }
-ok($all_identical); 
+ok($all_identical, "calling accessing SRILM ngram"); 
 #print @prob_seq, "\n"; 
 #print @d_prob_seq, "\n"; 
 
-#4 weighted_sum call
+#4 weighted_sum call (LOG probabilities) 
 my @a = (-1.00000, -0.69897, -0.52288, -0.39794); 
 my @b = (-1.69897, -2.0, -2.0, -2.0);     
 
 my $r = weighted_sum(\@a, \@b); 
 ok($r == -1.9586); 
+#ok(1, "calling weighted sum on OCTAVE"); 

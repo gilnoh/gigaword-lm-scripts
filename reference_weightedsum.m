@@ -9,9 +9,19 @@
 function probsum = reference_weightedsum (X) 
 
 Y = 10 .^ X; 
-nonlog = (Y(:,1)' * Y(:,2)) 
-log = log10(nonlog)
-probsum = log; 
+col1_sum = sum(Y(:,1));
+Y(:,1) = Y(:,1) / col1_sum; 
+nonlog = (Y(:,1)' * Y(:,2))
+logval = log10(nonlog)
+probsum = logval; 
+
+% done 
+
+% old code without normalization part (denominator missing) 
+%Y = 10 .^ X; 
+%nonlog = (Y(:,1)' * Y(:,2)) 
+%log = log10(nonlog)
+%probsum = log; 
 
 
 end
