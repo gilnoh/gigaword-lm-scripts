@@ -2,7 +2,7 @@ use strict;
 use warnings; 
 use octave_call; 
 use srilm_call;
-use Test::Simple tests => 4; 
+use Test::Simple tests => 5; 
 
 #1 lambda_sum 
 my $l = 0.9; 
@@ -36,7 +36,7 @@ for(my $i=0; $i < scalar(@prob_seq); $i++)
 {
     $all_identical = 0 if ($prob_seq[$i] != $d_prob_seq[$i]);  
 }
-ok($all_identical, "calling accessing SRILM ngram"); 
+ok($all_identical, "calling+accessing SRILM ngram"); 
 #print @prob_seq, "\n"; 
 #print @d_prob_seq, "\n"; 
 
@@ -45,5 +45,10 @@ my @a = (-1.00000, -0.69897, -0.52288, -0.39794);
 my @b = (-1.69897, -2.0, -2.0, -2.0);     
 
 my $r = weighted_sum(\@a, \@b); 
-ok($r == -1.9586); 
+ok($r == -1.9586, "calling weighted_sum on OCTAVE"); 
 #ok(1, "calling weighted sum on OCTAVE"); 
+
+#5 mean 
+my @mean_data = (-0.4973960, -0.0517816, -0.6938937, -1.2344063, -0.1251993, -0.4130810, -0.7731068, -0.0899830, -0.0089617, -0.0286763); 
+$r = mean(\@mean_data); 
+ok (($r - (-0.25969)) < 0.0001, "mean of log probs on OCTAVE"); 

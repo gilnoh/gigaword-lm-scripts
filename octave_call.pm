@@ -3,22 +3,22 @@
 
 require Exporter;
 @ISA = qw(Exporter); 
-@EXPORT = qw(lambda_sum weighted_sum); 
+@EXPORT = qw(lambda_sum weighted_sum mean); 
 
 my $OCTAVE_COMMAND="octave -q "; 
 my $OCTAVE_EVAL_OPTION = "--eval "; 
+my $WEIGHTED_SUM_FUNCTION = "weighted_sum"; 
 
 my $MATFILE = "matrix4_weightedsum.csv"; 
 
 # all calculation will call the corresponding octave code...  
-
-
 sub weighted_sum(@@) 
 {
     # weighted_sum(\@doc_logprob, \@seq_logprob) 
     # gets two (same-size) array of log prob.
     # @doc_loprob, @sequence_log_prob. 
     # Calls octave to do the weighted sum in logarithm. 
+    # NOTE: both input and output are *log* probabilities. 
     
     my @doc_logprob = @{$_[0]};
     my @seq_logprob = @{$_[1]}; 
@@ -34,7 +34,8 @@ sub weighted_sum(@@)
     close FILE; 
 
     # run Octave, load that data and call function 
-    my $call_line = "X = csvread(\'$MATFILE\'); weighted_sum(X)"; 
+    #my $call_line = "X = csvread(\'$MATFILE\'); weighted_sum(X)"; 
+    my $call_line = "X = csvread(\'$MATFILE\'); " . $WEIGHTED_SUM_FUNCTION ."(X)"; 
     my $command = $OCTAVE_COMMAND . $OCTAVE_EVAL_OPTION . '"' . $l_line . $a_line . $b_line . $call_line . '"';  
 
     #print STDERR $command, "\n"; 
@@ -46,12 +47,26 @@ sub weighted_sum(@@)
     return $1; 
 }
 
+sub mean(@) 
+{
+    # gets one list of log probabilities and outputs its 
+    # mean, also as a log probability. 
+    # simply calls weighted_sum with uniform weights 
+    my $aref = $_[0]; 
+    my $len = scalar (@$aref); 
+    my @weight = (-1) x $len; 
+    return weighted_sum(\@weight, $aref); 
+}
+
+
 sub lambda_sum($@@)
 {
-    # gets lambda, two list of log probability 
+    # ( a specific function for SRILM -debug output.) 
+    # gets lambda, two list of (non-log) probability 
     # (same length, each per token) 
-    # returns one log probability, summed with lambda and then 
+    # returns one *log* probability, summed with lambda and then 
     # producted (log-summed) to make single probability. 
+    # NOTE: *non-log* prob list in, *log* prob out. 
    
     my $lambda = $_[0]; 
     my $left_aref = $_[1]; # log probability of P_doc, on each token
