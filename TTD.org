@@ -7,8 +7,16 @@
 
 * List of Things to Fix/Improve 
 ** DONE [#A] bug splitta outputs the last "." concatted to the last Word.    
-** TODO [#C] [??] feature catall.pl "do not print a file size less than X" 
-** TODO [#C] [Possible?] Matrix-ize weighted_sum Octave code. 
+** TODO? [#C] [??] feature catall.pl "do not print a file size less than X" 
+** TODO? [#C] [Very hard - Possible?] Matrix-ize weighted_sum Octave code. 
+** TODO [#B] [Efficiency] Lamda sum in Perl space. (No octave call) 
+- For each news "story" we call twice; once ngram (can't reduce this),
+  once octave. Maybe starting up octave each time is
+  expansive. Consider this. 
+** TODO [#B] If log-sum is only needed as "weighted sum"
+- we may not need to do the costy log-space-sums. 
+- (by multiply weights to a certain degree, so within octave normal range). 
+- (using reference_weightedsum, or a improved variation, etc). 
 
 ==== 
 
@@ -67,10 +75,6 @@
 ===
 
 * Ideas to Consider 
-** If log-sum is only needed as "weighted sum"
-- we may not need to do the costy log-space-sums. 
-- (by multiply weights to a certain degree, so within octave normal range). 
-- (using reference_weightedsum, or a improved variation, etc). 
 
 
 * Possible known problems? 
@@ -99,4 +103,54 @@ It seems that both related to sparseness. Not critical, but affecting
   summation: simple (lambda * model 1 prob) + ((1-lamba) * model 2
   prob), for each word point. (Well if you ask me what -bayes non-zero
   means ... I don't) 
-** TODO Know what are the basic discount/smoothing method, in DEFAULT (no opt) 
+
+** Perplexity (per word) is calculated in SRILM 
+- ppl = 10^(-logprob / (words - OOVs + sentences))
+- ppl1 (without </s>) = 10^(-logprob / (words - OOVs)) 
+
+** TODO Know what are the basic discount/smoothing method, in DEFAULT (no opt)
+*** TODO See SRILM FAQ once more
+
+* Something I am not really sure
+
+** [#A] Word level model, or Sentence level model? 
+- Basically, what I am trying to do is doing weighted sum of
+  probabilities. There is two way of doing things. 
+- Word Level weighted sum and Sentence Level weighted sum 
+- Say, sentence is: P(w_1, ..., w_n). 
+*** Sentence level weighted-sum 
+- At sentence level, this can be calculated by 
+  weighted_mean_all_d(  P_d(w_1, .., w_n)  ) 
+*** Word level weithed-sum 
+- At word level, this can be caluclated by 
+- product 
+  { ... 
+    weighted_mean_all_d( P(w_n | w_{n-1},w_{n-2}, w_{n-3} ), 
+    weighted_mean_all_d( P(w_n+1 | w_n, w_{n-1}, w_{n-2} ), 
+    ... 
+    weighted_mean_all_d( P(</s> | ...) ) 
+  }
+*** Not compatible
+- The problem is that, two values are different. Weighted mean on
+  sentence level (up to each sentence, prob calculated by each
+  document model) produces one value. Product of word level
+  probabilities that gained by per word weighted mean produces another
+  value. They are generally not that far, but not the same. 
+
+*** Which one should we use? 
+- If we want to use "per-word predictability" power, we need to do
+  things on word level. Maybe this is more powerful. (and a bit
+  slower) 
+- If we are not interested in word level, and since our assumption
+  simply assumes the underlying document-model generates a
+  probablility for each given sentence... Then sentence level is good
+  enough.
+- Try both? Hmm. 
+
+*** For now?
+- Try both?: no. on sentence level.  
+- Sentence level. Following strictly to P_d(sentence). 
+- Basic premise: A sentence, a probability. Each document model is
+  independent (although weakly linked by coll-model, but this is
+  not relevant here) 
+
