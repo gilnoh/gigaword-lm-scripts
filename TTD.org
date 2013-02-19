@@ -13,7 +13,7 @@
 - For each news "story" we call twice; once ngram (can't reduce this),
   once octave. Maybe starting up octave each time is
   expansive. Consider this. 
-** TODO [#B] If log-sum is only needed as "weighted sum"
+** TODO [#B] If log-sum is only needed as "weighted sum" (use not-tool-small sum)
 - we may not need to do the costy log-space-sums. 
 - (by multiply weights to a certain degree, so within octave normal range). 
 - (using reference_weightedsum, or a improved variation, etc). 
@@ -48,7 +48,7 @@
 - (already have): weighted-sum matlab code 
 **** DONE (write octave caller wrapper) logprob mean 
 - use weighted sum with same weights. :-) 
-**** TODO calc P_coll 
+**** DONE calc P_coll 
 - check collection model file 
 - get P_coll (t) (with -debug 3)
 **** TODO each P_doc(t) 
@@ -91,25 +91,30 @@ It seems that both related to sparseness. Not critical, but affecting
 ** ngram 
 - (CURRENT) all default: no other than "-ppl" (input designation) and "-lm".  
 
-* (Really Minor, prolly not worth) Consider
-** Splitta tokenization errors are post-processed for now. 
-- But maybe, use it only for sentence split, and not for tokenization,
-  and use another tokenization run? 
-- Not for now. Just keep an eye, for further problem, if happenes. 
-
 * Some notes
 ** SRILM 
+*** Interpolate call parameters 
 - "-bayes 0" mix-model is generally what I would expect from simple
   summation: simple (lambda * model 1 prob) + ((1-lamba) * model 2
   prob), for each word point. (Well if you ask me what -bayes non-zero
   means ... I don't) 
+- so the mixture model call is something like: 
+- ngram -lm doc.model -mix-lm collection.model -ppl test.txt -bayes 0 -debug 3 -lambda 0.1
 
-** Perplexity (per word) is calculated in SRILM 
+*** Perplexity (per word), as calculated in SRILM 
 - ppl = 10^(-logprob / (words - OOVs + sentences))
 - ppl1 (without </s>) = 10^(-logprob / (words - OOVs)) 
 
-** TODO Know what are the basic discount/smoothing method, in DEFAULT (no opt)
-*** TODO See SRILM FAQ once more
+*** Discount methods in SRILM defult 
+**** TODO Know what are the basic discount/smoothing method, in DEFAULT (no opt)
+
+** Octave 
+*** Octave "precision" of double is one digit less (than SRILM) 
+- Seems like this causes the small amount of difference in the final
+  result. (try octave> a = 0.00409898) 
+- Octave uses H/W floats. ... hmm. no easy way around(?)
+- "Symbolic toolbox". vpa(something). ... hmm. Maybe. 
+
 
 * Something I am not really sure
 

@@ -73,7 +73,7 @@ sub lambda_sum($@@)
     my $right_aref = $_[2]; # log probability of P_coll, on each token
     
     # sanity check 
-    die unless ($lambda > 0 and $lambda <1); 
+    die unless ($lambda >= 0 and $lambda <=1); 
     die unless (scalar (@$left_aref) == scalar (@$right_aref)); 
 
     # remove "both 0" element" 

@@ -1,39 +1,44 @@
 # a perl module to call and read SRILM 
 # outputs (especially those debug outputs, too) 
-
+use strict; 
+use warnings; 
 require Exporter;
-@ISA = qw(Exporter); 
-@EXPORT = qw(call_ngram read_debug3_log read_debug3_p); 
+
+my @ISA = qw(Exporter); 
+my @EXPORT = qw(read_debug3_p call_ngram); 
 
 my $NGRAM_EXECUTABLE = "ngram"; 
 my $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
-my $NGRAM_INPUT_FILE = "./output/ngram_input.txt"; # we use a fixed name. can't run multiple instances. 
+my $NGRAM_INPUT_FILE = "./output/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
 
-sub call_ngram {
+sub call_ngram($;$$) {
     # call ngram with some options. 
-    # arguments are call_ngram(model_path, sentence, optional_arguments); 
+    # arguments are call_ngram(model_path, optional_arguments*, sentence**); 
+    # only first argument is mandatory. 
+    # * if missing, no optional arguments will be given. 
+    # ** if missing, will run on previously called text. 
     # the STDOUT of ngram, will be returned as @result 
-
-# format 
-# ngram -ppl target.txt -lm modelfile (-order or any similar options) -debug 3 
-# a complex exmaple 
-# ngram -ppl test.txt -lm ./afp_eng_2009/AFP_ENG_20090531.0484.story.model -mix-lm collection.model -debug 3 -bayes 0 -lambda 0.5 
-
-# outputs come to STDOUT. so capture it. 
+    
+    # call would be made like this; 
+    # ngram -ppl in.txt -lm modelfile (-order or any similar options) -debug 3 
 
     my $model_path = $_[0]; 
-    my $sentence_string = $_[1]; 
-    my $additional_options = $_[2]; 
+    my $additional_options = $_[1]; 
+    my $sentence_string = $_[2]; 
 
     # sanity check 
-    die unless (defined $sentence_string); 
     die unless (-e $model_path); 
     $additional_options = "" unless (defined $additional_options); 
+    
+    # generate input file, if $sentence_string is given 
+    if (defined $sentence_string)
+    {
+	open FILE, ">", $NGRAM_INPUT_FILE; 
+	print FILE $sentence_string; 
+	close FILE;
+    }
 
-    # generate input file 
-    open FILE, ">", "./output/ngram_input.txt"; 
-    print FILE $sentence_string; 
-    close FILE; 
+    die "Something wrong. This is a new call without sentence, or file write failed\n" unless (-r $NGRAM_INPUT_FILE); 
 
     # make command 
     my $command = $NGRAM_EXECUTABLE . " " . "-ppl " . $NGRAM_INPUT_FILE . " " . "-lm " . $model_path . " " . $NGRAM_DEBUGOPTION . " " . $additional_options; 
@@ -48,7 +53,7 @@ sub call_ngram {
 sub read_debug3_p {
     # return probability value itself (non-log) 
     my @result; 
-    @pline = read_debug3(@_);
+    my @pline = read_debug3(@_);
     foreach (@pline)
     {
 	/.\] (.+?) \[ /; 
@@ -60,7 +65,7 @@ sub read_debug3_p {
 sub read_debug3_log {
     # return log probability part of each word 
     my @result; 
-    @pline = read_debug3(@_); 
+    my @pline = read_debug3(@_); 
     foreach (@pline)
     {
 	/ \[ (.+?) \] \/ 1/; 
