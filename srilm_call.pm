@@ -1,11 +1,14 @@
 # a perl module to call and read SRILM 
 # outputs (especially those debug outputs, too) 
+
+package srilm_call; 
+
 use strict; 
 use warnings; 
-require Exporter;
+use Exporter;
 
-my @ISA = qw(Exporter); 
-my @EXPORT = qw(read_debug3_p call_ngram); 
+our @ISA = qw(Exporter); 
+our @EXPORT = qw(read_debug3_p call_ngram); 
 
 my $NGRAM_EXECUTABLE = "ngram"; 
 my $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 

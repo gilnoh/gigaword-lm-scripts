@@ -1,21 +1,19 @@
 use strict;
 use warnings; 
 use octave_call; 
-use srilm_call qw(call_ngram read_debug3_p); 
-use proto_condprob qw(P_coll $COLLECTION_MODEL); 
-use Test::Simple tests => 8; 
+use srilm_call; 
+use proto_condprob qw(P_coll P_doc P_t $COLLECTION_MODEL); 
+use Test::Simple tests => 9; 
 
 ## lambda_sum 
 my $l = 0.9; 
 my @left = (0.1, 0.2); 
 my @right = (0.02, 0.03); 
 my $result = lambda_sum($l, \@left, \@right); 
-ok($result == -1.7738, "calling lambda sum on OCTAVE"); 
+ok(($result - -1.7738) < 0.0001, "calling lambda sum on OCTAVE"); 
 
-$result = lambda_sum(1, \@left, \@right); 
-ok($result == -1.6990, "calling labmda sum yet another"); 
-
-
+$result = lambda_sum2(1, \@left, \@right); 
+ok(($result - -1.6990) < 0.0001, "calling labmda sum yet another"); 
 ## read_debug3_p 
 open FILE_C, "<", "./testdata/debug3_coll.out"; 
 open FILE_D, "<", "./testdata/debug3_doc.out"; 
@@ -59,7 +57,7 @@ my @mean_data = (-0.4973960, -0.0517816, -0.6938937, -1.2344063, -0.1251993, -0.
 $r = mean(\@mean_data); 
 ok (($r - (-0.25969)) < 0.0001, "mean of log probs on OCTAVE"); 
 
-## calc collection model 
+## P_coll 
 our $COLLECTION_MODEL; #from proto_condprob 
 if (-e $COLLECTION_MODEL) 
 {
@@ -84,3 +82,21 @@ else
     ok(1, "ignoring calling P_doc, missing collection model"); 
 }
 
+## Finally, P_t that uses P_doc and P_coll 
+
+if (-e $COLLECTION_MODEL)
+{
+    # P_t() arguments: text, lambda, collection model, document model glob 
+    my %result = P_t($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    foreach (keys %result)
+    {
+	print "\t$_\t$result{$_}\n"; 
+    }
+    my @a = values %result; 
+    print "\t Average logprob from the doc-models: ", mean(\@a), "\n"; 
+    ok(1, "calling P_t done"); 
+}
+else 
+{
+    ok(1, "ignoring calling P_t, missing collection model in /output"); 
+}

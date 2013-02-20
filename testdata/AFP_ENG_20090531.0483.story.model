@@ -1,0 +1,33 @@
+
+\data\
+ngram 1=10
+ngram 2=10
+ngram 3=0
+
+\1-grams:
+-1.041393	-	-0.2596373
+-0.7403627	</s>
+-99	<s>	-0.3899711
+-0.7403627	afp	-0.3388186
+-1.041393	news	-0.2596373
+-1.041393	no	-0.2596373
+-1.041393	reproduction	-0.2138798
+-1.041393	service	-0.2596373
+-1.041393	unauthorized	-0.2596373
+-1.041393	world	-0.2596373
+
+\2-grams:
+-0.30103	- no
+-0.1760913	<s> afp
+-0.4771213	afp </s>
+-0.4771213	afp world
+-0.30103	news service
+-0.30103	no unauthorized
+-0.30103	reproduction </s>
+-0.30103	service -
+-0.30103	unauthorized reproduction
+-0.30103	world news
+
+\3-grams:
+
+\end\

@@ -9,7 +9,7 @@
 ** DONE [#A] bug splitta outputs the last "." concatted to the last Word.    
 ** TODO? [#C] [??] feature catall.pl "do not print a file size less than X" 
 ** TODO? [#C] [Very hard - Possible?] Matrix-ize weighted_sum Octave code. 
-** TODO [#B] [Efficiency] Lamda sum in Perl space. (No octave call) 
+** DONE [#A] [Efficiency] Lamda sum in Perl space. (No octave call) 
 - For each news "story" we call twice; once ngram (can't reduce this),
   once octave. Maybe starting up octave each time is
   expansive. Consider this. 
@@ -74,8 +74,10 @@
 ===
 ===
 
-* Ideas to Consider 
-
+* Efficiency 
+** Testing on May 2009 AFP news (20k documents) 
+- Running P_t sequentially currently takes about 3 min (2:48) on Moore.  
+- 
 
 * Possible known problems? 
 ** Discount related questions
