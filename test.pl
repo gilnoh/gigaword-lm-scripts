@@ -108,8 +108,8 @@ my %result2;
 if (-e $COLLECTION_MODEL)
 {
     # P_t_multithread() arguments: text, lambda, collection model, document model glob 
-    my $nthread = 4;
-    set_num_thread($nthread); 
+    my $nthread = 3;
+    proto_condprob::set_num_thread($nthread); 
     %result2 = P_t_multithread($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
     my $result_same = 1; 
     foreach (keys %result2)

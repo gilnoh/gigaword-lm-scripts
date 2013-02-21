@@ -1,18 +1,32 @@
 * Status Memo 
 ** Current corpus 
-- AFP 2010, as "small" test. 
+- P_doc AFP 2009_05, as "small" test. 
+- P_coll AFP 2010, as "small" test. 
 
 * Preparation
-** DONE [#B] Install SRILM on NFS home/bin 
-** TODO [#A] Very big "collection" model and its preparation 
+** TODO [#A] Medium & Large size "collection" model and its preparation  
 - currently: 1) afp 2010 (no problem) 
 - then: 2) all afp. 
 - and: 3) all of the gigaword? 
 - Maybe we need something between 2), 3). Summing up two or three
   models, etc. ... 
-- Do need some testing with single directory output (catall.pl options) 
+- Single directory (not [agency]-[year]) output is set in gzset_runner.pl. 
+- Doing 2). a) run gzset runner, b) cat all, c) call ngram-count
+  (consider -write-binary-lm) 
+*** TODO Preparing Medium size collection model 
+**** DONE single directory output modification, gzset_runner.pl 
+**** DONE run gzset_runner on all AFP_ENG 
+**** TODO catall into AFP_ENG_collection.txt 
+**** TODO run ngram-count (possibly with binary lm) on collection
+**** TODO try to run the sentence, etc. 
+
+** DONE [#B] Install SRILM on NFS home/bin 
+
+
 
 * List of Things to Fix/Improve 
+** TODO [#B] (To reduce load time), binary LM models 
+*** TODO On all model building process, use -write-binary-lm 
 ** DONE [#A] bug splitta outputs the last "." concatted to the last Word.    
 ** TODO? [#C] [??] feature catall.pl "do not print a file size less than X" 
 ** TODO? [#C] [Very hard - Possible?] Matrix-ize weighted_sum Octave code. 
@@ -35,6 +49,7 @@
   really critical, compared to other "multi-number" of things. 
 
 ==== 
+
 
 * Things to Do 
 ** Collection Model 
@@ -124,19 +139,21 @@ It seems that both related to sparseness. Not critical, but affecting
 - ppl1 (without </s>) = 10^(-logprob / (words - OOVs)) 
 
 *** Discount methods in SRILM defult 
-**** TODO Know what are the basic discount/smoothing method, in DEFAULT (no opt)
+- When no option is given, it does Good-Turing discount. (the warnings
+  are from those, when counting count of counts, etc) 
 
 ** Octave 
 *** Octave "precision" of double is one digit less (than SRILM) 
 - Seems like this causes the small amount of difference in the final
   result. (try octave> a = 0.00409898) 
 - Octave uses H/W floats. ... hmm. no easy way around(?)
-- "Symbolic toolbox". vpa(something). ... hmm. Maybe. 
+- Eh, no. Above examples is actually within HW float, but octave cuts 
+  it. Prolly some precision cut mechanism in work. What's it? 
+- "Symbolic toolbox". vpa(something)? Hmm. no need yet.  
 
 
-* Something I am not really sure
-
-** [#A] Word level model, or Sentence level model? 
+* Theoretical crosspoints / decisions 
+** DONE [#A] Word level model, or Sentence level model? 
 - Basically, what I am trying to do is doing weighted sum of
   probabilities. There is two way of doing things. 
 - Word Level weighted sum and Sentence Level weighted sum 
@@ -176,4 +193,4 @@ It seems that both related to sparseness. Not critical, but affecting
 - Basic premise: A sentence, a probability. Each document model is
   independent (although weakly linked by coll-model, but this is
   not relevant here) 
-
+- Word-level might be useful/needed for "dynamic/better LM". 
