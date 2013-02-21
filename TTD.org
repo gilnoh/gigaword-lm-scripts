@@ -13,6 +13,11 @@
 - For each news "story" we call twice; once ngram (can't reduce this),
   once octave. Maybe starting up octave each time is
   expansive. Consider this. 
+** TODO [#A] [Efficiency for response] Not using multiple threads/ngram processes
+- Working on it. 
+** TODO [#A] [Efficiency for throughput] Unable to call two or more instances. 
+- Currently, the file to be passed to ngram -ppl is a fixed name. 
+- should be improved to temporary random name, or something like getName{sent}. 
 ** TODO [#B] If log-sum is only needed as "weighted sum" (use not-tool-small sum)
 - we may not need to do the costy log-space-sums. 
 - (by multiply weights to a certain degree, so within octave normal range). 

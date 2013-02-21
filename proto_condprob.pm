@@ -18,7 +18,7 @@ our @EXPORT_OK = qw (P_coll P_doc $COLLECTION_MODEL $DOCUMENT_MODEL_PATH);
 our $COLLECTION_MODEL = "./output/collection.model"; 
 our $DOCUMENT_MODELS = "./output/afp_eng_2009/*.model"; 
 our $LAMBDA = 0.5; 
-our $NUM_THREAD = 4; 
+our $NUM_THREAD = 6; 
 
 
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
@@ -87,8 +87,7 @@ sub P_t_multithread($;$$$)
     # 	die unless (scalar(@document_model) == $sum); 
     # }    
     
-    # the models to be checked are divided in @aref_array 
-    # generate the threads, and run them. 
+    # generate the threads, and run them with 1/number_thread array parts. 
     my @thread; 
     my $n = int (scalar (@document_model) / $NUM_THREAD); 
     my $start = 0; 
@@ -96,17 +95,29 @@ sub P_t_multithread($;$$$)
 
     for (my $i=0; $i < $NUM_THREAD; $i++)
     {
-    	$thread[$i] = threads->create(\&P_d_runner, @document_model[$start .. $end]);
-    	# update next array
+	# dcode
+	# print STDERR "$start - $end\n"; 
+	# () needed: array context. see http://perldoc.perl.org/threads.html#THREAD-CONTEXT
+    	($thread[$i]) = threads->create(\&P_d_runner, @document_model[$start .. $end]);
+    	# update start-end for the next array
     	$start += $n; 
     	$end = $start + $n - 1; 
-    	$end = ((scalar @document_model) -1) if ($i == $NUM_THREAD -1); # last part special case
+    	$end = ((scalar @document_model) -1) if (($i+1) == $NUM_THREAD -1); # last part special case
     }
-
+       
+    # wait for threads to end. 
+    my %parts; 
+    for (my $i=0; $i < $NUM_THREAD; $i++)
+    {
+    	my %r = $thread[$i]->join(); 
+    	#print $r[0], "\t", $r[1], "\n"; 
+    	%parts = (%parts, %r); 
+    }
+    # sum up the results from the thread 
+    
+    %result = %parts; 
+    
     #%result = P_d_runner(@document_model); 
-
-
-    print STDERR  "\n"; 
     return %result; 
 }
 
@@ -121,7 +132,7 @@ sub P_d_runner
 	$r{$_} = P_doc($_); 
 	print STDERR "." unless ($count++ % 100); 
     }
-    return %r; 
+    return %r;
 }
 
 
