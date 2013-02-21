@@ -1,8 +1,10 @@
 Command start to DONE
-(Westy) 
+(Westy, under some load) 
 8 threads: 1 min 35
 6 threads: 1 min 18 
 4 threads: 1 min 20 
 2 threads: 1 min 53 
 1 thread: 3 min 19 
 
+(Gillespie) 
+6 threads: 0 min 50  (cool) 

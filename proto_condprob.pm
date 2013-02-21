@@ -12,16 +12,33 @@ use threads;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread); 
-our @EXPORT_OK = qw (P_coll P_doc $COLLECTION_MODEL $DOCUMENT_MODEL_PATH); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL); 
 
-# some constants 
+# some globals 
 our $COLLECTION_MODEL = "./output/collection.model"; 
 our $DOCUMENT_MODELS = "./output/afp_eng_2009/*.model"; 
 our $LAMBDA = 0.5; 
-our $NUM_THREAD = 6; 
+our $NUM_THREAD = 4; 
 
-
+#
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
+
+sub set_num_thread
+{
+    $NUM_THREAD = $_[0]; 
+}
+
+# sub set_collection_model 
+# {
+#     $COLLECTION_MODEL = $_[0]; 
+#     die "unable to find/read collection model file\n" unless (-r $COLLECTION_MODEL); 
+# }
+
+# sub set_document_models
+# {
+#     $DOCUMENT_MODELS = $_[0]; 
+#     # sanity check is done within P_doc, no need to worry here. 
+# }
 
 sub P_t_multithread($;$$$) 
 {

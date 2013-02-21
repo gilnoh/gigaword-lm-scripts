@@ -4,6 +4,13 @@
 
 * Preparation
 ** DONE [#B] Install SRILM on NFS home/bin 
+** TODO [#A] Very big "collection" model and its preparation 
+- currently: 1) afp 2010 (no problem) 
+- then: 2) all afp. 
+- and: 3) all of the gigaword? 
+- Maybe we need something between 2), 3). Summing up two or three
+  models, etc. ... 
+- Do need some testing with single directory output (catall.pl options) 
 
 * List of Things to Fix/Improve 
 ** DONE [#A] bug splitta outputs the last "." concatted to the last Word.    
@@ -13,15 +20,19 @@
 - For each news "story" we call twice; once ngram (can't reduce this),
   once octave. Maybe starting up octave each time is
   expansive. Consider this. 
-** TODO [#A] [Efficiency for response] Not using multiple threads/ngram processes
-- Working on it. 
-** TODO [#A] [Efficiency for throughput] Unable to call two or more instances. 
+** DONE [#A] [Efficiency for response] Not using multiple threads/ngram processes
+** TODO [#C] [Efficiency for throughput] Unable to call two or more instances. 
 - Currently, the file to be passed to ngram -ppl is a fixed name. 
-- should be improved to temporary random name, or something like getName{sent}. 
-** TODO [#B] If log-sum is only needed as "weighted sum" (use not-tool-small sum)
+- should be improved to temporary random name, or something like
+  getName{sent}?
+- *Not really important*, since the code does use multithread for P_t, and a
+  single instance can utilize many nubmers of threads. 
+** TODO [#C] If log-sum is only needed as "weighted sum" (use not-tool-small sum)
 - we may not need to do the costy log-space-sums. 
 - (by multiply weights to a certain degree, so within octave normal range). 
 - (using reference_weightedsum, or a improved variation, etc). 
+- *Not really important* Only calculated twice, or three times only. Not
+  really critical, compared to other "multi-number" of things. 
 
 ==== 
 

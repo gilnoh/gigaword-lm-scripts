@@ -2,8 +2,8 @@ use strict;
 use warnings; 
 use octave_call; 
 use srilm_call; 
-use proto_condprob qw(P_coll P_doc P_t $COLLECTION_MODEL); 
-use Test::Simple tests => 9; 
+use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc $COLLECTION_MODEL); 
+use Test::Simple tests => 10; 
 
 ## lambda_sum 
 my $l = 0.9; 
@@ -82,12 +82,12 @@ else
     ok(1, "ignoring calling P_doc, missing collection model"); 
 }
 
-## Finally, P_t that uses P_doc and P_coll 
-
+my %result; 
+## P_t that uses P_doc and P_coll 
 if (-e $COLLECTION_MODEL)
 {
     # P_t() arguments: text, lambda, collection model, document model glob 
-    my %result = P_t($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    %result = P_t($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
     foreach (keys %result)
     {
 	print "\t$_\t$result{$_}\n"; 
@@ -99,4 +99,29 @@ if (-e $COLLECTION_MODEL)
 else 
 {
     ok(1, "ignoring calling P_t, missing collection model in /output"); 
+}
+
+## Run P_t multithread and check the result is the same. 
+
+my %result2; 
+
+if (-e $COLLECTION_MODEL)
+{
+    # P_t_multithread() arguments: text, lambda, collection model, document model glob 
+    my $nthread = 4;
+    set_num_thread($nthread); 
+    %result2 = P_t_multithread($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    my $result_same = 1; 
+    foreach (keys %result2)
+    {
+	print "\t$_\t$result2{$_}\n"; 
+	$result_same = 0 if ($result{$_} != $result2{$_}); 
+    }
+    my @a = values %result; 
+    print "\t Average logprob from the doc-models (with $nthread threads): ", mean(\@a), "\n"; 
+    ok($result_same, "calling P_t_multithread done, result the same"); 
+}
+else
+{
+    ok(1, "ignoring calling P_t_multithread, missing collection model in /output"); 
 }
