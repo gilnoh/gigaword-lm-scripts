@@ -11,7 +11,7 @@ use octave_call;
 use threads; 
 
 our @ISA = qw(Exporter); 
-our @EXPORT = qw(P_t P_t_multithread); 
+our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread); 
 our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL); 
 
 # some globals 
@@ -20,7 +20,6 @@ our $DOCUMENT_MODELS = "./output/afp_eng_2009/*.model";
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 
-#
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 
 sub set_num_thread
@@ -39,6 +38,58 @@ sub set_num_thread
 #     $DOCUMENT_MODELS = $_[0]; 
 #     # sanity check is done within P_doc, no need to worry here. 
 # }
+
+sub P_h_t_multithread($$;$$$)
+{
+    # argument: hypothesis, text, lambda, collection model path, document models
+    # output (return): 
+    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+
+    # argument check 
+    my @args = @_; 
+    my $hypothesis = shift @args; 
+    my $text = shift @args; 
+    die unless ($hypothesis and $text); 
+
+    # calculate P(t) for each document model 
+    my %text_per_doc = P_t_multithread($text, @args); # remaining @args will be checked there 
+
+    # calculate P(h) for each model 
+    my %hypo_per_doc = P_t_multithread($hypothesis, @args); 
+
+    # calculate P(h|t,d) for each model 
+    # note this %weighted is *non-normalized weight* (for evidence) 
+    # and not the final prob. 
+    my %weighted; 
+    {
+	foreach (keys %text_per_doc)
+	{
+	    $weighted{$_} = $text_per_doc{$_} + $hypo_per_doc{$_}; 
+	}
+    }
+    
+    # calculate P(t) overall 
+    my @t = values %text_per_doc; 
+    my $P_t = mean(\@t); # (on uniform P(d) )
+    print STDERR "P(t) is $P_t \n"; 
+
+    # calculate P(h) overall 
+    my @h = values %hypo_per_doc; 
+    my $P_h = mean(\@h); # (on uniform P(d) ) 
+    print STDERR "P(h) is (logprob): $P_h \n"; 
+
+    # calculate P(h|t) overall (that is, P(h|t,d)) 
+    my $P_h_given_t = weighted_sum(\@t, \@h); 
+    print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
+
+    # calculate P(h|t) / P(h), as supporting measure. 
+    my $gain = 10 ** ($P_h_given_t - $P_h); # note that this is not logprob
+    print STDERR "P(h|t) / P(h) is (nonlog): ", $gain, "\n"; 
+
+    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+    return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
+
+}
 
 sub P_t_multithread($;$$$) 
 {

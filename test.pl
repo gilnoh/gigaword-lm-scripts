@@ -3,7 +3,12 @@ use warnings;
 use octave_call; 
 use srilm_call; 
 use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc $COLLECTION_MODEL); 
-use Test::Simple tests => 10; 
+use Test::Simple tests => 13; 
+
+# test data 
+# (just for the test, not meaningful at all) 
+my $testinput = "we can not say yet if there will be an agreement , \" said Merkel on her way into the summit .";  
+my $testh = "an agreement may be reached in the summit . "; 
 
 ## lambda_sum 
 my $l = 0.9; 
@@ -30,7 +35,6 @@ close FILE_C;
 close FILE_D; 
 
 ## call_ngram
-my $testinput = "we can not say yet if there will be an agreement , \" said Merkel on her way into the summit .";  
 my @ngram_result = call_ngram("./testdata/AFP_ENG_20090531.0484.story.model", "", $testinput);  
 my @prob_seq = read_debug3_p(@ngram_result); 
 
@@ -124,4 +128,51 @@ if (-e $COLLECTION_MODEL)
 else
 {
     ok(1, "ignoring calling P_t_multithread, missing collection model in /output"); 
+}
+
+# P_t on another sentence (hypothesis in next test) 
+my %result3; 
+if (-e $COLLECTION_MODEL)
+{
+    %result3 = P_t($testh, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    foreach (keys %result3)
+    {
+	print "\t$_\t$result3{$_}\n"; 
+    }
+    my @a = values %result3; 
+    print "\t Average logprob from the doc-models: ", mean(\@a), "\n"; 
+    ok(1, "calling P_t on another sentence");     
+}
+else
+{
+    ok(1, "ignoring another call to P_t"); 
+}
+
+
+## P_h_t_multithread
+if (-e $COLLECTION_MODEL)
+{
+    my $nthread = 3;
+    proto_condprob::set_num_thread($nthread); 
+    my ($gain,$P_h_t, $P_h, $P_t ,$href) = P_h_t_multithread($testh, $testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+
+    print "Non-normalized contribution of documents (evidences)\n"; 
+    foreach (keys %$href)
+    {
+	print "\t $_ \t $href->{$_}\n"; 
+    }    
+    ok(1, "P_h_t_multithread ran Okay"); 
+
+    # finally, check %result2 + %result3 is this $href 
+    my $result_same = 1; 
+    foreach (keys %$href)
+    {
+	$result_same = 0 unless ($href->{$_} == ($result2{$_} + $result3{$_})); 
+    }
+    ok($result_same, "And P_h_t result concurs to P_t on t and h"); 
+}
+else
+{
+   ok(1, "ignoring calling P_h_t_multithread, missing collection model in /output"); 
+   ok(1, "ignoring calling P_h_t_multithread, missing collection model in /output"); 
 }

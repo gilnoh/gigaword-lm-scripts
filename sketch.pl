@@ -8,6 +8,7 @@ use octave_call;
 # test call on 2009 small set 
 
 my $text = "we can not say yet if there will be an agreement , \" said Merkel on her way into the summit .";  
+my $hypothesis = "an agreement reached in the summit . "; 
 
 #my %r = P_t($text); 
 my %r = P_t_multithread($text); 
@@ -15,6 +16,9 @@ print "Done\n";
 export_hash_to_file(\%r, "Pt_from_sketch.txt"); 
 my @a = values %r;
 print "Average logprob from the doc-models: ", mean(\@a), "\n"; 
+
+##
+P_h_t_multithread($text, $hypothesis); 
 
 sub export_hash_to_file
 {
