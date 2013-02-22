@@ -52,10 +52,22 @@ sub P_h_t_multithread($$;$$$)
     die unless ($hypothesis and $text); 
 
     # calculate P(t) for each document model 
+    print STDERR $text, "\n"; 
     my %text_per_doc = P_t_multithread($text, @args); # remaining @args will be checked there 
 
+    # calculate P(t) overall 
+    my @t = values %text_per_doc; 
+    my $P_t = mean(\@t); # (on uniform P(d) )
+    print STDERR "P(t) is $P_t \n"; 
+
     # calculate P(h) for each model 
+    print STDERR $hypothesis, "\n"; 
     my %hypo_per_doc = P_t_multithread($hypothesis, @args); 
+
+    # calculate P(h) overall 
+    my @h = values %hypo_per_doc; 
+    my $P_h = mean(\@h); # (on uniform P(d) ) 
+    print STDERR "P(h) is (logprob): $P_h \n"; 
 
     # calculate P(h|t,d) for each model 
     # note this %weighted is *non-normalized weight* (for evidence) 
@@ -68,16 +80,6 @@ sub P_h_t_multithread($$;$$$)
 	}
     }
     
-    # calculate P(t) overall 
-    my @t = values %text_per_doc; 
-    my $P_t = mean(\@t); # (on uniform P(d) )
-    print STDERR "P(t) is $P_t \n"; 
-
-    # calculate P(h) overall 
-    my @h = values %hypo_per_doc; 
-    my $P_h = mean(\@h); # (on uniform P(d) ) 
-    print STDERR "P(h) is (logprob): $P_h \n"; 
-
     # calculate P(h|t) overall (that is, P(h|t,d)) 
     my $P_h_given_t = weighted_sum(\@t, \@h); 
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 

@@ -1,9 +1,13 @@
+* some rough ideas 
+- better baseline would be P(h|h), instead of P(h)? (topical
+  relatedness gets some even before starting). 
+
 * Status Memo 
 ** Current corpus 
-- P_doc AFP 2009_05, as "small" test. 
-- P_coll AFP 2010, as "small" test. 
+- P_doc AFP 2009_05, as the "small" set of document models. 
+- P_coll AFP 2010, as the "small" collection model. 
 
-* Preparation
+* Data Preparation
 ** TODO [#A] Medium & Large size "collection" model and its preparation  
 - currently: 1) afp 2010 (no problem) 
 - then: 2) all afp. 
@@ -14,15 +18,7 @@
 - Doing 2). a) run gzset runner, b) cat all, c) call ngram-count
   (consider -write-binary-lm) 
 *** TODO Preparing Medium size collection model 
-**** DONE single directory output modification, gzset_runner.pl 
-**** DONE run gzset_runner on all AFP_ENG 
-**** TODO catall into AFP_ENG_collection.txt 
-**** TODO run ngram-count (possibly with binary lm) on collection
-**** TODO try to run the sentence, etc. 
-
 ** DONE [#B] Install SRILM on NFS home/bin 
-
-
 
 * List of Things to Fix/Improve 
 ** TODO [#B] (To reduce load time), binary LM models 
@@ -35,37 +31,36 @@
   once octave. Maybe starting up octave each time is
   expansive. Consider this. 
 ** DONE [#A] [Efficiency for response] Not using multiple threads/ngram processes
-** TODO [#C] [Efficiency for throughput] Unable to call two or more instances. 
+
+* Postponed improvements: "Good to have, but not critical"
+** TODO? [#C] [Efficiency for throughput] Unable to call two or more instances. 
 - Currently, the file to be passed to ngram -ppl is a fixed name. 
 - should be improved to temporary random name, or something like
   getName{sent}?
 - *Not really important*, since the code does use multithread for P_t, and a
   single instance can utilize many nubmers of threads. 
-** TODO [#C] If log-sum is only needed as "weighted sum" (use not-tool-small sum)
+** TODO? [#C] If log-sum is only needed as "weighted sum" (use not-tool-small sum)
 - we may not need to do the costy log-space-sums. 
 - (by multiply weights to a certain degree, so within octave normal range). 
 - (using reference_weightedsum, or a improved variation, etc). 
-- *Not really important* Only calculated twice, or three times only. Not
-  really critical, compared to other "multi-number" of things. 
+- *Not really important* Only calculated twice, or three times only
+  per each P(h|t). Not really critical, compared to other
+  efficiency issues. 
+- Well, "not needing octave anymore" would be nice but. 
 
 ==== 
 
-
-* Things to Do 
+* Main line: Things To Do (codings to do) 
 ** Collection Model 
-
 *** DONE (run) Get "target" news files (target corpus) all in one folder 
 *** DONE (run) catall and generate collection LM model 
 *** [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
-
 ** Document Model 
 *** DONE (write script) For each file, make each LM model
-
 ** Produce single sentence prob. (t) 
 *** DONE (write matlab script) weighted-sum 
 - input: weight (doc prob), sentence prob, of each document 
 - output: weighted average. 
-
 *** (write scripts) P(t) prob 
 **** DONE (write debug3 reader) read_log_prob, read_prob
 **** DONE (write octave caller) lambda sum (interpolate) 
@@ -82,33 +77,37 @@
 **** DONE calc P_coll 
 - check collection model file 
 - get P_coll (t) (with -debug 3)
-**** TODO each P_doc(t) 
+**** DONE each P_doc(t) 
 - get for each pure P_d(t) (with -debug 3), on all doc 
 - calculate lamda*P_d + (1-lamda)*P_coll for each by call octave
-**** TODO calc P_(t) by weighted sum 
+**** DONE calc P_(t) by weighted sum 
 - do the weighted-sum of the values, with uniform weight 
-- store the result for each P_d(t). 
-- store the one reulst P(t). 
 
 ** Produce conditional prob. 
-*** TODO (write scripts) P(h | t) prob 
-(perl side) 
-- get P(h), using previous section 
-- get P_d(t) for each doc. 
-(Octave side) 
-- do the weighted-sum of the P_d(h) values, with (P_d(t) /
-  sigma(P_d(t))) as weight for each d. 
+*** DONE (write scripts) P(h | t) prob 
+*** DONE write script "evidence calculation code" 
+Wow. Finally. 
+*** DONE sanity check, more with sketch. 
+- on AFP 2009 May
 
-*** TODO write script "evidence calculation code" 
+*** TODO [#A] Some possible "look-into" data saving. 
+- Starting from P_t, P_h, P_h
 
-===
-===
-===
+** Experiments with this prototype conditional prob. 
+*** TODO [#A] Some test on small corpus
+- AFP_ENG 2009 05 
+*** TODO [#A] Some test on not-so-small-but-still-small corpus 
+- AFP ENG 2010 
+*** TODO [#A] Some test on mid-size corpus 
+- All AFP
+- This is not doable until better "recursive-sub-dir-visit" for; 
+- Model making: (catall, and etc for collection model) 
+
 
 * Efficiency 
 ** Testing on May 2009 AFP news (20k documents) 
 - Running P_t sequentially currently takes about 3 min (2:48) on Moore.  
-- 
+
 
 * Possible known problems? 
 ** Discount related questions
@@ -118,11 +117,13 @@
 It seems that both related to sparseness. Not critical, but affecting
 (e.g. less good smoothing?)  
 
+
 * Currently used/tested SRILM call parameters 
 ** ngram-count 
 - (CURRENT) all default: no other than "-text" and "-lm". 
 ** ngram 
 - (CURRENT) all default: no other than "-ppl" (input designation) and "-lm".  
+
 
 * Some notes
 ** SRILM 
