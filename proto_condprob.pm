@@ -15,8 +15,8 @@ our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread);
 our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL); 
 
 # some globals 
-our $COLLECTION_MODEL = "./output/collection.model"; 
-our $DOCUMENT_MODELS = "./output/afp_eng_2009/*.model"; 
+our $COLLECTION_MODEL = "./output/collection/collection.model"; 
+our $DOCUMENT_MODELS = "./output/document/afp_eng_2009/*.model"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 
@@ -95,7 +95,7 @@ sub P_h_t_multithread($$;$$$)
 
 sub P_t_multithread($;$$$) 
 {
-    # argument: text, lambda, collection model path, document model path 
+    # argument: text, lambda, collection model path, document model glob 
     # out: a hash (model name, prob of given text produced from the model) 
 
     my %result; # $result{"model_id"} = log prob of $text from 'model_id' 
@@ -208,7 +208,7 @@ sub P_d_runner
 
 sub P_t($;$$$) 
 {
-    # argument: text, lambda, collection model path, document model path 
+    # argument: text, lambda, collection model path, document model glob 
     # out: a hash (model name, prob of given text produced from the model) 
 
     my %result; # $result{"model_id"} = log prob of $text from 'model_id' 
@@ -275,8 +275,8 @@ sub P_doc($)
 {
     # arg[0]: document model path 
     
-    die unless (scalar @collection_seq); 
-    die unless (-r $_[0]); 
+    die "Calling P_doc requires previos call of P_coll" unless (scalar @collection_seq); 
+    die "Unable to open path $_[0]" unless (-r $_[0]); 
 
     my @doc_seq = read_debug3_p(call_ngram($_[0])); 
     #print "\n", (scalar @doc_seq), "\t", (scalar @collection_seq), "\n"; 

@@ -14,6 +14,15 @@ my $NGRAM_EXECUTABLE = "ngram";
 my $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
 my $NGRAM_INPUT_FILE = "./output/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
 
+
+sub set_ngram_input_file($)
+{
+    # if multiple sentences are called simiultanously, this must 
+    # be set accordingly..? 
+    $NGRAM_INPUT_FILE = $_[0]; 
+}
+
+
 sub call_ngram($;$$) {
     # call ngram with some options. 
     # arguments are call_ngram(model_path, optional_arguments*, sentence**); 

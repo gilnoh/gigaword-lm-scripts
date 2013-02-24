@@ -1,11 +1,28 @@
-* some rough ideas 
+* some rough ideas & observations 
 - better baseline would be P(h|h), instead of P(h)? (topical
   relatedness gets some even before starting). 
+- "gain" (P(h|t) / P(h)) seems to (generally) increases with the
+  length of (t & h)  
 
 * Status Memo 
 ** Current corpus 
 - P_doc AFP 2009_05, as the "small" set of document models. 
 - P_coll AFP 2010, as the "small" collection model. 
+
+
+* Binary language model 
+** add binary option as default option 
+
+* SubDir plays (needed before doing more than AFP one year) 
+** Collection model generate from subdirs 
+*** DONE For collection - catall to dump everything in subdirs.  
+
+** Per doc model generate with subdirs 
+*** TODO For per-doc models - perstroy_runnner with subdir. 
+
+** Calculating P_doc with subdirs 
+*** TODO P_t should work with sub dirs. (so is P_t_multithread) 
+- argument for doc models need to be changed. (for now, its glob (path/*.story) ) 
 
 * Data Preparation
 ** TODO [#A] Medium & Large size "collection" model and its preparation  
@@ -54,7 +71,7 @@
 ** Collection Model 
 *** DONE (run) Get "target" news files (target corpus) all in one folder 
 *** DONE (run) catall and generate collection LM model 
-*** [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
+*** DONE [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
 ** Document Model 
 *** DONE (write script) For each file, make each LM model
 ** Produce single sentence prob. (t) 
