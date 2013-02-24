@@ -2,7 +2,7 @@
 0. PREREQUISITE  
 - SRILM binaries must be in PATH. (ngram-count and ngram) 
 - Perl 5.8 or later needed.  
-- Python needed (for the sentence splitter). 
+- Python 2.x needed by the sentence splitter. (Splitta, in /splitta) 
 
 === 
 1. Unpack (the selected) GigaWord target gz files, and run splitta to
@@ -12,26 +12,27 @@ Commands to run:
 > perl gzset_runner.pl [list of gigaword gz file] 
 
 Note: output folder is defined in the script. For now, let's assume
-this is /output/newsarticles/. (actual may differ). This process will
+this is "./models/document/". (actual may differ). This process will
 take some time, according to the corpus size. 
-
 
 ===
 2. Generate "collection" LM on all of the "story" (actual news
 article) files.  
 
 Commands to run: 
-1) > perl catall.pl "./output/newsarticles/*.story" > output/collection.txt
+1) > perl cat_all_story.pl ./models/document > ./models/collection/collection.txt
+2) > ngram-count -text ./models/collection/collection.txt -lm ./models/collection/collection.model -write-binary-lm 
 
-2) > ngram-count -text ./output/collection.txt -lm ./output/collection.model 
-
-Note: 1) generates single big collection file of news articles,for
+Note: 1) generates single big collection text of news articles,for
       SRILM ngram modeller. 2) runs SRILM ngram model on the big text,
-      and saves the resulting model on output/colleciton.model. 
-Note: If you use some other options (like order n), those should also
-      be reflected on the next step. 
+      and saves the resulting model on output/collection/collection.model
+Note: If you have use some other options (like order n) for LM, 
+      those should also be reflected on the next step. 
 
 === 
+** TODO: make it "look this and subdir" version for perstory_runner.pl 
+(just like cat_all_story.pl) 
+
 3. Generate "per document" LM on each of the "story". 
 
 Commands to run: 

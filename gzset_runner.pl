@@ -11,7 +11,9 @@ my $SCRIPT_TO_RUN="gz_to_newsperfile.pl";
 my $CREATE_SUBDIRECTORY_AGENTYEAR=1; 
    # if 1, subdirectory with the "year" generated 
    # if 0, all in the output dir 
-my $OUTPUT_PATH_BASE="./output"; 
+   # WARNING: subdirectories (1) are better, since it gets really slow 
+   # with more than 100K files in a directory. 
+my $OUTPUT_PATH_BASE="./models/document"; 
 die "needs a list of Gigaword gz files" unless ($ARGV[0]); 
 
 foreach(@ARGV)
