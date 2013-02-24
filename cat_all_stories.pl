@@ -6,7 +6,7 @@
 use warnings;
 use strict; 
 
-die "This simple script gets a path, and cat all news file (*.story) in \nthe direct subdirectories of that path, to the STDOUT. (1 depth only)\nUsage: At least one argument needed; a directory path.\n(> perl cat_all_stories.pl ./output/docs/ > collection.txt)\n" unless ($ARGV[0]); 
+die "This simple script gets a path, and cat all news file (*.story) in \nthe direct subdirectories of that path, to the STDOUT. (1 depth only)\nUsage: At least one argument needed; a directory path.\n(> perl cat_all_stories.pl ./models/document/ > collection.txt)\n" unless ($ARGV[0]); 
 
 my $toppath = $ARGV[0]; 
 opendir (my $dh, $toppath) or die "can't open dir $ARGV[0]\n"; 

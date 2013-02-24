@@ -12,7 +12,7 @@ our @EXPORT = qw(read_debug3_p call_ngram);
 
 my $NGRAM_EXECUTABLE = "ngram"; 
 my $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
-my $NGRAM_INPUT_FILE = "./output/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
+my $NGRAM_INPUT_FILE = "./models/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
 
 
 sub set_ngram_input_file($)

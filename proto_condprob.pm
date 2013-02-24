@@ -15,8 +15,8 @@ our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread);
 our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL); 
 
 # some globals 
-our $COLLECTION_MODEL = "./output/collection/collection.model"; 
-our $DOCUMENT_MODELS = "./output/document/afp_eng_2009/*.model"; 
+our $COLLECTION_MODEL = "./models/collection/collection.model"; 
+our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 

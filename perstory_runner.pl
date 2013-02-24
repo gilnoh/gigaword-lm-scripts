@@ -10,7 +10,7 @@ my $NGRAM_COUNT_OPTIONS="";
 # this will generate model with default (3-gram, default discount, etc) 
 
 # get a path 
-die "Usage: At least one argument needed; a file path with a wild card.\n(e.g. perl runner.pl \"./output/*.story\"). \nNote that you need quotation (e.g. \"./path/fileglob\") to surround your path.\n" unless ($ARGV[0]); 
+die "Usage: At least one argument needed; a file path with a wild card.\n(e.g. perl runner.pl \"./models/*.story\"). \nNote that you need quotation (e.g. \"./path/fileglob\") to surround your path.\n" unless ($ARGV[0]); 
 
 # sanity check 
 my $x = `$NGRAM_COUNT_COMMAND`; 
