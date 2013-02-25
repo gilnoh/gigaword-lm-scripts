@@ -230,7 +230,7 @@ sub P_t($;$$$)
 
     # get list of all document models     
     my @document_model = glob($DOCUMENT_MODELS); 
-    die unless (scalar @document_model); 
+    die "unable to find document models at $DOCUMENT_MODELS" unless (scalar @document_model); 
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  

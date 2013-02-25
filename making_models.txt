@@ -30,22 +30,22 @@ Note: If you have use some other options (like order n) for LM,
       those should also be reflected on the next step. 
 
 === 
-** TODO: make it "look this and subdir" version for perstory_runner.pl 
-(just like cat_all_story.pl) 
 
 3. Generate "per document" LM on each of the "story". 
 
 Commands to run: 
-> perl perstory_runner.pl "./output/newsarticles/*.story" 
+> perl perstory_runner.pl ./models/document 
 
-Note: The model files (*.model) will be generated in the newsarticle
-dir, with the same name to each .story document file names. 
+Note: The model files (*.model) will be generated in the same
+directory where the story (news article, *.story) file is located,
+with the same name (*.story.model). (as binary SRILM ngram model) 
 Note: This also takes some time, according to the corpus size. 
 
 ===
 4. Now the model files are ready. Collection-wide model on
-/output/collection.model, and per-document models are at
-/output/newsarticles/[newsname].model 
+/models/collection/collection.model, and per-document models are at
+/models/document/[newsfile].model 
 
- See calc_cond_prob.txt for how to use the scripts to use them to
- calculate conditional probability.  
+See next section (calc_cond_prob.txt?) for how to call the scripts 
+that uses the models. 
+
