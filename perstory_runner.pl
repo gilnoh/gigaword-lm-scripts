@@ -4,10 +4,10 @@ use strict;
 use warnings; 
 
 my $NGRAM_COUNT_COMMAND="ngram-count"; 
-my $NGRAM_COUNT_OPTIONS=" -write-binary-lm ";  
+my $NGRAM_COUNT_OPTIONS=" -write-binary-lm ";  # save as binary models, saves loading time, but does not (should not) affect any result 
 
-# > ngram-count -text [filename] -lm [modelname] 
-# this will generate model with default (3-gram, default discount, etc) 
+# > ngram-count -text [filename] -lm [modelname] [additional options]
+# this will generate model with default (3-gram, default discount, etc), if no additional option is affecting model related parameters. 
 
 # get a path 
 die "Usage: At least one argument needed; a dir path.\n(e.g. perl perstory_runner.pl \"./models/document\"). \nThe script will build one LM for each .story news file in the path's subdirs\n" unless ($ARGV[0]); 

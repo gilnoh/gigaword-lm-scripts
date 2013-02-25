@@ -2,7 +2,7 @@
 
 use warnings; 
 use strict; 
-use proto_condprob; 
+use proto_condprob qw(:DEFAULT set_num_thread); 
 use octave_call; 
 
 # test call on 2009 small set 
