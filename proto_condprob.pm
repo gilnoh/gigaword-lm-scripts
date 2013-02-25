@@ -9,16 +9,19 @@ use Exporter;
 use srilm_call qw(read_debug3_p call_ngram); 
 use octave_call;
 use threads; 
+use Carp; 
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG); 
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
 our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
+our $DEBUG=1; 
+
 
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 
@@ -54,20 +57,22 @@ sub P_h_t_multithread($$;$$$)
     # calculate P(t) for each document model 
     print STDERR $text, "\n"; 
     my %text_per_doc = P_t_multithread($text, @args); # remaining @args will be checked there 
-
     # calculate P(t) overall 
     my @t = values %text_per_doc; 
     my $P_t = mean(\@t); # (on uniform P(d) )
     print STDERR "P(t) is $P_t \n"; 
-
+    # dcode 
+    export_hash_to_file(\%text_per_doc, "Pt_per_doc.txt"); 
+    
     # calculate P(h) for each model 
     print STDERR $hypothesis, "\n"; 
     my %hypo_per_doc = P_t_multithread($hypothesis, @args); 
-
     # calculate P(h) overall 
     my @h = values %hypo_per_doc; 
     my $P_h = mean(\@h); # (on uniform P(d) ) 
     print STDERR "P(h) is (logprob): $P_h \n"; 
+    # dcode
+    export_hash_to_file(\%hypo_per_doc, "Ph_per_doc.txt"); 
 
     # calculate P(h|t,d) for each model 
     # note this %weighted is *non-normalized weight* (for evidence) 
@@ -79,6 +84,8 @@ sub P_h_t_multithread($$;$$$)
 	    $weighted{$_} = $text_per_doc{$_} + $hypo_per_doc{$_}; 
 	}
     }
+    # dcode
+    export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
     
     # calculate P(h|t) overall (that is, P(h|t,d)) 
     my $P_h_given_t = weighted_sum(\@t, \@h); 
@@ -90,7 +97,6 @@ sub P_h_t_multithread($$;$$$)
 
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
     return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
-
 }
 
 sub P_t_multithread($;$$$) 
@@ -117,7 +123,7 @@ sub P_t_multithread($;$$$)
 
     # get list of all document models     
     my @document_model = glob($DOCUMENT_MODELS); 
-    die unless (scalar @document_model); 
+    croak "Unable to open document models, $DOCUMENT_MODELS\n" unless (scalar @document_model); 
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  
@@ -282,6 +288,21 @@ sub P_doc($)
     #print "\n", (scalar @doc_seq), "\t", (scalar @collection_seq), "\n"; 
     my $logprob = lambda_sum2($LAMBDA, \@doc_seq, \@collection_seq); 
     return $logprob; 
+}
+
+
+# a utility function 
+sub export_hash_to_file
+{
+    return unless ($DEBUG); 
+    my %h = %{$_[0]}; 
+    my $filename = $_[1]; 
+    open FILE, ">", $filename; 
+    foreach (sort keys %h)
+    {
+	print FILE "$_ \t $h{$_}\n"; 
+    }
+    close FILE;
 }
 
 

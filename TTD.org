@@ -42,6 +42,7 @@
 - P_t argument change (and all consequent callers) 
 - P_t code change (to traverse and run) 
 **** TODO Test of P_h_t_multithread with sketch 
+- (with multiple subdirs) 
 *** Collection model generate from subdirs 
 **** DONE For collection - catall to dump everything in subdirs.  
 
