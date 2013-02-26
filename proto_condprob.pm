@@ -20,8 +20,11 @@ our $COLLECTION_MODEL = "./models/collection/collection.model";
 our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
-our $DEBUG=1; 
-
+our $DEBUG=2;  
+# DEBUG level 
+# 0: no addtional file output 
+# 1: P_t_h_multithread will output intermediate result hash as files 
+# 2: the hash output will be sorted (higher value first)      
 
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 
@@ -298,9 +301,20 @@ sub export_hash_to_file
     my %h = %{$_[0]}; 
     my $filename = $_[1]; 
     open FILE, ">", $filename; 
-    foreach (sort keys %h)
+
+    if ($DEBUG == 1 )
     {
-	print FILE "$_ \t $h{$_}\n"; 
+	foreach (sort keys %h)
+	{
+	    print FILE "$_ \t $h{$_}\n"; 
+	}
+    }
+    else #elsif ($DEBUG == 2)
+    {
+	foreach (sort {$h{$b} <=> $h{$a}} keys %h)
+	{
+	    print FILE "$_ \t $h{$_}\n"; 
+	}
     }
     close FILE;
 }

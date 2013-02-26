@@ -12,6 +12,7 @@ our @EXPORT = qw(lambda_sum2 lambda_sum weighted_sum mean);
 my $OCTAVE_COMMAND="octave -q "; 
 my $OCTAVE_EVAL_OPTION = "--eval "; 
 my $WEIGHTED_SUM_FUNCTION = "weighted_sum"; 
+our $IGNORE_END_S = 1; 
 
 my $MATFILE = "matrix4_weightedsum.csv"; 
 
@@ -99,6 +100,13 @@ sub lambda_sum2($$$)
 	push @plist, log10($val); 
     }
 
+    #(removing last <\s> if specified) 
+    if ($IGNORE_END_S)
+    {
+    	pop @plist; 
+    	die unless (scalar @plist); 
+    }
+
     my $result = 0; 
     $result += $_ foreach (@plist);
     return $result; 
@@ -132,8 +140,14 @@ sub lambda_sum($$$)
 	push @right, $right_aref ->[$i]; 
     }
 
-    # prepare command and run octave 
+    # (removing last <\s> if specified) 
+    if ($IGNORE_END_S)
+    {
+    	pop @left;
+    	pop @right; 
+    }
 
+    # prepare command and run octave 
     my $l_line = "l = $lambda; "; 
     my $a_line = "a = ["; 
     foreach (@left)

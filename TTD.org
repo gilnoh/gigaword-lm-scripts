@@ -1,68 +1,32 @@
-* EXPERIMENTS 
-** Data Preparation
-*** TODO [#A] Medium & Large size "collection" model and its preparation  
-- currently: 1) afp 2010 (no problem) 
-- then: 2) all afp. 
-- and: 3) all of the gigaword? 
-- Maybe we need something between 2), 3). Summing up two or three
-  models, etc. ... 
-- Single directory (not [agency]-[year]) output is set in gzset_runner.pl. 
-- Doing 2). a) run gzset runner, b) cat all, c) call ngram-count
-  (consider -write-binary-lm) 
-** Some additional ideas 
-*** some rough ideas & observations 
-- better baseline would be P(h|h), instead of P(h)? (topical
-  relatedness gets some even before starting). 
-- "gain" (P(h|t) / P(h)) seems to (generally) increases with the
-  length of (t & h)  
-
-** Experiments Memo 
-*** Currently used/tested SRILM call parameters 
-**** ngram-count 
-- (CURRENT) "-text" and "-lm", and "-write-binary-lm", all other
-  default 
-**** ngram 
-- (CURRENT) all default: no other than "-ppl" (input designation) and "-lm".  
-
-*** Current corpus 
-- P_doc AFP 2009_05, as the "small" set of document models. 
-- P_coll AFP 2010, as the "small" collection model. 
-- (Moore) AFP 1994 & 1995 as another "small" collection & document 
-
-*** Memo on efficiency
-**** Testing on May 2009 AFP news (20k documents) 
-- Running P_t sequentially currently takes about 3 min (2:48) on Moore.  
-- Multi threads (6) on Gillespie, 58 seconds 
-
+* Current Memo 
+- Running "perstory" on Gillespie, on all AFP documents <2013-02-26 Tue 16:17>
+- Current Coding: [[*%20A%20SubDir%20plays%20needed%20before%20doing%20more%20than%20AFP%20one%20year][SubDir plays (needed before doing more than AFP one year)]]
 
 * DEVEL
 ** Ongoing Improvements 
-*** SubDir plays (needed before doing more than AFP one year) 
+*** [#A] Collection model generate from subdirs 
+**** DONE For collection - catall to dump everything in subdirs.  
+
+*** [#A] Per doc model generate with subdirs 
+**** DONE For per-doc models - perstroy_runnner with subdir. 
+- now it works on all files in the given dir and its direct sub dirs 
+*** [#A] SubDir plays (needed before doing more than AFP one year) 
 **** TODO P_t should traverse all subdirs. 
 - P_t argument change (and all consequent callers) 
 - P_t code change (to traverse and run) 
 **** TODO Test of P_h_t_multithread with sketch 
 - (with multiple subdirs) 
-*** Collection model generate from subdirs 
-**** DONE For collection - catall to dump everything in subdirs.  
 
-*** Per doc model generate with subdirs 
-**** TODO For per-doc models - perstroy_runnner with subdir. 
 
-*** Calculating P_doc with subdirs 
-**** TODO P_t should work with sub dirs. (so is P_t_multithread) 
-- argument for doc models need to be changed. (for now, its glob (path/*.story) ) 
-
-*** DONE [#B] Install SRILM on NFS home/bin 
 
 ** Main line coding 
-*** Collection Model 
+*** DONE Collection Model 
 **** DONE (run) Get "target" news files (target corpus) all in one folder 
 **** DONE (run) catall and generate collection LM model 
 **** DONE [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
-*** Document Model 
+*** DONE Document Model 
 **** DONE (write script) For each file, make each LM model
-*** Produce single sentence prob. (t) 
+*** DONE Produce single sentence prob. (t) 
 **** DONE (write matlab script) weighted-sum 
 - input: weight (doc prob), sentence prob, of each document 
 - output: weighted average. 
@@ -88,19 +52,30 @@
 ***** DONE calc P_(t) by weighted sum 
 - do the weighted-sum of the values, with uniform weight 
 
-*** Produce conditional prob. 
+*** DONE Produce conditional prob. 
 **** DONE (write scripts) P(h | t) prob 
 **** DONE write script "evidence calculation code" 
 Wow. Finally. 
 **** DONE sanity check, more with sketch. 
 - on AFP 2009 May
 
-**** TODO [#A] Some possible "look-into" data saving. 
-- Starting from P_t, P_h, P_h
+**** DONE [#A] Some possible "look-into" data saving. 
+- Starting from P_t, P_h, P_h|t. 
+- Output of result hash: 
+- Debug 1 : output the hash into file, no sorting, file order 
+- Debug 2 : sorting, higher value first. 
 
-*** Experiments with this prototype conditional prob. 
-**** TODO [#A] Some test on small corpus
+*** POC Experiments on this prototype conditional prob. 
+**** TODO ONGOING [#A] Some test on small corpus
 - AFP_ENG 2009 05 
+- WAY too small. Nothing to be seen. (e.g. "airplane" doesn't occur, etc) 
+- Maybe I should pick something from the news itself, and try it. 
+- Note that: +-1 logprob fluctation in LM prob output is not reliable,
+  for example, documents report two words both as OOV, reports
+  different probabilitiy. This must be based on discounting method
+  (long document gets lower discount value? or higher discount value,
+  etc). --> just add more documents to see big jumps (say, +-10?), or
+  maybe remove too-short-documents, if this keeps coming up? 
 **** TODO [#A] Some test on not-so-small-but-still-small corpus 
 - AFP ENG 2010 
 **** TODO [#A] Some test on mid-size corpus 
@@ -109,7 +84,37 @@ Wow. Finally.
 - Model making: (catall, and etc for collection model) 
 
 
-* NOTES & PREVIOUS MEMO 
+* EXPERIMENTS 
+** MODEL preparation 
+*** TODO [#A] See how ngram-count works on large files 
+**** DONE 1) afp 2010 (no problem) 
+**** DONE 1-b) afp 2010 per doc (no problem) 
+**** DONE 2) all afp. (Gillespie, no problem)
+**** TODO 2-b) all afp, per doc (Gillespie, ONGOING) 
+**** TODO? 3) all of the gigaword? 
+- Maybe we need something between 2), 3). 
+** Some additional ideas 
+*** some rough ideas & observations 
+- better baseline would be P(h|h), instead of P(h)? (topical
+  relatedness gets some even before starting). 
+- "gain" (P(h|t) / P(h)) seems to (generally) increases with the
+  length of (t & h)  
+  
+** Notes 
+*** Currently used/tested SRILM call parameters 
+**** ngram-count 
+- (CURRENT) "-text" and "-lm", and "-write-binary-lm", all other
+  default 
+**** ngram 
+- (CURRENT) all default: no other than "-ppl" (input designation) and "-lm".  
+
+*** Memo on efficiency
+**** Testing on May 2009 AFP news (20k documents) 
+- Running P_t sequentially currently takes about 3 min (2:48) on Moore.  
+- Multi threads (6) on Gillespie, 58 seconds 
+
+
+* RECORDS & POSTPONED
 ** Past Improvements 
 *** DONE Binary language model 
 *** add binary option as default option 
@@ -169,6 +174,12 @@ It seems that both related to sparseness. Not critical, but affecting
 - When no option is given, it does Good-Turing discount. (the warnings
   are from those, when counting count of counts, etc) 
 
+**** Why different prob, for all OOV queries? 
+- Q: They share all the same back-off interpolate model, why different? 
+- A: /s 
+- All OOV docs, at least has one </s>. Different /s prob per models. 
+- We now have an option to exclude this </s>, from calculation. (DEFAULT ON, on lamba_sumX) 
+
 *** Octave 
 **** Octave "precision" of double is one digit less (than SRILM) 
 - Seems like this causes the small amount of difference in the final
@@ -179,15 +190,18 @@ It seems that both related to sparseness. Not critical, but affecting
 - "Symbolic toolbox". vpa(something)? Hmm. no need yet.  
 
 ** Theoretical crosspoints / decisions 
-*** DONE [#A] Word level model, or Sentence level model? 
+
+
+* THEORETICAL 
+** DONE [#A] Word level model, or Sentence level model? 
 - Basically, what I am trying to do is doing weighted sum of
   probabilities. There is two way of doing things. 
 - Word Level weighted sum and Sentence Level weighted sum 
 - Say, sentence is: P(w_1, ..., w_n). 
-**** Sentence level weighted-sum 
+*** Sentence level weighted-sum 
 - At sentence level, this can be calculated by 
   weighted_mean_all_d(  P_d(w_1, .., w_n)  ) 
-**** Word level weithed-sum 
+*** Word level weithed-sum 
 - At word level, this can be caluclated by 
 - product 
   { ... 
@@ -196,14 +210,14 @@ It seems that both related to sparseness. Not critical, but affecting
     ... 
     weighted_mean_all_d( P(</s> | ...) ) 
   }
-**** Not compatible
+*** Not compatible
 - The problem is that, two values are different. Weighted mean on
   sentence level (up to each sentence, prob calculated by each
   document model) produces one value. Product of word level
   probabilities that gained by per word weighted mean produces another
   value. They are generally not that far, but not the same. 
 
-**** Which one should we use? 
+*** Which one should we use? 
 - If we want to use "per-word predictability" power, we need to do
   things on word level. Maybe this is more powerful. (and a bit
   slower) 
@@ -213,7 +227,7 @@ It seems that both related to sparseness. Not critical, but affecting
   enough.
 - Try both? Hmm. 
 
-**** For now?
+*** For now?
 - Try both?: no. on sentence level.  
 - Sentence level. Following strictly to P_d(sentence). 
 - Basic premise: A sentence, a probability. Each document model is

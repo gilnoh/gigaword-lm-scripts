@@ -2,20 +2,16 @@
 
 use warnings; 
 use strict; 
-use proto_condprob qw(:DEFAULT set_num_thread); 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG); 
 use octave_call; 
+use Benchmark qw(:all); 
 
+our $DEBUG = 2; 
+set_num_thread(2); 
 # test call on 2009 small set 
-
-# (meaningless, if those text and hypothesis is not observable in the 2009 MAY) 
-# Try with something that appears there. So see how distinctive they are in 
-# terms of P_t and P_h 
+# (not meaningful at all, since none of May 2009 holds any event on plane crash) just as functional OKAY-ness. Too small corpus that does not really have those terms) 
 my $text = "there was an airplane accident";  
 my $hypothesis = "everyone died"; 
-
-# what would be average of H(t|t)? : not sure. 24 (2 words) 316 (20+ words), related to the length? 
-# train something according to gain, T length, H length, 
-
 
 # my %r = P_t($text); 
 # my %r = P_t_multithread($text); 
@@ -29,7 +25,13 @@ my $hypothesis = "everyone died";
 # output (return): 
 # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
 
+# time in 
+my $t0 = Benchmark->new; 
 P_h_t_multithread($hypothesis, $text); 
+# time out
+my $t1 = Benchmark->new; 
+my $td = timediff($t1, $t0); 
+print "the code took:", timestr($td), "\n"; 
 
 sub export_hash_to_file
 {
