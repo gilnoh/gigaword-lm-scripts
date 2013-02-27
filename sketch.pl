@@ -27,7 +27,7 @@ my $hypothesis = "everyone died";
 
 # time in 
 my $t0 = Benchmark->new; 
-P_h_t_multithread($hypothesis, $text); 
+P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 
 # time out
 my $t1 = Benchmark->new; 
 my $td = timediff($t1, $t0); 
