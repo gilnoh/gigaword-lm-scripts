@@ -166,10 +166,16 @@ if (-e $COLLECTION_MODEL)
 
     # finally, check %result2 + %result3 is this $href 
     my $result_same = 1; 
+    my @t; my @h; 
     foreach (keys %$href)
     {
 	$result_same = 0 unless ($href->{$_} == ($result2{$_} + $result3{$_})); 
+	push @t, $result2{$_}; 
+	push @h, $result3{$_}; 
     }
+    # and check they end up the same; 
+    my $dcheck = weighted_sum(\@t, \@h); 
+    $result_same = 0 unless ($dcheck == $P_h_t); 
     ok($result_same, "And P_h_t result concurs to P_t on t and h"); 
 }
 else

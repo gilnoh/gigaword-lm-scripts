@@ -18,7 +18,7 @@ our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG);
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
 #our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
-our $DOCUMENT_MODELS_DIR = "./models/document/"; 
+our $DOCUMENT_MODELS_DIR = "./models/document"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 our $DEBUG=2;  
