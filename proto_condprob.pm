@@ -18,7 +18,7 @@ our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG);
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
 #our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
-our $DOCUMENT_MODELS_DIR = "./models/document"; 
+our $DOCUMENT_MODELS_DIR = "./models/document/"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 our $DEBUG=2;  
@@ -70,17 +70,24 @@ sub P_h_t_multithread($$;$$$)
     # note this %weighted is *non-normalized weight* (for evidence) 
     # and not the final prob. 
     my %weighted; 
+    my @text;
+    my @hypo; 
     {
 	foreach (keys %text_per_doc)
 	{
 	    $weighted{$_} = $text_per_doc{$_} + $hypo_per_doc{$_}; 
+	    push @text, $text_per_doc{$_}; 
+	    push @hypo, $hypo_per_doc{$_}; 
 	}
     }
     # dcode
     export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
     
     # calculate P(h|t) overall (that is, P(h|t,d)) 
-    my $P_h_given_t = weighted_sum(\@t, \@h); 
+    # WARNING: we made sure in the previous step, @text and @hypo sorted on the same 
+    # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
+    # This must be guaranteeded! 
+    my $P_h_given_t = weighted_sum(\@text, \@hypo); 
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
 
     # calculate P(h|t) / P(h), as supporting measure. 
