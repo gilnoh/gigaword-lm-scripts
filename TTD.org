@@ -1,5 +1,5 @@
 * Current Memo 
-- Running "perstory" on Gillespie, on all AFP documents <2013-02-26 Tue 16:17>
+- All AFP documents on Gillespie, as collection & per document model 
 - Current Coding: [[*%20A%20SubDir%20plays%20needed%20before%20doing%20more%20than%20AFP%20one%20year][SubDir plays (needed before doing more than AFP one year)]]
 - Test experiments with AFP 2010! 
 
