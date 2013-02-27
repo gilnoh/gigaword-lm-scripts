@@ -17,7 +17,8 @@ our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG);
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
-our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
+#our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
+our $DOCUMENT_MODELS_DIR = "./models/document/"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 our $DEBUG=2;  
@@ -32,18 +33,6 @@ sub set_num_thread
 {
     $NUM_THREAD = $_[0]; 
 }
-
-# sub set_collection_model 
-# {
-#     $COLLECTION_MODEL = $_[0]; 
-#     die "unable to find/read collection model file\n" unless (-r $COLLECTION_MODEL); 
-# }
-
-# sub set_document_models
-# {
-#     $DOCUMENT_MODELS = $_[0]; 
-#     # sanity check is done within P_doc, no need to worry here. 
-# }
 
 sub P_h_t_multithread($$;$$$)
 {
@@ -120,13 +109,23 @@ sub P_t_multithread($;$$$)
 	die unless (-r $_[2]);
 	$COLLECTION_MODEL = $_[2]; 
     }
-    if ($_[3]) { # document models as file glob string (e.g. "path/*.model") 
-	$DOCUMENT_MODELS = $_[3]; 
+    if ($_[3]) { # document model path 
+	$DOCUMENT_MODELS_DIR = $_[3]; 
     }
 
-    # get list of all document models     
-    my @document_model = glob($DOCUMENT_MODELS); 
-    croak "Unable to open document models, $DOCUMENT_MODELS\n" unless (scalar @document_model); 
+    my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
+    print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
+
+    my @document_model; 
+    foreach my $d (@subdir)
+    {
+	print STDERR "$d: "; 
+	my @ls = glob($d . "/*.model"); 
+	print STDERR scalar(@ls), " model files\n"; 
+	push @document_model, @ls; 
+    }
+
+    die "unable to find document models at $DOCUMENT_MODELS_DIR" unless (scalar @document_model); 
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  
@@ -217,6 +216,11 @@ sub P_d_runner
 
 sub P_t($;$$$) 
 {
+    # argument: $text, $lambda, $collection_model_file, $document_model_dir
+    # out: a hash where a key is model name, and the associated 
+    #      value is the value of P_model($text) 
+
+    ## OLD parameters, they were...
     # argument: text, lambda, collection model path, document model glob 
     # out: a hash (model name, prob of given text produced from the model) 
 
@@ -234,12 +238,23 @@ sub P_t($;$$$)
 	$COLLECTION_MODEL = $_[2]; 
     }
     if ($_[3]) { # document models as file glob string (e.g. "path/*.model") 
-	$DOCUMENT_MODELS = $_[3]; 
+	$DOCUMENT_MODELS_DIR = $_[3]; 
     }
 
     # get list of all document models     
-    my @document_model = glob($DOCUMENT_MODELS); 
-    die "unable to find document models at $DOCUMENT_MODELS" unless (scalar @document_model); 
+    my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
+    print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
+
+    my @document_model; 
+    foreach my $d (@subdir)
+    {
+	print STDERR "$d: "; 
+	my @ls = glob($d . "/*.model"); 
+	print STDERR scalar(@ls), " model files\n"; 
+	push @document_model, @ls; 
+    }
+
+    die "unable to find document models at $DOCUMENT_MODELS_DIR" unless (scalar @document_model); 
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  
@@ -248,7 +263,7 @@ sub P_t($;$$$)
     print STDERR $coll_logprob, "\n"; 
 
     # for each model, call P_doc()     
-    print STDERR "Calculating per-document model logprobs, ", scalar(@document_model), " files\n"; 
+    print STDERR "Calculating per-document model logprobs on, ", scalar(@document_model), " files\n"; 
     my $count = 0; 
     foreach (@document_model)
     {
@@ -317,6 +332,24 @@ sub export_hash_to_file
 	}
     }
     close FILE;
+}
+
+
+sub get_subdirs($)
+{
+# get_subdir("./somepath") will return all its subdirs, including itself. 
+    my $toppath = $_[0]; 
+    opendir (my $dh, $toppath) or croak "can't open dir $_[0]"; 
+    my @subdir; # will hold all subdirectories of the given path 
+    foreach (readdir($dh))
+    {
+	next if ( ($_ eq "..") ); 
+	my $path = $toppath . "/" . $_; 
+	push @subdir, $path if (-d $path); 
+	
+    }
+    close $dh; 
+    return @subdir; 
 }
 
 

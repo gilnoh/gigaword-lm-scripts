@@ -91,7 +91,7 @@ my %result;
 if (-e $COLLECTION_MODEL)
 {
     # P_t() arguments: text, lambda, collection model, document model glob 
-    %result = P_t($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    %result = P_t($testinput, 0.5, $COLLECTION_MODEL, "./testdata"); 
     foreach (keys %result)
     {
 	print "\t$_\t$result{$_}\n"; 
@@ -102,7 +102,7 @@ if (-e $COLLECTION_MODEL)
 }
 else 
 {
-    ok(1, "ignoring calling P_t, missing collection model in /output"); 
+    ok(1, "ignoring calling P_t, missing collection model in $COLLECTION_MODEL"); 
 }
 
 ## Run P_t multithread and check the result is the same. 
@@ -114,7 +114,7 @@ if (-e $COLLECTION_MODEL)
     # P_t_multithread() arguments: text, lambda, collection model, document model glob 
     my $nthread = 3;
     proto_condprob::set_num_thread($nthread); 
-    %result2 = P_t_multithread($testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    %result2 = P_t_multithread($testinput, 0.5, $COLLECTION_MODEL, "./testdata"); 
     my $result_same = 1; 
     foreach (keys %result2)
     {
@@ -127,14 +127,14 @@ if (-e $COLLECTION_MODEL)
 }
 else
 {
-    ok(1, "ignoring calling P_t_multithread, missing collection model in /output"); 
+    ok(1, "ignoring calling P_t_multithread, missing collection model in $COLLECTION_MODEL"); 
 }
 
 # P_t on another sentence (hypothesis in next test) 
 my %result3; 
 if (-e $COLLECTION_MODEL)
 {
-    %result3 = P_t($testh, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    %result3 = P_t($testh, 0.5, $COLLECTION_MODEL, "./testdata"); 
     foreach (keys %result3)
     {
 	print "\t$_\t$result3{$_}\n"; 
@@ -155,7 +155,7 @@ if (-e $COLLECTION_MODEL)
 {
     my $nthread = 3;
     proto_condprob::set_num_thread($nthread); 
-    my ($gain,$P_h_t, $P_h, $P_t ,$href) = P_h_t_multithread($testh, $testinput, 0.5, $COLLECTION_MODEL, "./testdata/*.story.model"); 
+    my ($gain,$P_h_t, $P_h, $P_t ,$href) = P_h_t_multithread($testh, $testinput, 0.5, $COLLECTION_MODEL, "./testdata"); 
 
     print "Non-normalized contribution of documents (evidences)\n"; 
     foreach (keys %$href)
@@ -174,6 +174,6 @@ if (-e $COLLECTION_MODEL)
 }
 else
 {
-   ok(1, "ignoring calling P_h_t_multithread, missing collection model in /output"); 
-   ok(1, "ignoring calling P_h_t_multithread, missing collection model in /output"); 
+   ok(1, "ignoring calling P_h_t_multithread, missing collection model in $COLLECTION_MODEL"); 
+   ok(1, "ignoring calling P_h_t_multithread, missing collection model in $COLLECTION_MODEL"); 
 }
