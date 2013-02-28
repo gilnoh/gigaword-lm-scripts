@@ -3,8 +3,21 @@
 - Current Coding: [[*%20A%20SubDir%20plays%20needed%20before%20doing%20more%20than%20AFP%20one%20year][SubDir plays (needed before doing more than AFP one year)]]
 - Test experiments with AFP 2010! 
 
+
+
 * DEVEL
 ** Ongoing Improvements 
+
+** Future Improvements 
+*** [#A] (primitive) Indexing 
+- At least one term must occur, to be included in the @doclist 
+- Hmm. maybe simple. 
+
+*** [#B] remove (or don't count) too short news articles
+- 100 bytes? there are some weird (not normal) news files even in
+  .story files 
+
+** Previous Improvements 
 *** [#A] Collection model generate from subdirs 
 **** DONE For collection - catall to dump everything in subdirs.  
 
@@ -12,13 +25,11 @@
 **** DONE For per-doc models - perstroy_runnner with subdir. 
 - now it works on all files in the given dir and its direct sub dirs 
 *** [#A] SubDir plays (needed before doing more than AFP one year) 
-**** TODO P_t should traverse all subdirs. 
+**** DONE P_t should traverse all subdirs. 
 - P_t argument change (and all consequent callers) 
 - P_t code change (to traverse and run) 
-**** TODO Test of P_h_t_multithread with sketch 
+**** DONE Test of P_h_t_multithread with sketch 
 - (with multiple subdirs) 
-
-
 
 ** Main line coding 
 *** DONE Collection Model 
@@ -67,7 +78,7 @@ Wow. Finally.
 - Debug 2 : sorting, higher value first. 
 
 *** POC Experiments on this prototype conditional prob. 
-**** TODO ONGOING [#A] Some test on small corpus
+**** DONE ONGOING [#A] Some test on small corpus
 - AFP_ENG 2009 05 
 - WAY too small. Nothing to be seen. (e.g. "airplane" doesn't occur, etc) 
 - Maybe I should pick something from the news itself, and try it. 
@@ -85,15 +96,19 @@ Wow. Finally.
 - Model making: (catall, and etc for collection model) 
 
 
+
+
 * EXPERIMENTS 
 ** MODEL preparation 
-*** TODO [#A] See how ngram-count works on large files 
+*** DONE [#A] See how ngram-count works on large files 
 **** DONE 1) afp 2010 (no problem) 
 **** DONE 1-b) afp 2010 per doc (no problem) 
 **** DONE 2) all afp. (Gillespie, no problem)
-**** TODO 2-b) all afp, per doc (Gillespie, ONGOING) 
-**** TODO? 3) all of the gigaword? 
+**** DONE 2-b) all afp, per doc (Gillespie, ONGOING) 
+- Way too slow (no need to do, since 2010 takes 30+ min) 
+**** TODO 3) all of the gigaword? 
 - Maybe we need something between 2), 3). 
+
 ** Some additional ideas 
 *** some rough ideas & observations 
 - better baseline would be P(h|h), instead of P(h)? (topical
@@ -228,7 +243,7 @@ It seems that both related to sparseness. Not critical, but affecting
   enough.
 - Try both? Hmm. 
 
-*** For now?
+*** DONE For now?
 - Try both?: no. on sentence level.  
 - Sentence level. Following strictly to P_d(sentence). 
 - Basic premise: A sentence, a probability. Each document model is
