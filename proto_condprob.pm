@@ -361,3 +361,19 @@ sub get_subdirs($)
 
 
 1; 
+
+__END__
+
+=head1 NAME
+
+(proto) condprob - a conditional probability calculation tools for SRILM Language Models. 
+
+=head1 SYNOPSIS
+
+    use condprob qw(:DEFAULT $NUM_THREAD); 
+
+=head1 DESCRIPTION 
+
+well, some discription. 
+
+
