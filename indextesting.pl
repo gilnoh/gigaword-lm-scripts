@@ -29,8 +29,8 @@ $doc2->add(Plucene::Document::Field->UnIndexed(id => "afp_2010_2"));
 $doc2->add(Plucene::Document::Field->UnStored(text => "it is a airline strike")); 
 
 # standard analyzer will remove some stop words (is, was) 
-#my $analyzer = Plucene::Analysis::SimpleAnalyzer->new();
-my $analyzer = Plucene::Analysis::Standard::StandardAnalyzer->new(); 
+my $analyzer = Plucene::Analysis::SimpleAnalyzer->new();
+#my $analyzer = Plucene::Analysis::Standard::StandardAnalyzer->new(); 
 my $writer = Plucene::Index::Writer->new("my_index", $analyzer, 1);
 
 $writer->add_document($doc);
@@ -48,6 +48,7 @@ my $parser = Plucene::QueryParser->new({
 #my $query = $parser->parse('text:"accident"');
 #my $query = $parser->parse('text:"airline"'); 
 my $query = $parser->parse('text:"is" text:"accident"'); 
+# both document will be retrieved, "is" or "accident". (if is, is indexed, DefaultAnalyser will remove stop word is) 
 
 
 # search 
