@@ -50,6 +50,10 @@ my $parser = Plucene::QueryParser->new({
 my $query = $parser->parse('text:"is" text:"accident"'); 
 # both document will be retrieved, "is" or "accident". (if is, is indexed, DefaultAnalyser will remove stop word is) 
 
+# or example 
+#my $query = $parser->parse('text:"football" AND text:"holiday"'); 
+
+
 
 # search 
 my $searcher = Plucene::Search::IndexSearcher->new("my_index");

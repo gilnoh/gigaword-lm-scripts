@@ -47,8 +47,8 @@ print STDERR "$toppath has ", scalar (@subdir), " dirs (subdirs + itself) to fol
 
 #
 # prepare analyzer and indexer 
-my $analyzer = Plucene::Analysis::SimpleAnalyzer->new();
-#my $analyzer = Plucene::Analysis::Standard::StandardAnalyzer->new(); 
+# my $analyzer = Plucene::Analysis::SimpleAnalyzer->new();
+my $analyzer = Plucene::Analysis::Standard::StandardAnalyzer->new(); 
 my $writer = Plucene::Index::Writer->new("models_index", $analyzer, 1);
 
 #
@@ -70,7 +70,8 @@ foreach my $d (@subdir)
 	# prepare a Plucene doc. 
 	my $doc = Plucene::Document->new; 
 	$doc->add(Plucene::Document::Field->UnIndexed(id => $inputfile)); 
-	$doc->add(Plucene::Document::Field->Text(text => $text)); 
+	#$doc->add(Plucene::Document::Field->Text(text => $text)); 
+	$doc->add(Plucene::Document::Field->UnStored(text => $text)); 
 
 	# add to index. 
 	$writer->add_document($doc);
