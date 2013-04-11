@@ -19,6 +19,7 @@ our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG);
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
 #our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
 our $DOCUMENT_MODELS_DIR = "./models/document"; 
+our $DOCUMENT_INDEX_DIR = "./models_index"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 our $DEBUG=2;  
@@ -358,6 +359,22 @@ sub get_subdirs($)
     close $dh; 
     return @subdir; 
 }
+
+
+# TODO 
+# P_t_multithread_index 
+# same as P_t_multithread, but this will get index path, instead of glob path 
+# and will return the same thing. 
+
+# TODO
+# P_h_t_multithread_index 
+# same as P_h_t_multithread, but this will get index path, instead of glob path
+# and will do the same thing 
+
+# MEMO 
+# number of files within index can be get by "reader" (need to be checked) 
+
+
 
 
 1; 

@@ -9,7 +9,7 @@
 ** Ongoing Improvements 
 
 ** Future Improvements 
-*** [#A] (primitive) Indexing 
+*** DONE [#A] (primitive) Indexing 
 - At least one term must occur, to be included in the @doclist 
 - Hmm. maybe simple. 
 
@@ -99,6 +99,10 @@ Wow. Finally.
 
 
 * EXPERIMENTS 
+** Need to confirm/consider 
+*** TODO very long sentence okay. (-200 or less logprob) 
+- pick one or two "paragraph" level "Text". Test it. 
+
 ** MODEL preparation 
 *** DONE [#A] See how ngram-count works on large files 
 **** DONE 1) afp 2010 (no problem) 
