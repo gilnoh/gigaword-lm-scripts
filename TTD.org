@@ -1,13 +1,29 @@
-* Current Memo 
-- All AFP documents on Gillespie, as collection & per document model 
-- Current Coding: [[*%20A%20SubDir%20plays%20needed%20before%20doing%20more%20than%20AFP%20one%20year][SubDir plays (needed before doing more than AFP one year)]]
-- Test experiments with AFP 2010! 
+
+** Index Work 
+*** DONE add index optimizer at the end of indexing.pl 
+- check doc Plucene::Index::Writer 
+- call optimize before close the writer. 
+- output indexed file number via $writer->doc_count; 
+
+*** DONE run temp.pl query on 2009 data 
+- run something (on temp already) 
+- check & compare, make sure it really works. (It seems so. Seems so
+  doesn't sound so strict, but I have no other reason to belive it
+  won't work so :-). 
+
+*** TODO recreate the work environment in home ... 
+
+*** TODO Code P_t with index. 
+
+*** TODO Code P_t_h with index 
+
+*** TODO Test on 2009 (test code), compare the result to bruteforce 
 
 
+* Currently ... 
+Currently working on "Index Work", for index using P_t (& P_h given t) 
 
-* DEVEL
-** Ongoing Improvements 
-
+* DEVEL History 
 ** Future Improvements 
 *** DONE [#A] (primitive) Indexing 
 - At least one term must occur, to be included in the @doclist 

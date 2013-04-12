@@ -81,6 +81,8 @@ foreach my $d (@subdir)
     }
     print STDERR "\n"; 
 }
-print STDERR "In total, processed and indexed $file_count .story files\n"; 
-undef $writer; # close the indexer 
+print STDERR "In total, processed and indexed $file_count .story files, and have ", $writer->doc_count(), " indexed docs\n"; 
+
+$writer->optimize(); 
+undef $writer; # close the indexer writer 
 
