@@ -2,8 +2,8 @@ use strict;
 use warnings; 
 use octave_call; 
 use srilm_call; 
-use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG); 
-use Test::Simple tests => 13; 
+use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG); 
+use Test::Simple tests => 14; 
 
 # test data 
 # (just for the test, not meaningful at all) 
@@ -182,4 +182,22 @@ else
 {
    ok(1, "ignoring calling P_h_t_multithread, missing collection model in $COLLECTION_MODEL"); 
    ok(1, "ignoring calling P_h_t_multithread, missing collection model in $COLLECTION_MODEL"); 
+}
+
+#plucene query 
+our $DOCUMENT_INDEX_DIR = "./testdata/models_index"; 
+if (-e $DOCUMENT_INDEX_DIR)
+{
+    my ($docid_aref, $docscore_href) = plucene_query("football hiddink"); 
+    foreach (@{$docid_aref})
+    {
+	print "$_: ", $docscore_href->{$_}, "\n"; 
+    }
+    # check order: .0481, .0480, .0482, .0484 
+    # and 483 not in there. 
+    ok(($docid_aref->[0] =~ /0481\.story/) and ($docid_aref->[1] =~ /0480\.story/)); 
+}
+else
+{
+    ok(1, "ignoreing calling plucene_query, missing index dir $DOCUMENT_INDEX_DIR"); 
 }

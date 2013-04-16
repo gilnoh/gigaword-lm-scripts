@@ -11,9 +11,18 @@ use octave_call;
 use threads; 
 use Carp; 
 
+use Plucene; 
+use Plucene::Document; 
+use Plucene::Document::Field; 
+use Plucene::Search::IndexSearcher; 
+use Plucene::Analysis::SimpleAnalyzer; 
+use Plucene::Analysis::Standard::StandardAnalyzer; 
+use Plucene::Index::Writer; 
+use Plucene::QueryParser; 
+
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc $COLLECTION_MODEL $DEBUG); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR); 
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
@@ -361,6 +370,50 @@ sub get_subdirs($)
 }
 
 
+# plucene_query($text_str) 
+# : a query method that query on Plucene index $DOCUMENT_INDEX_DIR 
+# and returns two references. 
+# returns: my ($ref_array_doc_names, $ref_hash_perdoc_score) 
+# $ref_array is an ordered array of document names. ("good hit first"). 
+
+sub plucene_query($)
+{ 
+    my $query_str = $_[0]; 
+
+    # prepare query
+    my $parser = Plucene::QueryParser->new({
+	analyzer => Plucene::Analysis::SimpleAnalyzer->new(),
+	default  => "text" # Default field for non-specified queries
+					   });
+    my $query = $parser->parse($query_str); 
+
+    # search 
+    my $searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
+    my $reader = $searcher->reader(); 
+    print STDERR "Querying \"$query_str\" - Index has ", $reader->num_docs(), " documents\n"; 
+
+    my @docs; #TBR 
+    my %docscore; 
+    my $hc = Plucene::Search::HitCollector->new(collect => sub {
+	my ($self, $id, $score) = @_;
+	my $doc = $searcher->doc($id);
+	push @docs, $doc; #TBR
+	my $docid = $doc->get("id")->string(); 
+	$docscore{$docid} = $score; # for score. 
+						});
+
+    $searcher->search_hc($query => $hc);
+    
+    my @sorted_docid; 
+    foreach (sort {$docscore{$b} <=> $docscore{$a}} keys %docscore)
+    {
+	push @sorted_docid, $_; 
+    }
+
+    return (\@sorted_docid, \%docscore); 
+}
+
+
 # TODO 
 # P_t_multithread_index 
 # same as P_t_multithread, but this will get index path, instead of glob path 
@@ -370,9 +423,6 @@ sub get_subdirs($)
 # P_h_t_multithread_index 
 # same as P_h_t_multithread, but this will get index path, instead of glob path
 # and will do the same thing 
-
-# MEMO 
-# number of files within index can be get by "reader" (need to be checked) 
 
 
 

@@ -11,7 +11,10 @@
   doesn't sound so strict, but I have no other reason to belive it
   won't work so :-). 
 
-*** TODO recreate the work environment in home ... 
+*** DONE recreate the work environment in home ... 
+
+*** DONE query method. (Text in, ordered result out) 
+- with test code. Yeah! 
 
 *** TODO Code P_t with index. 
 
