@@ -2,4 +2,11 @@ models/
 data/
 temp/
 splitta/
+models_index/
+*~
+t
+stdout
+stderr
+*.csv
+*per_doc.txt
 
