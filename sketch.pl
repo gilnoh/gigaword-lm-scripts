@@ -31,8 +31,8 @@ my $hypothesis = "everyone died";
 # time in 
 my $t0 = Benchmark->new; 
 
-my %r = P_t_multithread($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009"); 
-# my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 
+#my %r = P_t_multithread($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009"); 
+ my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 
 #P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 
 
 my @a = values %r; 

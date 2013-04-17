@@ -16,9 +16,19 @@
 *** DONE query method. (Text in, ordered result out) 
 - with test code. Yeah! 
 
-*** TODO Code P_t with index. 
+*** DONE Code P_t with index. 
 - ... and how? 
-- well spend some time ... 
+- ... spend some time ... 
+
+*** TODO Some more test on P_t, "and try approximate"?
+- Is it Okay to use top_N? say, 10k? Spend some time. 
+- Approximation will (artificially) lower P_t(hypo). 
+- But it will also lower P_t(text) and everything (?) 
+- What we do finally is comparing P(hypo) and P(hypo | text): if two
+  things both got lowered. Is this Acceptable?  
+
+*** TODO Implement "top N" approximation. check some approx vs non-approx.
+- 
 
 *** TODO Code P_t_h with index 
 
