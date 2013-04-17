@@ -21,7 +21,7 @@ use Plucene::Index::Writer;
 use Plucene::QueryParser; 
 
 our @ISA = qw(Exporter); 
-our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread); 
+our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
 our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR); 
 
 # some globals 
@@ -373,7 +373,7 @@ sub get_subdirs($)
 # plucene_query($text_str) 
 # : a query method that query on Plucene index $DOCUMENT_INDEX_DIR 
 # and returns two references. 
-# returns: my ($ref_array_doc_names, $ref_hash_perdoc_score) 
+# returns: my ($ref_array_doc_names, $ref_hash_perdoc_score, $total_doc_num) 
 # $ref_array is an ordered array of document names. ("good hit first"). 
 
 sub plucene_query($)
@@ -390,7 +390,8 @@ sub plucene_query($)
     # search 
     my $searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
     my $reader = $searcher->reader(); 
-    print STDERR "Querying \"$query_str\" - Index has ", $reader->num_docs(), " documents\n"; 
+    my $total_doc = $reader->num_docs(); 
+    print STDERR "Querying \"$query_str\" - Index has ", $total_doc, " documents\n"; 
 
     my @docs; #TBR 
     my %docscore; 
@@ -410,7 +411,7 @@ sub plucene_query($)
 	push @sorted_docid, $_; 
     }
 
-    return (\@sorted_docid, \%docscore); 
+    return (\@sorted_docid, \%docscore, $total_doc); 
 }
 
 
@@ -419,12 +420,114 @@ sub plucene_query($)
 # same as P_t_multithread, but this will get index path, instead of glob path 
 # and will return the same thing. 
 
+sub P_t_multithread_index($;$$$)
+{
+    # argument: text, lambda, collection model path, document index path 
+    # out: a hash (model name, prob of given text produced from the model) 
+
+    my %result; # $result{"model_id"} = log prob of $text from 'model_id' 
+    
+    # argument copy & sanity check 
+    my $text = $_[0]; 
+    die unless ($text); 
+    if ($_[1]) { # lambda 
+	die unless ($_[1] >=0 and $_[1] <= 1); 
+	$LAMBDA = $_[1]; 
+    }
+    if ($_[2]) { # collection model (single file) 
+	die unless (-r $_[2]);
+	$COLLECTION_MODEL = $_[2]; 
+    }
+    if ($_[3]) { # plucene index path
+	die unless (-e $_[3]); 
+	$DOCUMENT_INDEX_DIR = $_[3]; 
+    }
+    my ($hits_aref, $hits_href, $total_doc_size) = plucene_query($text); 
+    
+    # sanity check 
+    my $hit_size = scalar (@{$hits_aref}); 
+    warn "$text resulted no hits in plucene index" unless ($hit_size); 
+
+    # prepare list of models 
+    my @document_model; 
+    
+    # TODO: faster_approximation  -- use only N numbers 
+    foreach (@{$hits_aref}) # it is already ordered, 
+    {
+	push @document_model, ($_ . ".model"); 
+    }
+
+    # call P_coll() 
+    print STDERR "Calculating collection model logprob (to be interpolated)";  
+    my @r = P_coll($text); # return value already saved in global @collection_seq
+    my $coll_logprob = lambda_sum2(1, \@r, \@r); 
+    print STDERR $coll_logprob, "\n"; 
+
+    # for each model, call P_doc()     
+    print STDERR "Calculating per-document model logprobs, ", scalar(@document_model), " files\n"; 
+
+    # generate the threads, and run them with 1/number_thread array parts. 
+    my @thread; 
+    my $n = int (scalar (@document_model) / $NUM_THREAD); 
+    my $start = 0; 
+    my $end = $n-1; 
+
+    for (my $i=0; $i < $NUM_THREAD; $i++)
+    {
+	# dcode
+	# print STDERR "$start - $end\n"; 
+	# () needed: array context. see http://perldoc.perl.org/threads.html#THREAD-CONTEXT
+    	($thread[$i]) = threads->create(\&P_d_runner, @document_model[$start .. $end]);
+    	# update start-end for the next array
+    	$start += $n; 
+    	$end = $start + $n - 1; 
+    	$end = ((scalar @document_model) -1) if (($i+1) == $NUM_THREAD -1); # last part special case
+    }
+       
+    # wait for threads to end. 
+    my %parts; 
+    for (my $i=0; $i < $NUM_THREAD; $i++)
+    {
+    	my %r = $thread[$i]->join(); 
+    	#print $r[0], "\t", $r[1], "\n"; 
+    	%parts = (%parts, %r); 
+    }
+    # sum up the results from the thread 
+    %result = %parts; 
+
+
+    # now, fill in the prob of "no-hit" document models 
+    # calculate the minimum no-hit prob. 
+    my $min_prob; 
+    {
+	my @t; 
+	push @t, 0 foreach (@r); 
+	$min_prob = lambda_sum2($LAMBDA, \@t, \@r); 
+    }
+
+    for(my $i=0; $i < ($total_doc_size - $hit_size); $i++)
+    {
+	# TODO make it actual model file names. 
+	my $id = "nohit" . $i; 
+	$result{$id} = $min_prob; 
+    }
+    
+    # done. return the result.
+    return %result; 
+}
+
+
 # TODO
 # P_h_t_multithread_index 
 # same as P_h_t_multithread, but this will get index path, instead of glob path
 # and will do the same thing 
 
 
+
+sub log10 {
+    my $n = shift;
+    return log($n)/log(10);
+}
 
 
 1; 

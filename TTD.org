@@ -17,6 +17,8 @@
 - with test code. Yeah! 
 
 *** TODO Code P_t with index. 
+- ... and how? 
+- well spend some time ... 
 
 *** TODO Code P_t_h with index 
 

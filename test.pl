@@ -3,7 +3,7 @@ use warnings;
 use octave_call; 
 use srilm_call; 
 use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG); 
-use Test::Simple tests => 14; 
+use Test::Simple tests => 15; 
 
 # test data 
 # (just for the test, not meaningful at all) 
@@ -184,20 +184,40 @@ else
    ok(1, "ignoring calling P_h_t_multithread, missing collection model in $COLLECTION_MODEL"); 
 }
 
-#plucene query 
+#plucene query test
 our $DOCUMENT_INDEX_DIR = "./testdata/models_index"; 
 if (-e $DOCUMENT_INDEX_DIR)
 {
-    my ($docid_aref, $docscore_href) = plucene_query("football hiddink"); 
+    my ($docid_aref, $docscore_href, $total_doc) = plucene_query("football hiddink"); 
     foreach (@{$docid_aref})
     {
 	print "$_: ", $docscore_href->{$_}, "\n"; 
     }
+    print "among $total_doc documents\n"; 
     # check order: .0481, .0480, .0482, .0484 
     # and 483 not in there. 
-    ok(($docid_aref->[0] =~ /0481\.story/) and ($docid_aref->[1] =~ /0480\.story/)); 
+    ok((($docid_aref->[0] =~ /0481\.story/) and ($docid_aref->[1] =~ /0480\.story/)), "query result as expected"); 
 }
 else
 {
     ok(1, "ignoreing calling plucene_query, missing index dir $DOCUMENT_INDEX_DIR"); 
+}
+
+
+# P_t_multithread_index test 
+my %result4; 
+if (-e $COLLECTION_MODEL)
+{
+    %result4 = P_t_multithread_index($testh, 0.5, $COLLECTION_MODEL, "./testdata/models_index"); 
+    foreach (keys %result4)
+    {
+	print "\t$_\t$result4{$_}\n"; 
+    }
+    my @a = values %result4; 
+    print "\t Average logprob from the doc-models: ", mean(\@a), "\n"; 
+    ok(1, "calling P_t_ multithread index ..."); 
+}
+else
+{
+    ok(1, "ignoring another call to P_t"); 
 }
