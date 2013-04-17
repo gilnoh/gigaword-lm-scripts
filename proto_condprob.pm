@@ -417,12 +417,12 @@ sub plucene_query($)
 
 # TODO 
 # P_t_multithread_index 
-# same as P_t_multithread, but this will get index path, instead of glob path 
+# same as P_t_multithread, but this will one additional argument index path
 # and will return the same thing. 
 
-sub P_t_multithread_index($;$$$)
+sub P_t_multithread_index($;$$$$)
 {
-    # argument: text, lambda, collection model path, document index path 
+    # argument: text, lambda, collection model path, document model glob, document index path 
     # out: a hash (model name, prob of given text produced from the model) 
 
     my %result; # $result{"model_id"} = log prob of $text from 'model_id' 
@@ -438,9 +438,13 @@ sub P_t_multithread_index($;$$$)
 	die unless (-r $_[2]);
 	$COLLECTION_MODEL = $_[2]; 
     }
-    if ($_[3]) { # plucene index path
+    if ($_[3]) { # document model path 
 	die unless (-e $_[3]); 
-	$DOCUMENT_INDEX_DIR = $_[3]; 
+	$DOCUMENT_MODELS_DIR = $_[3]; 
+    }
+    if ($_[4]) { # plucene index path
+	die unless (-e $_[4]); 
+	$DOCUMENT_INDEX_DIR = $_[4]; 
     }
     my ($hits_aref, $hits_href, $total_doc_size) = plucene_query($text); 
     
@@ -497,7 +501,8 @@ sub P_t_multithread_index($;$$$)
 
 
     # now, fill in the prob of "no-hit" document models 
-    # calculate the minimum no-hit prob. 
+    # first, calculate the minimum no-hit prob. 
+    my %final_result; 
     my $min_prob; 
     {
 	my @t; 
@@ -505,15 +510,35 @@ sub P_t_multithread_index($;$$$)
 	$min_prob = lambda_sum2($LAMBDA, \@t, \@r); 
     }
 
-    for(my $i=0; $i < ($total_doc_size - $hit_size); $i++)
+    # get all docmodel list 
+    my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
+    print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n"; 
+    #print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
+
+    my @all_model; 
+    foreach my $d (@subdir)
     {
-	# TODO make it actual model file names. 
-	my $id = "nohit" . $i; 
-	$result{$id} = $min_prob; 
+	#print STDERR "$d: "; 
+	my @ls = glob($d . "/*.model"); 
+	#print STDERR scalar(@ls), " model files\n"; 
+	push @all_model, @ls; 
+    }
+
+    foreach (@all_model)
+    {
+	if ($result{$_})
+	{
+	    $final_result{$_} = $result{$_} if ($result{$_}); 
+	}
+	else
+	{
+	    $final_result{$_} = $min_prob; 
+	}
+
     }
     
     # done. return the result.
-    return %result; 
+    return %final_result; 
 }
 
 
@@ -521,7 +546,6 @@ sub P_t_multithread_index($;$$$)
 # P_h_t_multithread_index 
 # same as P_h_t_multithread, but this will get index path, instead of glob path
 # and will do the same thing 
-
 
 
 sub log10 {

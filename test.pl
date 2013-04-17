@@ -208,7 +208,7 @@ else
 my %result4; 
 if (-e $COLLECTION_MODEL)
 {
-    %result4 = P_t_multithread_index($testh, 0.5, $COLLECTION_MODEL, "./testdata/models_index"); 
+    %result4 = P_t_multithread_index($testh, 0.5, $COLLECTION_MODEL, "./testdata", "./testdata/models_index"); 
     foreach (keys %result4)
     {
 	print "\t$_\t$result4{$_}\n"; 
