@@ -31,7 +31,7 @@ our $DOCUMENT_MODELS_DIR = "./models/document";
 our $DOCUMENT_INDEX_DIR = "./models_index"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
-our $APPROXIMATE_WITH_TOP_N_HITS = 1000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
+our $APPROXIMATE_WITH_TOP_N_HITS = 10000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
 
 our $DEBUG=2;  
 # DEBUG level 
@@ -513,6 +513,13 @@ sub P_t_multithread_index($;$$$$)
     # sum up the results from the thread 
     %result = %parts; 
 
+    # for debug code 
+    my $max_prob = P_doc($document_model[0]); 
+    my $cut_prob = 0; 
+    if ($APPROXIMATE_WITH_TOP_N_HITS < (scalar @document_model))
+    {
+	$cut_prob = P_doc($document_model[$APPROXIMATE_WITH_TOP_N_HITS -1]); 
+    }
 
     # now, fill in the prob of "no-hit" document models 
     # first, calculate the minimum no-hit prob. 
@@ -526,7 +533,8 @@ sub P_t_multithread_index($;$$$$)
 
     # get all docmodel list 
     my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
-    print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n"; 
+    print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n";     
+    print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
     #print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
 
     my @all_model; 
@@ -550,7 +558,17 @@ sub P_t_multithread_index($;$$$$)
 	}
 
     }
-    
+
+    # Debug CODE 
+    # cutpoint average & all average 
+    if ($DEBUG)
+    {
+	my @ca = values %result; 
+	print "average logprob from the cut point ", scalar (@ca), " doc-models:", mean(\@ca), "\n"; 
+	my @aa = values %final_result; 
+	print "average logprob from the all ", scalar(@aa)," (approximated, min-fill) doc-models:", mean(\@aa), "\n"; 
+    }
+
     # done. return the result.
     return %final_result; 
 }

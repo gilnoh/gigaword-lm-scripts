@@ -7,7 +7,7 @@ use octave_call;
 use Benchmark qw(:all); 
 
 our $DEBUG = 2; 
-set_num_thread(2); 
+set_num_thread(4); 
 # test call on 2009 small set 
 # (not meaningful at all, since none of May 2009 holds any event on plane crash) just as functional OKAY-ness. Too small corpus that does not really have those terms) 
 my $text = "there was an airplane accident";  
@@ -30,9 +30,9 @@ my $hypothesis = "everyone died";
 
 # time in 
 my $t0 = Benchmark->new; 
-our $APPROXIMATE_WITH_TOP_N_HITS=100000; 
+our $APPROXIMATE_WITH_TOP_N_HITS=20000; 
 #my %r = P_t_multithread($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009"); 
- my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 
+my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 
 #P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 
 
 my @a = values %r; 
