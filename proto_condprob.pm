@@ -22,7 +22,7 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS); 
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
@@ -31,6 +31,8 @@ our $DOCUMENT_MODELS_DIR = "./models/document";
 our $DOCUMENT_INDEX_DIR = "./models_index"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
+our $APPROXIMATE_WITH_TOP_N_HITS = 1000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
+
 our $DEBUG=2;  
 # DEBUG level 
 # 0: no addtional file output 
@@ -455,10 +457,22 @@ sub P_t_multithread_index($;$$$$)
     # prepare list of models 
     my @document_model; 
     
-    # TODO: faster_approximation  -- use only N numbers 
-    foreach (@{$hits_aref}) # it is already ordered, 
-    {
-	push @document_model, ($_ . ".model"); 
+    if ($APPROXIMATE_WITH_TOP_N_HITS > 0)
+    { 	# use top N only. 
+	my $n = 0; 
+	foreach (@{$hits_aref}) # hits_aref is already sorted with search hit score, top first. 
+	{
+	    push @document_model, ($_ . ".model"); 
+	    $n++; 
+	    last if ($n >= $APPROXIMATE_WITH_TOP_N_HITS); 
+	}
+    }
+    else 
+    {   # use all of them. 
+	foreach (@{$hits_aref}) 
+	{
+	    push @document_model, ($_ . ".model"); 
+	}
     }
 
     # call P_coll() 
@@ -468,7 +482,7 @@ sub P_t_multithread_index($;$$$$)
     print STDERR $coll_logprob, "\n"; 
 
     # for each model, call P_doc()     
-    print STDERR "Calculating per-document model logprobs, ", scalar(@document_model), " files\n"; 
+    print STDERR "Calculating per-document model logprobs for ", scalar(@document_model), " files (among $total_doc_size total doc) \n"; 
 
     # generate the threads, and run them with 1/number_thread array parts. 
     my @thread; 

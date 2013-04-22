@@ -2,8 +2,8 @@ use strict;
 use warnings; 
 use octave_call; 
 use srilm_call; 
-use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG); 
-use Test::Simple tests => 15; 
+use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG $APPROXIMATE_WITH_TOP_N_HITS); 
+use Test::Simple tests => 16; 
 
 # test data 
 # (just for the test, not meaningful at all) 
@@ -216,6 +216,25 @@ if (-e $COLLECTION_MODEL)
     my @a = values %result4; 
     print "\t Average logprob from the doc-models: ", mean(\@a), "\n"; 
     ok(1, "calling P_t_ multithread index ..."); 
+}
+else
+{
+    ok(1, "ignoring another call to P_t"); 
+}
+
+# approximate by using top n ... 
+my %result5; 
+if (-e $COLLECTION_MODEL)
+{
+    our $APPROXIMATE_WITH_TOP_N_HITS = 1; 
+    %result5 = P_t_multithread_index($testh, 0.5, $COLLECTION_MODEL, "./testdata", "./testdata/models_index"); 
+    foreach (keys %result5)
+    {
+	print "\t$_\t$result5{$_}\n"; 
+    }
+    my @a = values %result5; 
+    print "\t Average logprob from the doc-models: ", mean(\@a), "\n"; 
+    ok(1, "calling P_t_ multithread index with top N approximation."); 
 }
 else
 {

@@ -2,7 +2,7 @@
 
 use warnings; 
 use strict; 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG); 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS); 
 use octave_call; 
 use Benchmark qw(:all); 
 
@@ -30,7 +30,7 @@ my $hypothesis = "everyone died";
 
 # time in 
 my $t0 = Benchmark->new; 
-
+our $APPROXIMATE_WITH_TOP_N_HITS=100000; 
 #my %r = P_t_multithread($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009"); 
  my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 
 #P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 

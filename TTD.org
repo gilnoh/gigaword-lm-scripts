@@ -20,15 +20,18 @@
 - ... and how? 
 - ... spend some time ... 
 
+*** TODO Implement "top N" approximation. check some approx vs non-approx.
+- 
+
 *** TODO Some more test on P_t, "and try approximate"?
 - Is it Okay to use top_N? say, 10k? Spend some time. 
 - Approximation will (artificially) lower P_t(hypo). 
 - But it will also lower P_t(text) and everything (?) 
 - What we do finally is comparing P(hypo) and P(hypo | text): if two
   things both got lowered. Is this Acceptable?  
+**** TODO HOW LARGE IS THE "Big tail". (drop based on 100, 1k, 10k 100k) 
 
-*** TODO Implement "top N" approximation. check some approx vs non-approx.
-- 
+
 
 *** TODO Code P_t_h with index 
 
