@@ -417,7 +417,6 @@ sub plucene_query($)
 }
 
 
-# TODO 
 # P_t_multithread_index 
 # same as P_t_multithread, but this will one additional argument index path
 # and will return the same thing. 
@@ -457,7 +456,7 @@ sub P_t_multithread_index($;$$$$)
     # prepare list of models 
     my @document_model; 
     
-    if ($APPROXIMATE_WITH_TOP_N_HITS > 0)
+    if ( $APPROXIMATE_WITH_TOP_N_HITS > 0 )
     { 	# use top N only. 
 	my $n = 0; 
 	foreach (@{$hits_aref}) # hits_aref is already sorted with search hit score, top first. 
@@ -486,16 +485,18 @@ sub P_t_multithread_index($;$$$$)
 
     # generate the threads, and run them with 1/number_thread array parts. 
     my @thread; 
-    my $n = int (scalar (@document_model) / $NUM_THREAD); 
+    my $n = int ((scalar (@document_model)) / ($NUM_THREAD+0.0)); 
     my $start = 0; 
     my $end = $n-1; 
 
     for (my $i=0; $i < $NUM_THREAD; $i++)
     {
 	# dcode
-	# print STDERR "$start - $end\n"; 
-	# () needed: array context. see http://perldoc.perl.org/threads.html#THREAD-CONTEXT
-    	($thread[$i]) = threads->create(\&P_d_runner, @document_model[$start .. $end]);
+	#print STDERR "$start - $end\n"; 
+	#print STDERR "$document_model[$start] - $document_model[$end]\n"; 
+
+    	($thread[$i]) = threads->create(\&P_d_runner, @document_model[$start .. $end]); # () needed: array context. see http://perldoc.perl.org/threads.html#THREAD-CONTEXT
+
     	# update start-end for the next array
     	$start += $n; 
     	$end = $start + $n - 1; 
@@ -516,9 +517,12 @@ sub P_t_multithread_index($;$$$$)
     # for debug code 
     my $max_prob = P_doc($document_model[0]); 
     my $cut_prob = 0; 
-    if ($APPROXIMATE_WITH_TOP_N_HITS < (scalar @document_model))
+    #if ($APPROXIMATE_WITH_TOP_N_HITS < (scalar @document_model))
+    if ((scalar @document_model) < $total_doc_size)
     {
-	$cut_prob = P_doc($document_model[$APPROXIMATE_WITH_TOP_N_HITS -1]); 
+	my $last = $APPROXIMATE_WITH_TOP_N_HITS -1; 
+	$last = ($hit_size - 1) if ($last > ($hit_size - 1)); 
+	$cut_prob = P_doc($document_model[$last]); 
     }
 
     # now, fill in the prob of "no-hit" document models 
@@ -574,10 +578,82 @@ sub P_t_multithread_index($;$$$$)
 }
 
 
-# TODO
 # P_h_t_multithread_index 
 # same as P_h_t_multithread, but this will get index path, instead of glob path
 # and will do the same thing 
+sub P_h_t_multithread_index($$;$$$$)
+{
+    # argument: hypothesis, text, lambda, collection model path, document model glob, document index path 
+    # output (return): 
+    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+
+    # argument check 
+    my @args = @_; 
+    my $hypothesis = shift @args; 
+    my $text = shift @args; 
+    die unless ($hypothesis and $text); 
+
+    # calculate P(t) for each document model 
+    print STDERR $text, "\n"; 
+    my %text_per_doc = P_t_multithread_index($text, @args); # remaining @args will be checked there 
+    # calculate P(t) overall 
+    my @t = values %text_per_doc; 
+    my $P_t = mean(\@t); # (on uniform P(d) )
+    print STDERR "P(t) is $P_t \n"; 
+
+    ## CONSIDER: we can calculate "N only" version of P(t) by using only 
+    ## top N values. 
+
+    # dcode 
+    export_hash_to_file(\%text_per_doc, "Pt_per_doc.txt"); 
+
+    # calculate P(h) for each model 
+    print STDERR $hypothesis, "\n"; 
+    my %hypo_per_doc = P_t_multithread_index($hypothesis, @args); 
+    # calculate P(h) overall 
+    my @h = values %hypo_per_doc; 
+    my $P_h = mean(\@h); # (on uniform P(d) ) 
+    print STDERR "P(h) is (logprob): $P_h \n"; 
+
+    ## CONSIDER: we can calculate "N only" version of P(t) by using only 
+    ## top N values. 
+
+    # dcode
+    export_hash_to_file(\%hypo_per_doc, "Ph_per_doc.txt"); 
+
+
+    # calculate P(h|t,d) for each model 
+    # note this %weighted is *non-normalized weight* (for evidence) 
+    # and not the final prob. 
+    my %weighted; 
+    my @text;
+    my @hypo; 
+    {
+	foreach (keys %text_per_doc)
+	{
+	    $weighted{$_} = $text_per_doc{$_} + $hypo_per_doc{$_}; 
+	    push @text, $text_per_doc{$_}; 
+	    push @hypo, $hypo_per_doc{$_}; 
+	}
+    }
+    # dcode
+    export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
+
+
+    # calculate P(h|t) overall (that is, P(h|t,d)) 
+    # WARNING: we made sure in the previous step, @text and @hypo sorted on the same 
+    # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
+    # This must be guaranteeded! 
+    my $P_h_given_t = weighted_sum(\@text, \@hypo); 
+    print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
+
+    # calculate P(h|t) / P(h), as supporting measure. 
+    my $gain = 10 ** ($P_h_given_t - $P_h); # note that this is not logprob
+    print STDERR "P(h|t) / P(h) is (nonlog): ", $gain, "\n"; 
+    
+    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+    return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
+}
 
 
 sub log10 {

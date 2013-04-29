@@ -20,23 +20,24 @@
 - ... and how? 
 - ... spend some time ... 
 
-*** TODO Implement "top N" approximation. check some approx vs non-approx.
+*** DONE Implement "top N" approximation. check some approx vs non-approx.
 - 
 
-*** TODO Some more test on P_t, "and try approximate"?
+*** DONE Some more test on P_t, "and try approximate"?
 - Is it Okay to use top_N? say, 10k? Spend some time. 
 - Approximation will (artificially) lower P_t(hypo). 
 - But it will also lower P_t(text) and everything (?) 
 - What we do finally is comparing P(hypo) and P(hypo | text): if two
-  things both got lowered. Is this Acceptable?  
-**** TODO HOW LARGE IS THE "Big tail". (drop based on 100, 1k, 10k 100k) 
+  things both got lowered. Is this Acceptable?  ... 
+- Need more testing. 
+- It drops "too much". (very easily get "min" value). Very large Big tail.  
 
-
-
-*** TODO Code P_t_h with index 
-
-*** TODO Test on 2009 (test code), compare the result to bruteforce 
-
+*** DONE Implement P_t_h_index with N approximation. 
+*** TODO Test P_t_h_index with test code. 
+*** TODO Get some realistic sentences from RTE3. 
+*** TODO Test effect of N on this P_t_h_index (with N approx) 
+- 2009 only? well why not. Then 2010.
+- Compare this to "Full" P(h|t) 
 
 * Currently ... 
 Currently working on "Index Work", for index using P_t (& P_h given t) 
