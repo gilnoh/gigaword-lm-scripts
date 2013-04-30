@@ -46,7 +46,7 @@ sub set_num_thread
     $NUM_THREAD = $_[0]; 
 }
 
-sub P_h_t_multithread($$;$$$)
+sub P_h_t_multithread
 {
     # argument: hypothesis, text, lambda, collection model path, document models
     # output (return): 
@@ -110,7 +110,7 @@ sub P_h_t_multithread($$;$$$)
     return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
 }
 
-sub P_t_multithread($;$$$) 
+sub P_t_multithread
 {
     # argument: text, lambda, collection model path, document model glob 
     # out: a hash (model name, prob of given text produced from the model) 
@@ -233,7 +233,7 @@ sub P_d_runner
 }
 
 
-sub P_t($;$$$) 
+sub P_t
 {
     # argument: $text, $lambda, $collection_model_file, $document_model_dir
     # out: a hash where a key is model name, and the associated 
@@ -300,7 +300,7 @@ sub P_t($;$$$)
 
 # internal function that records collection probability per words 
 # (model to be interpolated for each P_doc model) 
-sub P_coll($)
+sub P_coll
 {
     # sanity check 
     die "unable to find collection model file $COLLECTION_MODEL\n" unless (-r $COLLECTION_MODEL); 
@@ -314,7 +314,7 @@ sub P_coll($)
 }
 
 # internal function, that assumes previous call on P_coll  
-sub P_doc($) 
+sub P_doc
 {
     # arg[0]: document model path 
     
@@ -354,7 +354,7 @@ sub export_hash_to_file
 }
 
 
-sub get_subdirs($)
+sub get_subdirs
 {
 # get_subdir("./somepath") will return all its subdirs, including itself. 
     my $toppath = $_[0]; 
@@ -378,9 +378,12 @@ sub get_subdirs($)
 # returns: my ($ref_array_doc_names, $ref_hash_perdoc_score, $total_doc_num) 
 # $ref_array is an ordered array of document names. ("good hit first"). 
 
-sub plucene_query($)
+sub plucene_query
 { 
     my $query_str = $_[0]; 
+
+    # remove any \" from query string 
+    $query_str =~ s/\"//g; 
 
     # prepare query
     my $parser = Plucene::QueryParser->new({
@@ -421,7 +424,7 @@ sub plucene_query($)
 # same as P_t_multithread, but this will one additional argument index path
 # and will return the same thing. 
 
-sub P_t_multithread_index($;$$$$)
+sub P_t_multithread_index
 {
     # argument: text, lambda, collection model path, document model glob, document index path 
     # out: a hash (model name, prob of given text produced from the model) 
@@ -581,7 +584,7 @@ sub P_t_multithread_index($;$$$$)
 # P_h_t_multithread_index 
 # same as P_h_t_multithread, but this will get index path, instead of glob path
 # and will do the same thing 
-sub P_h_t_multithread_index($$;$$$$)
+sub P_h_t_multithread_index
 {
     # argument: hypothesis, text, lambda, collection model path, document model glob, document index path 
     # output (return): 
@@ -645,6 +648,7 @@ sub P_h_t_multithread_index($$;$$$$)
     # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
     # This must be guaranteeded! 
     my $P_h_given_t = weighted_sum(\@text, \@hypo); 
+    #print @text, @hypo;     #dcode 
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
 
     # calculate P(h|t) / P(h), as supporting measure. 

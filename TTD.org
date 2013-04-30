@@ -39,6 +39,12 @@
 - 2009 only? well why not. Then 2010.
 - Compare this to "Full" P(h|t) 
 
+
+
+* Consider The following Improvements 
+** TODO Normalized contribution (of each doc to P(h|t)) 
+
+
 * Currently ... 
 Currently working on "Index Work", for index using P_t (& P_h given t) 
 

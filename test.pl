@@ -3,7 +3,7 @@ use warnings;
 use octave_call; 
 use srilm_call; 
 use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG $APPROXIMATE_WITH_TOP_N_HITS); 
-use Test::Simple tests => 16; 
+use Test::Simple tests => 17; 
 
 # test data 
 # (just for the test, not meaningful at all) 
@@ -208,7 +208,7 @@ else
 my %result4; 
 if (-e $COLLECTION_MODEL)
 {
-    %result4 = P_t_multithread_index($testh, 0.5, $COLLECTION_MODEL, "./testdata", "./testdata/models_index"); 
+    %result4 = P_t_multithread_index($testinput, 0.5, $COLLECTION_MODEL, "./testdata", "./testdata/models_index"); 
     foreach (keys %result4)
     {
 	print "\t$_\t$result4{$_}\n"; 
@@ -239,4 +239,23 @@ if (-e $COLLECTION_MODEL)
 else
 {
     ok(1, "ignoring another call to P_t"); 
+}
+
+
+# now testing P_h_t_multithread_index  
+$APPROXIMATE_WITH_TOP_N_HITS = 1000; 
+if (-e $COLLECTION_MODEL)
+{
+    my ($gain,$P_h_t, $P_h, $P_t ,$href) = P_h_t_multithread_index($testh, $testinput, 0.5, $COLLECTION_MODEL, "./testdata", "./testdata/models_index"); 
+
+    print "Non-normalized contribution of documents (evidences)\n"; 
+    foreach (keys %$href)
+    {
+	print "\t $_ \t $href->{$_}\n"; 
+    }    
+    ok(1, "P_h_t_multithread_index ran Okay"); 
+}
+else
+{
+   ok(1, "ignoring calling P_h_t_multithread_index, missing collection model in $COLLECTION_MODEL"); 
 }
