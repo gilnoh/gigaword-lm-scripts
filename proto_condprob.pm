@@ -22,7 +22,7 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
@@ -550,9 +550,19 @@ sub P_t_multithread_index
 	#print STDERR "$d: "; 
 	my @ls = glob($d . "/*.model"); 
 	#print STDERR scalar(@ls), " model files\n"; 
+
+        # converting file name into standard form. 
+	# so it is compatible with the file name in Index. 
+	foreach (@ls) 
+	{
+	    s/\/\.\//\//g;  # /./ -> /
+	}
 	push @all_model, @ls; 
     }
 
+    #print "$_ \n" foreach (@document_model); 
+    #print "===***===\n"
+    #print "$_ \n" foreach (@all_model); 
     foreach (@all_model)
     {
 	if ($result{$_})
@@ -563,7 +573,14 @@ sub P_t_multithread_index
 	{
 	    $final_result{$_} = $min_prob; 
 	}
-
+    }
+    # sanity check 
+    foreach (keys %result)
+    {
+	unless ($final_result{$_} == $result{$_}) #(exists $final_result{$_})
+	{
+	    die "Internal sanity check failure: model result found by index-fetching not found in the final result. File name match failure? Bad code? (Blame Gil for this.)\n" 
+	}
     }
 
     # Debug CODE 

@@ -33,7 +33,8 @@
 - It drops "too much". (very easily get "min" value). Very large Big tail.  
 
 *** DONE Implement P_t_h_index with N approximation. 
-*** TODO Test P_t_h_index with test code. 
+*** DONE Test P_t_h_index with test code. 
+*** TODO Play with some more simple texts on the newst implementation 
 *** TODO Get some realistic sentences from RTE3. 
 *** TODO Test effect of N on this P_t_h_index (with N approx) 
 - 2009 only? well why not. Then 2010.
@@ -41,8 +42,41 @@
 
 
 
+* MEMO 
+** Some numbers 
+- ALL, 100k (all, but no stop-word), 1k, 100, 10, etc 
+*** ALL 
+P(h) is (logprob): -8.0458 
+P(h|t) is (logprob):  -7.0918 
+P(h|t) / P(h) is (nonlog): 8.99497581530035
+the code took:166 wallclock secs (14.09 usr 120.09 sys + 188.45 cusr 163.45 csys = 486.08 CPU)
+*** 100k (all, but excluding stop word hits) 
+P(h) is (logprob): -8.0458 
+P(h|t) is (logprob):  -7.0889 
+P(h|t) / P(h) is (nonlog): 9.05524072268361
+the code took:67 wallclock secs ( 8.02 usr 35.87 sys + 70.79 cusr 51.31 csys = 165.99 CPU)
+*** 1k 
+P(h) is (logprob): -8.1412 
+P(h|t) is (logprob):  -7.1033 
+P(h|t) / P(h) is (nonlog): 10.911890519552
+the code took:25 wallclock secs ( 4.34 usr  5.96 sys + 21.98 cusr  8.19 csys = 40.47 CPU)
+*** 100 
+P(h) is (logprob): -8.5588 
+P(h|t) is (logprob):  -7.7297 
+P(h|t) / P(h) is (nonlog): 6.74683361398827
+the code took:19 wallclock secs ( 3.73 usr  1.45 sys + 13.94 cusr  1.04 csys = 20.16 CPU)
+*** 10
+(h) is (logprob): -8.9819 
+P(h|t) is (logprob):  -9.0917 
+P(h|t) / P(h) is (nonlog): 0.776604673960837
+the code took:18 wallclock secs ( 3.63 usr  0.84 sys + 13.14 cusr  0.33 csys = 17.94 CPU)
+
+
+
+
+
 * Consider The following Improvements 
-** TODO Normalized contribution (of each doc to P(h|t)) 
+** TODO MAYBE? Normalized contribution (of each doc to P(h|t)) 
 
 
 * Currently ... 
