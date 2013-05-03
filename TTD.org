@@ -38,8 +38,9 @@ TODO NOW
 
 *** DONE Implement P_t_h_index with N approximation. 
 *** DONE Test P_t_h_index with test code. 
-*** TODO Play with some more simple texts on the newst implementation 
-*** TODO Get some realistic sentences from RTE3. 
+*** TODO Play with some more simple texts on the newst implementation. 
+*** TODO Test with some sentences from RTE3. 
+*** TODO Make a experiment sketch code that will read and work on RTE3 data. 
 *** TODO Test effect of N on this P_t_h_index (with N approx) 
 - 2009 only? well why not. Then 2010.
 - Compare this to "Full" P(h|t) 
