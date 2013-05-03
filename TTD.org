@@ -1,3 +1,7 @@
+TODO NOW 
+- 2010 on gillespie 
+- all afp on /proj 
+- 2008 2009 2010 on home
 
 ** Index Work 
 *** DONE add index optimizer at the end of indexing.pl 
