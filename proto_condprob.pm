@@ -477,6 +477,12 @@ sub P_t_multithread_index
 	}
     }
 
+    # remove all "/./" from model path, if any. 
+    foreach (@document_model)
+    {
+	s/\/\.\//\//g;  # /./ -> /
+    }
+
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  
     my @r = P_coll($text); # return value already saved in global @collection_seq
