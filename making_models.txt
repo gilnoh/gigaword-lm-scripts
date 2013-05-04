@@ -57,6 +57,12 @@ Note: the resulting index will be stored in ./models_index. (This dir
 can be changed within the script, but in that case, you should also
 change the global DOCUMENT_INDEX_DIR in proto_condprob.pm. 
 
+NOTE: If you want to keep multiple indexes --- rename the default
+models_index into something else, and pass this path to the index
+using methods. In that case, you have to pass the path (full arguments
+for P_t and P_t_h index methods, and no longer rely on default index
+paths). 
+
 ===
 5. Done. 
 

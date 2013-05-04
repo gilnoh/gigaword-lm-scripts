@@ -1,4 +1,7 @@
-Command start to DONE
+
+=== 
+Full calculation on files 
+2009 May AFP data (20k documents) 
 (Westy, under some load) 
 8 threads: 1 min 35
 6 threads: 1 min 18 
@@ -6,5 +9,36 @@ Command start to DONE
 2 threads: 1 min 53 
 1 thread: 3 min 19 
 
-(Gillespie) 
+(Gillespie, under some load) 
 6 threads: 0 min 50  (cool) 
+
+=== 
+Full calculation on files 
+2010 AFP data (186k documents) 
+
+(Westy) 
+2 threads: 2273 sec 
+
+(Gillespie) 
+2 threads: 
+
+
+==== 
+Some more test --- indexed (cz random access test?) case without reordering 
+On this result gillespie is so very slow! (x10 times). 
+Why? --- "random access?", or "i-node order access"? 
+
+(Westy on 2009 + 2010 AFP data, approximated with top 1000 hits) 
+2 threads: 
+
+
+(Gillespie on 2010 AFP data, approximated with top 1000 hits) 
+2 threads: 
+
+
+====
+Some more test --- indexed case *with* reordering (alphabetic order) 
+
+
+
+

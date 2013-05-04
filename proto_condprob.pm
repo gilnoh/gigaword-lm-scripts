@@ -683,12 +683,25 @@ sub P_h_t_multithread_index
     
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
     return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
+
+    # CONSIDER: return more --- like \@text, \@hypo. 
 }
 
 
 sub log10 {
     my $n = shift;
     return log($n)/log(10);
+}
+
+
+## TODO someday? 
+## for experiment to test impact of adding "one" or a set of "good
+## document". 
+## Input: \@text, \@hypo, 
+## and new evidence as P_doc(t), P_doc(h) for added evidence 
+sub add_evidence_to
+{
+    
 }
 
 

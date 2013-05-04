@@ -1,0 +1,28 @@
+
+* Gillespie 
+** DONE (DOING) perl other version (5.12.4) 
+- no difference  
+
+
+* Westy 
+q
+** DONE AFP 2010 unzip
+** DONE AFP 2009 unzip 
+** DONE COL MODEL 
+** DONE PERDOC MODEL
+** TODO INDEXING
+** TODO SKETCH, check speed 
+
+* Gillespie/proj (AFP all) 
+** TODO (DOING) PERDOC MODEL (see runlog_... to check completeness) 
+** TODO COL MODEL 
+** TODO INDEXING 
+** TODO SKETCH, check speed 
+
+* Ellington/home (2010) 
+(Ellington is slower. hmm. why? just because it is slower...?) 
+** DONE all done for 2010. Maybe for something else? 
+
+
+* Future todo 
+** TODO Sanity check: all AFP, same result on Westy = Gillespie 

@@ -1,50 +1,35 @@
-TODO NOW 
-- 2010 on gillespie 
-- all afp on /proj 
-- 2008 2009 2010 on home
 
-** Index Work 
-*** DONE add index optimizer at the end of indexing.pl 
-- check doc Plucene::Index::Writer 
-- call optimize before close the writer. 
-- output indexed file number via $writer->doc_count; 
+** Index Work improvements 
+*** TODO "reordering" for speed. 
+- processing on indexed result is much, much slower for NFS and server
+  file systems. While it is very fast on SSDs. I am assuming this is
+  a fact caused by HDD vs SSD. Sequential (i-node order?) access is
+  fairly fast, but randomized access of files (in various points of
+  i-nodes) can get slower. If this is really the case, sorting the
+  "index-hit-model" based on i-node order (which conveniently,
+  follows alphabetic order --- due to the fact that they unzipped in
+  that way), will help. 
+**** TODO IMPLEMENT THIS improvements! 
+- only a few lines of carefully written code
+**** TODO TEST IT
+- on gillespie, with/without reordering. ($HIT_REORDERING) 
 
-*** DONE run temp.pl query on 2009 data 
-- run something (on temp already) 
-- check & compare, make sure it really works. (It seems so. Seems so
-  doesn't sound so strict, but I have no other reason to belive it
-  won't work so :-). 
 
-*** DONE recreate the work environment in home ... 
+** Testing Work 
+*** TODO Data preparation
+**** TODO All AFP 
+- Westy and Gillespie/proj
+**** TODO 2009, 2010 
+- Westy 
+**** TODO 2010 
+- Gillespie/home 
 
-*** DONE query method. (Text in, ordered result out) 
-- with test code. Yeah! 
-
-*** DONE Code P_t with index. 
-- ... and how? 
-- ... spend some time ... 
-
-*** DONE Implement "top N" approximation. check some approx vs non-approx.
-- 
-
-*** DONE Some more test on P_t, "and try approximate"?
-- Is it Okay to use top_N? say, 10k? Spend some time. 
-- Approximation will (artificially) lower P_t(hypo). 
-- But it will also lower P_t(text) and everything (?) 
-- What we do finally is comparing P(hypo) and P(hypo | text): if two
-  things both got lowered. Is this Acceptable?  ... 
-- Need more testing. 
-- It drops "too much". (very easily get "min" value). Very large Big tail.  
-
-*** DONE Implement P_t_h_index with N approximation. 
-*** DONE Test P_t_h_index with test code. 
-*** TODO Play with some more simple texts on the newst implementation. 
-*** TODO Test with some sentences from RTE3. 
+*** TODO Test with some sentences from RTE3, for next step. 
 *** TODO Make a experiment sketch code that will read and work on RTE3 data. 
-*** TODO Test effect of N on this P_t_h_index (with N approx) 
-- 2009 only? well why not. Then 2010.
-- Compare this to "Full" P(h|t) 
-
+*** TODO Collect first full list of "gain", for RTE3 with default Lambda. 
+- gain, P(t), P(h), (as it is, and collection backoff), P(h|t), t-length,
+  h-length
+- copy and backup evidence file somewhere, 
 
 
 * MEMO 
@@ -79,20 +64,24 @@ the code took:18 wallclock secs ( 3.63 usr  0.84 sys + 13.14 cusr  0.33 csys = 1
 
 
 
+** Speed test 
+- see speedtest.txt 
+
 
 * Consider The following Improvements 
 ** TODO MAYBE? Normalized contribution (of each doc to P(h|t)) 
 
 
-* Currently ... 
-Currently working on "Index Work", for index using P_t (& P_h given t) 
+* Currently
+- Working on Index Work Improvements & Testing Work 
+
+
+
+* PRESENTPRESENTPRESENTPRESENTPRESENTPRESENTPRESENTPRESENT
+* PASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPAST
 
 * DEVEL History 
-** Future Improvements 
-*** DONE [#A] (primitive) Indexing 
-- At least one term must occur, to be included in the @doclist 
-- Hmm. maybe simple. 
-
+** (Stored) Future Improvements 
 *** [#B] remove (or don't count) too short news articles
 - 100 bytes? there are some weird (not normal) news files even in
   .story files 
@@ -110,6 +99,43 @@ Currently working on "Index Work", for index using P_t (& P_h given t)
 - P_t code change (to traverse and run) 
 **** DONE Test of P_h_t_multithread with sketch 
 - (with multiple subdirs) 
+
+*** [#A] Index Work 
+*** DONE add index optimizer at the end of indexing.pl 
+- check doc Plucene::Index::Writer 
+- call optimize before close the writer. 
+- output indexed file number via $writer->doc_count; 
+
+*** DONE run temp.pl query on 2009 data 
+- run something (on temp already) 
+- check & compare, make sure it really works. (It seems so. Seems so
+  doesn't sound so strict, but I have no other reason to belive it
+  won't work so :-). 
+
+*** DONE recreate the work environment in home ... 
+
+*** DONE query method. (Text in, ordered result out) 
+- with test code. Yeah! 
+
+*** DONE Code P_t with index. 
+- ... and how? 
+- ... spend some time ... 
+
+*** DONE Implement "top N" approximation. check some approx vs non-approx.
+- 
+
+*** DONE Some more test on P_t, "and try approximate"?
+- Is it Okay to use top_N? say, 10k? Spend some time. 
+- Approximation will (artificially) lower P_t(hypo). 
+- But it will also lower P_t(text) and everything (?) 
+- What we do finally is comparing P(hypo) and P(hypo | text): if two
+  things both got lowered. Is this Acceptable?  ... 
+- Need more testing. 
+- It drops "too much". (very easily get "min" value). Very large Big tail.  
+
+*** DONE Implement P_t_h_index with N approximation. 
+*** DONE Test P_t_h_index with test code. 
+*** DONE Play with some more simple texts on the newst implementation. 
 
 ** Main line coding 
 *** DONE Collection Model 
@@ -156,26 +182,6 @@ Wow. Finally.
 - Output of result hash: 
 - Debug 1 : output the hash into file, no sorting, file order 
 - Debug 2 : sorting, higher value first. 
-
-*** POC Experiments on this prototype conditional prob. 
-**** DONE ONGOING [#A] Some test on small corpus
-- AFP_ENG 2009 05 
-- WAY too small. Nothing to be seen. (e.g. "airplane" doesn't occur, etc) 
-- Maybe I should pick something from the news itself, and try it. 
-- Note that: +-1 logprob fluctation in LM prob output is not reliable,
-  for example, documents report two words both as OOV, reports
-  different probabilitiy. This must be based on discounting method
-  (long document gets lower discount value? or higher discount value,
-  etc). --> just add more documents to see big jumps (say, +-10?), or
-  maybe remove too-short-documents, if this keeps coming up? 
-**** TODO [#A] Some test on not-so-small-but-still-small corpus 
-- AFP ENG 2010 
-**** TODO [#A] Some test on mid-size corpus 
-- All AFP
-- This is not doable until better "recursive-sub-dir-visit" for; 
-- Model making: (catall, and etc for collection model) 
-
-
 
 
 * EXPERIMENTS 
