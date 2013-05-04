@@ -31,7 +31,7 @@ our $DOCUMENT_MODELS_DIR = "./models/document";
 our $DOCUMENT_INDEX_DIR = "./models_index"; 
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
-our $APPROXIMATE_WITH_TOP_N_HITS = 10000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
+our $APPROXIMATE_WITH_TOP_N_HITS = 1000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
 
 our $DEBUG=2;  
 # DEBUG level 
@@ -450,8 +450,10 @@ sub P_t_multithread_index
 	die unless (-e $_[4]); 
 	$DOCUMENT_INDEX_DIR = $_[4]; 
     }
+    print STDERR "Querying on Plucene index..."
     my ($hits_aref, $hits_href, $total_doc_size) = plucene_query($text); 
-    
+    print STDERR "DONE\n"; 
+
     # sanity check 
     my $hit_size = scalar (@{$hits_aref}); 
     warn "$text resulted no hits in plucene index" unless ($hit_size); 
@@ -464,6 +466,7 @@ sub P_t_multithread_index
 	my $n = 0; 
 	foreach (@{$hits_aref}) # hits_aref is already sorted with search hit score, top first. 
 	{
+	    s/\/\.\//\//g;  # /./ -> / 
 	    push @document_model, ($_ . ".model"); 
 	    $n++; 
 	    last if ($n >= $APPROXIMATE_WITH_TOP_N_HITS); 
@@ -473,15 +476,16 @@ sub P_t_multithread_index
     {   # use all of them. 
 	foreach (@{$hits_aref}) 
 	{
+	    s/\/\.\//\//g;  # /./ -> / 
 	    push @document_model, ($_ . ".model"); 
 	}
     }
 
     # remove all "/./" from model path, if any. 
-    foreach (@document_model)
-    {
-	s/\/\.\//\//g;  # /./ -> /
-    }
+    #foreach (@document_model)
+    #{
+    #	s/\/\.\//\//g;  # /./ -> /
+    #}
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  
@@ -591,7 +595,7 @@ sub P_t_multithread_index
 
     # Debug CODE 
     # cutpoint average & all average 
-    if ($DEBUG)
+    if (0) #($DEBUG)
     {
 	my @ca = values %result; 
 	print "average logprob from the cut point ", scalar (@ca), " doc-models:", mean(\@ca), "\n"; 
