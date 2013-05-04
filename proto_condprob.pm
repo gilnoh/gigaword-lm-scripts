@@ -385,6 +385,7 @@ sub plucene_query
     # remove any \" from query string 
     $query_str =~ s/\"//g; 
 
+    print STDERR "Querying \"$query_str\""; 
     # prepare query
     my $parser = Plucene::QueryParser->new({
 	analyzer => Plucene::Analysis::SimpleAnalyzer->new(),
@@ -396,7 +397,7 @@ sub plucene_query
     my $searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
     my $reader = $searcher->reader(); 
     my $total_doc = $reader->num_docs(); 
-    print STDERR "Querying \"$query_str\" - Index has ", $total_doc, " documents\n"; 
+    print STDERR "- Index has ", $total_doc, " documents\n"; 
 
     my @docs; #TBR 
     my %docscore; 
@@ -415,7 +416,6 @@ sub plucene_query
     {
 	push @sorted_docid, $_; 
     }
-
     return (\@sorted_docid, \%docscore, $total_doc); 
 }
 
@@ -450,9 +450,8 @@ sub P_t_multithread_index
 	die unless (-e $_[4]); 
 	$DOCUMENT_INDEX_DIR = $_[4]; 
     }
-    print STDERR "Querying on Plucene index..."
     my ($hits_aref, $hits_href, $total_doc_size) = plucene_query($text); 
-    print STDERR "DONE\n"; 
+    print STDERR "Search hits returned.\n"; 
 
     # sanity check 
     my $hit_size = scalar (@{$hits_aref}); 
