@@ -22,7 +22,7 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS $HITS_SORT_BY_NAMES export_hash_to_file); 
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
@@ -32,6 +32,7 @@ our $DOCUMENT_INDEX_DIR = "./models_index";
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 our $APPROXIMATE_WITH_TOP_N_HITS = 1000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
+our $HITS_SORT_BY_NAMES = 0; 
 
 our $DEBUG=2;  
 # DEBUG level 
@@ -385,7 +386,7 @@ sub plucene_query
     # remove any \" from query string 
     $query_str =~ s/\"//g; 
 
-    print STDERR "Querying \"$query_str\""; 
+    print STDERR "Loading index - "; 
     # prepare query
     my $parser = Plucene::QueryParser->new({
 	analyzer => Plucene::Analysis::SimpleAnalyzer->new(),
@@ -410,7 +411,7 @@ sub plucene_query
 						});
 
     $searcher->search_hc($query => $hc);
-    
+    print STDERR "Hits collected - sorting by decending match score\n"; 
     my @sorted_docid; 
     foreach (sort {$docscore{$b} <=> $docscore{$a}} keys %docscore)
     {
@@ -485,6 +486,12 @@ sub P_t_multithread_index
     #{
     #	s/\/\.\//\//g;  # /./ -> /
     #}
+
+    # for better access on inode 
+    if ($HITS_SORT_BY_NAMES)
+    {
+	@document_model = sort (@document_model)
+    }
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  

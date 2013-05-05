@@ -2,7 +2,7 @@
 
 use warnings; 
 use strict; 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $HITS_SORT_BY_NAMES export_hash_to_file); 
 use octave_call; 
 use Benchmark qw(:all); 
 
@@ -37,6 +37,7 @@ my $t0 = Benchmark->new;
 ##P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 
 
 our $APPROXIMATE_WITH_TOP_N_HITS=1000; 
+our $HITS_SORT_BY_NAMES=1; 
 
 ## Some tweaking for P_t_multithread_index
 #my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 

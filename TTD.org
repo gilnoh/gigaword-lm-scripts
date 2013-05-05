@@ -1,3 +1,11 @@
+* (URGENT) ANTI-INODE Patch
+- large files in a dir makes (10k>) file locating very, very slow. 
+
+** GZSet to use Month as dir 
+- make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
+
+** Sort index hit result 
+- this will (maybe) make it faster to process indexed ones. (test on gillespie afp2010) 
 
 ** Index Work improvements 
 *** TODO "reordering" for speed. 
