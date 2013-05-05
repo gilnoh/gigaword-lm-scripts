@@ -357,7 +357,9 @@ sub export_hash_to_file
 
 sub get_subdirs
 {
-# get_subdir("./somepath") will return all its subdirs, including itself. 
+    # get_subdir("./somepath") will return all its subdirs, 
+    # (up to depth 2), including top dir itself. 
+
     my $toppath = $_[0]; 
     opendir (my $dh, $toppath) or croak "can't open dir $_[0]"; 
     my @subdir; # will hold all subdirectories of the given path 
@@ -366,7 +368,20 @@ sub get_subdirs
 	next if ( ($_ eq "..") ); 
 	my $path = $toppath . "/" . $_; 
 	push @subdir, $path if (-d $path); 
-	
+	# push sub-sub dir, if any 
+	if (-d $path)
+	{
+	    unless ($_ eq ".")
+	    {
+		opendir (my $dsubh, $path) or die "can't open dir $path\n"; 
+		foreach (readdir($dsubh))
+		{
+		    next if ( ($_ eq "..") or ($_ eq ".")); 
+		    push @subdir, ($path . "/" . $_); 
+		}
+		close $dsubh; 
+	    }
+	} # end sub-sub
     }
     close $dh; 
     return @subdir; 
@@ -559,7 +574,7 @@ sub P_t_multithread_index
     my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
     print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n";     
     print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
-    #print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
+    print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
 
     my @all_model; 
     foreach my $d (@subdir)
@@ -652,12 +667,8 @@ sub P_h_t_multithread_index
     my $P_h = mean(\@h); # (on uniform P(d) ) 
     print STDERR "P(h) is (logprob): $P_h \n"; 
 
-    ## CONSIDER: we can calculate "N only" version of P(t) by using only 
-    ## top N values. 
-
     # dcode
     export_hash_to_file(\%hypo_per_doc, "Ph_per_doc.txt"); 
-
 
     # calculate P(h|t,d) for each model 
     # note this %weighted is *non-normalized weight* (for evidence) 
@@ -676,7 +687,6 @@ sub P_h_t_multithread_index
     # dcode
     export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
 
-
     # calculate P(h|t) overall (that is, P(h|t,d)) 
     # WARNING: we made sure in the previous step, @text and @hypo sorted on the same 
     # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
@@ -688,13 +698,13 @@ sub P_h_t_multithread_index
     # calculate P(h|t) / P(h), as supporting measure. 
     my $gain = 10 ** ($P_h_given_t - $P_h); # note that this is not logprob
     print STDERR "P(h|t) / P(h) is (nonlog): ", $gain, "\n"; 
+    print STDERR "(calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
     
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
     return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
 
     # CONSIDER: return more --- like \@text, \@hypo. 
 }
-
 
 sub log10 {
     my $n = shift;

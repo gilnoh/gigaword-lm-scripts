@@ -49,11 +49,15 @@ Some more test --- indexed case *with* reordering (alphabetic order)
 without reordering: 684 sec 
 with reordering: 663 sec 
 -20 seconds. hmm. not bad, but somethign else is in problem. I suppose.
+-the same test without index takes: 5039 sec. (with 9862.0 gain!!!)
 
 (Gillespie afp 10) 2 threads (uganda example) 
 without reordering: 419 sec 
 with reordering: 404 sec 
 - again, 15 seconds. something, but not enough. hopefully, broken down gzset would result better! 
 
+Eh, no. 
 
+with year_month sub dirs and reordering: 420 sec... (no gains) 
+without reordering: 418 (reordering doesn't really help here) 
 

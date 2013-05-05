@@ -6,6 +6,8 @@
 use strict; 
 use warnings; 
 
+my $DAY_SUBDIR = 1; 
+
 # read 
 die "need two arguments. First: (file output from splitta with tokenizing), second: the output dir." unless ($ARGV[0]); 
 die "need the output dir (where each sentence splitted news story will be unpacked)" unless ($ARGV[1]); 
@@ -15,6 +17,7 @@ die "unable to access directory $ARGV[1]" unless (-d $ARGV[1]);
 open FILEIN, "<$ARGV[0]"; 
 my $outputdir = $ARGV[1]; 
 my $count=0; 
+
 while(<FILEIN>)
 {
     # check DOC mark 
@@ -27,8 +30,22 @@ while(<FILEIN>)
 
 	s/<DOC id= " (\S+) ".+?>//; 
 	my $filename = $1; 
-	open FILEOUT, ">", ($outputdir . "/" . $filename . "." . $ext) ; 
-
+	
+	if ($DAY_SUBDIR) # AFP_201001/01/ AFP_201001/02  ... 
+	{
+	    $filename =~ /.+(\d\d)\./; 
+	    my $day = $1; 
+	    my $effective_outdir = $outputdir . "/" . $day; 
+	    unless (-d $effective_outdir)
+	    {
+		mkdir $effective_outdir; 
+	    }
+	    open FILEOUT, ">", ($effective_outdir . "/" . $filename . "." . $ext) ; 
+	}
+	else
+	{
+	    open FILEOUT, ">", ($outputdir . "/" . $filename . "." . $ext) ; 
+	}
     }
     # fixing tokenization error of Splitta (the end of sentence) 
     # case 1) Period (\w.$) at the end  -> (\w .$) 

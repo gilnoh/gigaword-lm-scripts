@@ -27,7 +27,7 @@ use Plucene::QueryParser;
 
 #
 # get path 
-die "Usage: At least one argument needed; a dir path.\n> perl indexing.pl \"./models/document\"\nThis small script will generate Plucene index for all .story files in (direct) subdirs of the argument. The index will be stored in ./models_index\n" unless ($ARGV[0]); 
+die "Usage: At least one argument needed; a dir path.\n> perl indexing.pl \"./models/document\"\nThis small script will generate Plucene index for all .story files in (up to 2nd-depth) subdirs of the argument. The index will be stored in ./models_index\n" unless ($ARGV[0]); 
 
 my $toppath = $ARGV[0]; 
 opendir (my $dh, $toppath) or die "can't open dir $ARGV[0]\n"; 
@@ -41,6 +41,20 @@ foreach (readdir($dh))
     my $path = $toppath . "/" . $_; 
     push @subdir, $path if (-d $path); 
 
+    # push sub-sub dir, if any 
+    if (-d $path)
+    {
+	unless ($_ eq ".")
+	{
+	    opendir (my $dsubh, $path) or die "can't open dir $path\n"; 
+	    foreach (readdir($dsubh))
+	    {
+		next if ( ($_ eq "..") or ($_ eq ".")); 
+		push @subdir, ($path . "/" . $_); 
+	    }
+	    close $dsubh; 
+	}
+    } # end sub-sub
 }
 close $dh; 
 print STDERR "$toppath has ", scalar (@subdir), " dirs (subdirs + itself) to follow. All .story files will be indexed.\n";

@@ -25,6 +25,20 @@ foreach (readdir($dh))
     my $path = $toppath . "/" . $_; 
     push @subdir, $path if (-d $path); 
 
+    # push sub-sub dir, if any 
+    if (-d $path)
+    {
+	unless ($_ eq ".")
+	{
+	    opendir (my $dsubh, $path) or die "can't open dir $path\n"; 
+	    foreach (readdir($dsubh))
+	    {
+		next if ( ($_ eq "..") or ($_ eq ".")); 
+		push @subdir, ($path . "/" . $_); 
+	    }
+	    close $dsubh; 
+	}
+    } # end sub-sub
 }
 close $dh; 
 print STDERR "$toppath has ", scalar (@subdir), " dirs (subdirs + itself) to follow. For each of the .story, one LM will be built.\n";

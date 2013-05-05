@@ -18,9 +18,8 @@
 
 ** GZSet to use Month as dir 
 - make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
-*** TODO writing 
-*** TODO testing 
-*** TODO schedule full data preparation work 
+*** DONE writing 
+*** DONE testing 
 
 ** Sort index hit result 
 *** DONE writing 
