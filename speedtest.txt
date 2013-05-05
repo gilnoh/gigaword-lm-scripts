@@ -45,6 +45,10 @@ Why? --- "random access?", or "i-node order access"?
 ====
 Some more test --- indexed case *with* reordering (alphabetic order) 
 
+(Westy 09+10) 2 threads (uganda example) 
+without reordering: 684 sec 
+with reordering: 663 sec 
+(-20 seconds. hmm. not bad, but somethign else is in problem. I suppose.) 
 
 
 

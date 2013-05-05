@@ -1,29 +1,30 @@
-* (URGENT) ANTI-INODE Patch
+* PERFORMANCE WORK 
 - large files in a dir makes (10k>) file locating very, very slow. 
+- GOAL: to make calling "ngram" perl doc as fast as "non-indexed" callings.  
 
 ** GZSet to use Month as dir 
 - make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
+*** TODO writing 
+*** TODO testing 
+*** TODO schedule full data preparation work 
 
 ** Sort index hit result 
+*** DONE writing 
 - this will (maybe) make it faster to process indexed ones. (test on gillespie afp2010) 
+*** DONE testing 
+- Only a few dozen seconds. It affects, but not enough. 
 
-** Index Work improvements 
-*** TODO "reordering" for speed. 
-- processing on indexed result is much, much slower for NFS and server
-  file systems. While it is very fast on SSDs. I am assuming this is
-  a fact caused by HDD vs SSD. Sequential (i-node order?) access is
-  fairly fast, but randomized access of files (in various points of
-  i-nodes) can get slower. If this is really the case, sorting the
-  "index-hit-model" based on i-node order (which conveniently,
-  follows alphabetic order --- due to the fact that they unzipped in
-  that way), will help. 
-**** TODO IMPLEMENT THIS improvements! 
-- only a few lines of carefully written code
-**** TODO TEST IT
-- on gillespie, with/without reordering. ($HIT_REORDERING) 
+** Index loading only once 
+- indexer, as a global. It will be loaded only if it is null. 
+*** TODO writing 
+*** TODO testing 
 
+** Getting list of all model files, only once 
+- path recorder, as a global (same as index). It will be loaded only once, if it is null 
+*** TODO writing 
+*** TODO testing 
 
-** Testing Work 
+* (POSTPONED FOR THE MOMENT) Testing Work 
 *** TODO Data preparation
 **** TODO All AFP 
 - Westy and Gillespie/proj

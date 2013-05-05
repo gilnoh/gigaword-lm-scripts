@@ -8,8 +8,8 @@ use strict;
 use File::Basename; 
 
 my $SCRIPT_TO_RUN="gz_to_newsperfile.pl"; 
-my $CREATE_SUBDIRECTORY_AGENTYEAR=1; 
-   # if 1, subdirectory with the "year" generated 
+my $CREATE_SUBDIRECTORY_AGENTYEARMONTH=1; 
+   # if 1, subdirectory with the "agent_yearmonth" generated 
    # if 0, all in the output dir 
    # WARNING: subdirectories (1) are better, since it gets really slow 
    # with more than 100K files in a directory. 
@@ -20,10 +20,11 @@ foreach(@ARGV)
 {
     my $filename = $_; 
     my $outpath;
-    if ($CREATE_SUBDIRECTORY_AGENTYEAR)
+    if ($CREATE_SUBDIRECTORY_AGENTYEARMONTH)
     {
 	my $basename = fileparse($filename); 
-	$basename =~ /(.+)\d\d\./; 
+	#$basename =~ /(.+)\d\d\./; 
+	$basename =~ /(.+\d\d)\./; 
 	my $agent_year = $1; 
 	$outpath = $OUTPUT_PATH_BASE . "/" . $agent_year; 
 	
