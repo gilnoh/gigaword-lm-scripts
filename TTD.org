@@ -4,8 +4,13 @@
 "30 die in a bus collision in uganda" 
 - write a simple script and test: "bus" "bus collision" "bus collision in uganda"  
 - (I am expecting all OR relation. is it something not?) 
-** TODO result return script 
-** TODO test those sequence 
+** DONE result return script 
+** DONE test those sequence 
+- it was because of "and". :-( 
+** DONE check all "special words" for (P)lucene query. 
+- A more complex queries may contain nested queries with 
+ 'and', 'or', 'not' or 'phrase' relations. (PLUCENE::SEARCH::QUERY)
+** TODO imporve plucene_query() by removing those terms from the given query
 
 * PERFORMANCE WORK 
 - large files in a dir makes (10k>) file locating very, very slow. 
