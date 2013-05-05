@@ -490,6 +490,7 @@ sub P_t_multithread_index
     # for better access on inode 
     if ($HITS_SORT_BY_NAMES)
     {
+	print STDERR "preparing hits with name sorting\n"; 
 	@document_model = sort (@document_model); 
     }
 
