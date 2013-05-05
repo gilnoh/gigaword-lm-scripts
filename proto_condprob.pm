@@ -490,7 +490,7 @@ sub P_t_multithread_index
     # for better access on inode 
     if ($HITS_SORT_BY_NAMES)
     {
-	@document_model = sort (@document_model)
+	@document_model = sort (@document_model); 
     }
 
     # call P_coll() 
