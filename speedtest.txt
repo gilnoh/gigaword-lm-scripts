@@ -18,9 +18,15 @@ Full calculation on files
 
 (Westy) 
 2 threads: 2273 sec 
+4 threads: 1848 sec
+6 threads: 2380 sec
+8 threads: (too slow. more than 5000 sec. Stuck.) 
 
 (Gillespie) 
-2 threads: 
+2 threads: 3676 sec  
+4 threads: 2681 sec
+6 threads: 2899 sec 
+8 threads: 3231 sec 
 
 
 ==== 
