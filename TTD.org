@@ -1,3 +1,12 @@
+* SEARCH SANITY CHECK 
+- why the following two returns different results? 
+"a bus collision with a truck in uganda has resulted in at least 30 fatalities and has left a further 21 injured"
+"30 die in a bus collision in uganda" 
+- write a simple script and test: "bus" "bus collision" "bus collision in uganda"  
+- (I am expecting all OR relation. is it something not?) 
+** TODO result return script 
+** TODO test those sequence 
+
 * PERFORMANCE WORK 
 - large files in a dir makes (10k>) file locating very, very slow. 
 - GOAL: to make calling "ngram" perl doc as fast as "non-indexed" callings.  
