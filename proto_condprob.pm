@@ -398,9 +398,15 @@ sub plucene_query
 { 
     my $query_str = $_[0]; 
 
+    # process the query sting, to remove any problem. 
     # remove any \" from query string 
     $query_str =~ s/\"//g; 
-
+    $query_str =~ s/\'//g; # cases like "Amy's" can't happen, if it is properly tokenized. And all target documents are already tokenized. So. 
+    $query_str =~ s/and//g; # for special relation terms for Plucene::SEARCH::QUERY. 
+    $query_str =~ s/or//g; 
+    $query_str =~ s/not//g; 
+    $query_str =~ s/phrase//g; 
+      
     print STDERR "Loading index - "; 
     # prepare query
     my $parser = Plucene::QueryParser->new({

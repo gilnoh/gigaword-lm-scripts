@@ -1,32 +1,8 @@
-* SEARCH SANITY CHECK 
-- why the following two returns different results? 
-"a bus collision with a truck in uganda has resulted in at least 30 fatalities and has left a further 21 injured"
-"30 die in a bus collision in uganda" 
-- write a simple script and test: "bus" "bus collision" "bus collision in uganda"  
-- (I am expecting all OR relation. is it something not?) 
-** DONE result return script 
-** DONE test those sequence 
-- it was because of "and". :-( 
-** DONE check all "special words" for (P)lucene query. 
-- A more complex queries may contain nested queries with 
- 'and', 'or', 'not' or 'phrase' relations. (PLUCENE::SEARCH::QUERY)
-** TODO imporve plucene_query() by removing those terms from the given query
 
 * PERFORMANCE WORK 
 - large files in a dir makes (10k>) file locating very, very slow. 
 - GOAL: to make calling "ngram" perl doc as fast as "non-indexed" callings.  
-
-** GZSet to use Month as dir 
-- make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
-*** DONE writing 
-*** DONE testing 
-
-** Sort index hit result 
-*** DONE writing 
-- this will (maybe) make it faster to process indexed ones. (test on gillespie afp2010) 
-*** DONE testing 
-- Only a few dozen seconds. It affects, but not enough. 
-
+- Main cause was big-num of files in a dir. Patched by using month/day subdirs. 
 ** Index loading only once 
 - indexer, as a global. It will be loaded only if it is null. 
 *** TODO writing 
@@ -36,6 +12,21 @@
 - path recorder, as a global (same as index). It will be loaded only once, if it is null 
 *** TODO writing 
 *** TODO testing 
+
+
+** DONE GZSet to use Month as dir 
+- make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
+*** DONE writing 
+*** DONE testing 
+    
+** DONE Sort index hit result 
+- this wasn't useful/impactful, and has some side effects. won't use it. 
+*** DONE writing 
+- this will (maybe) make it faster to process indexed ones. (test on gillespie afp2010) 
+*** DONE testing 
+- Only a few dozen seconds. It affects, but not enough. 
+
+
 
 * (POSTPONED FOR THE MOMENT) Testing Work 
 *** TODO Data preparation
@@ -158,48 +149,61 @@ the code took:18 wallclock secs ( 3.63 usr  0.84 sys + 13.14 cusr  0.33 csys = 1
 *** DONE Implement P_t_h_index with N approximation. 
 *** DONE Test P_t_h_index with test code. 
 *** DONE Play with some more simple texts on the newst implementation. 
+*** DONE SEARCH ERROR PATCH
+- why the following two returns different results? 
+"a bus collision with a truck in uganda has resulted in at least 30 fatalities and has left a further 21 injured"
+"30 die in a bus collision in uganda" 
+- write a simple script and test: "bus" "bus collision" "bus collision in uganda"  
+- (I am expecting all OR relation. is it something not?) 
+**** DONE result return script 
+**** DONE test those sequence 
+- it was because of "and". :-( 
+**** DONE check all "special words" for (P)lucene query. 
+- A more complex queries may contain nested queries with 
+ 'and', 'or', 'not' or 'phrase' relations. (PLUCENE::SEARCH::QUERY)
+**** DONE imporve plucene_query() by removing those terms from the given query
 
-** Main line coding 
-*** DONE Collection Model 
-**** DONE (run) Get "target" news files (target corpus) all in one folder 
-**** DONE (run) catall and generate collection LM model 
-**** DONE [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
-*** DONE Document Model 
-**** DONE (write script) For each file, make each LM model
-*** DONE Produce single sentence prob. (t) 
-**** DONE (write matlab script) weighted-sum 
+**** Main line coding 
+***** DONE Collection Model 
+****** DONE (run) Get "target" news files (target corpus) all in one folder 
+****** DONE (run) catall and generate collection LM model 
+****** DONE [#C] (If subdir needed) TODO? (write script) recursively catall and generate collection model 
+***** DONE Document Model 
+****** DONE (write script) For each file, make each LM model
+***** DONE Produce single sentence prob. (t) 
+****** DONE (write matlab script) weighted-sum 
 - input: weight (doc prob), sentence prob, of each document 
 - output: weighted average. 
-**** (write scripts) P(t) prob 
-***** DONE (write debug3 reader) read_log_prob, read_prob
-***** DONE (write octave caller) lambda sum (interpolate) 
-***** DONE check code for get seq_prob to lambda sum 
-***** DONE (srilm caller) write ngram runner
+****** (write scripts) P(t) prob 
+******* DONE (write debug3 reader) read_log_prob, read_prob
+******* DONE (write octave caller) lambda sum (interpolate) 
+******* DONE check code for get seq_prob to lambda sum 
+******* DONE (srilm caller) write ngram runner
 - model 
 - options  
 - sentence (input) 
-***** DONE (write octave caller) weighted sum 
+******* DONE (write octave caller) weighted sum 
 - (need): weighted-sum input format (simple matrix)?
 - (already have): weighted-sum matlab code 
-***** DONE (write octave caller wrapper) logprob mean 
+******* DONE (write octave caller wrapper) logprob mean 
 - use weighted sum with same weights. :-) 
-***** DONE calc P_coll 
+******* DONE calc P_coll 
 - check collection model file 
 - get P_coll (t) (with -debug 3)
-***** DONE each P_doc(t) 
+******* DONE each P_doc(t) 
 - get for each pure P_d(t) (with -debug 3), on all doc 
 - calculate lamda*P_d + (1-lamda)*P_coll for each by call octave
-***** DONE calc P_(t) by weighted sum 
+******* DONE calc P_(t) by weighted sum 
 - do the weighted-sum of the values, with uniform weight 
 
-*** DONE Produce conditional prob. 
-**** DONE (write scripts) P(h | t) prob 
-**** DONE write script "evidence calculation code" 
+***** DONE Produce conditional prob. 
+****** DONE (write scripts) P(h | t) prob 
+****** DONE write script "evidence calculation code" 
 Wow. Finally. 
-**** DONE sanity check, more with sketch. 
+****** DONE sanity check, more with sketch. 
 - on AFP 2009 May
 
-**** DONE [#A] Some possible "look-into" data saving. 
+****** DONE [#A] Some possible "look-into" data saving. 
 - Starting from P_t, P_h, P_h|t. 
 - Output of result hash: 
 - Debug 1 : output the hash into file, no sorting, file order 
