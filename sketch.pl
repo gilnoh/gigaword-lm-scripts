@@ -9,12 +9,12 @@ use Benchmark qw(:all);
 our $DEBUG = 2; 
 set_num_thread(2); 
 # test call on 2009 small set -- not that meaningful (since 2009 May doesn't have any aircraft accident, etc 
-#my $text = "there was an airplane accident";  
-#my $hypothesis = "everyone died"; 
+my $text = "there was an airplane accident";  
+my $hypothesis = "everyone died"; 
 #my $text = "the united arab emirates has given 1.43 million dollars to bangladeshi authorities to compensate children used as under-aged camel jockeys in the desert state , a minister said wednesday"; 
 #my $hypothesis = "the united arab emirates paid bangladesh to compensate child abuse"; 
-my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
-my $hypothesis = lc "30 die in a bus collision in Uganda"; 
+#my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
+#my $hypothesis = lc "30 die in a bus collision in Uganda"; 
 
 # my %r = P_t($text); 
 # my %r = P_t_multithread($text); 
@@ -37,7 +37,7 @@ my $t0 = Benchmark->new;
 ##P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 
 
 our $APPROXIMATE_WITH_TOP_N_HITS=1000; 
-our $HITS_SORT_BY_NAMES=1; 
+our $HITS_SORT_BY_NAMES=0; 
 
 ## Some tweaking for P_t_multithread_index
 #my %r = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2009", "./models_index"); 

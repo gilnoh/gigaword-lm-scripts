@@ -61,3 +61,12 @@ Eh, no.
 with year_month sub dirs and reordering: 420 sec... (no gains) 
 without reordering: 418 (reordering doesn't really help here) 
 
+==== 
+
+YES!!! 
+
+"Daily" news dir. (2nd depth sub dirs, keeping dir only several k files) 
+
+Westy 10, 2 threads (both example) 
+: around 155 sec. 
+
