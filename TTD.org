@@ -1,9 +1,11 @@
 * BUG PATCH - URGENT 
 ** uganda example failure (lamda sum) 
-** TODO Reproduce at Home Westy 
+** DONE Reproduce at Home Westy 
 - reproducable fully in Moore, with strange behavior. 
 - (Maybe failure of index? or something like that?) 
-** TODO PATCH 
+** TODO CHECK on moore. 
+- I doubt exactly this: index failure. model_index should have 207485,
+  and only that. No duplicated, or more things. 
 
 * PERFORMANCE WORK 
 - large files in a dir makes (10k>) file locating very, very slow. 
@@ -12,8 +14,10 @@
 ** Index loading only once 
 - indexer, as a global. It will be loaded only if it is null. 
 *** DONE writing 
-*** TODO testing (on Westy) 
-
+*** DONE testing (on Westy) 
+- It makes this even SLOWER!!!! (Memory was too FULL to do other
+  things :-( strange...). 
+- Reverted back. Maybe on servers... again, Maybe not. 
 ** Getting list of all model files, only once 
 - path recorder, as a global (same as index). It will be loaded only once, if it is null 
 *** TODO writing 

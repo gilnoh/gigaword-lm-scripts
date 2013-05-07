@@ -22,7 +22,7 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS $HITS_SORT_BY_NAMES export_hash_to_file); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 # some globals 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
@@ -32,7 +32,6 @@ our $DOCUMENT_INDEX_DIR = "./models_index";
 our $LAMBDA = 0.5; 
 our $NUM_THREAD = 4; 
 our $APPROXIMATE_WITH_TOP_N_HITS = 1000; # if this is 0, all document models will be used in P_t_multithread_index. if this has a number, only those top N hits will be used as approximation of P_t. 
-our $HITS_SORT_BY_NAMES = 0; 
 
 our $DEBUG=2;  
 # DEBUG level 
@@ -43,7 +42,8 @@ our $DEBUG=2;
 ## GLOBALS 
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 ## my $searcher; # an instance of Plucene::Search::IndexSearcher, we will keep only one copy when running. 
-
+my @all_model =(); # global variable that is filled in P_h_t_multithread_index. This array keeps the full list of .model files for this run... 
+my $all_model_top_path; # Associated value to @all_models. See P_h_t_multithread_index
 
 sub set_num_thread
 {
@@ -508,19 +508,6 @@ sub P_t_multithread_index
 	}
     }
 
-    # remove all "/./" from model path, if any. 
-    #foreach (@document_model)
-    #{
-    #	s/\/\.\//\//g;  # /./ -> /
-    #}
-
-    # for better access on inode 
-    if ($HITS_SORT_BY_NAMES)
-    {
-	print STDERR "preparing hits with name sorting\n"; 
-	@document_model = sort (@document_model); 
-    }
-
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  
     my @r = P_coll($text); # return value already saved in global @collection_seq
@@ -583,25 +570,32 @@ sub P_t_multithread_index
     }
 
     # get all docmodel list 
-    my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
+
     print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n";     
     print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
-    print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
 
-    my @all_model; 
-    foreach my $d (@subdir)
+
+
+    if ( ((scalar @all_model) == 0) or ($all_model_top_path ne $DOCUMENT_MODELS_DIR)) # cached value not exist, or different 
     {
-	#print STDERR "$d: "; 
-	my @ls = glob($d . "/*.model"); 
-	#print STDERR scalar(@ls), " model files\n"; 
-
-        # converting file name into standard form. 
-	# so it is compatible with the file name in Index. 
-	foreach (@ls) 
+	@all_model = (); 
+	my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
+	print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
+	foreach my $d (@subdir)
 	{
-	    s/\/\.\//\//g;  # /./ -> /
+	    #print STDERR "$d: "; 
+	    my @ls = glob($d . "/*.model"); 
+	    #print STDERR scalar(@ls), " model files\n"; 
+	    
+	    # converting file name into standard form. 
+	    # so it is compatible with the file name in Index. 
+	    foreach (@ls) 
+	    {
+		s/\/\.\//\//g;  # /./ -> /
+	    }
+	    push @all_model, @ls; 
 	}
-	push @all_model, @ls; 
+	$all_model_top_path = $DOCUMENT_MODELS_DIR; 
     }
 
     #print "$_ \n" foreach (@document_model); 
@@ -638,6 +632,7 @@ sub P_t_multithread_index
     }
 
     # done. return the result.
+    print STDERR "Per model probability now completed\n"; 
     return %final_result; 
 }
 
@@ -661,9 +656,13 @@ sub P_h_t_multithread_index
     print STDERR $text, "\n"; 
     my %text_per_doc = P_t_multithread_index($text, @args); # remaining @args will be checked there 
     # calculate P(t) overall 
-    my @t = values %text_per_doc; 
-    my $P_t = mean(\@t); # (on uniform P(d) )
-    print STDERR "P(t) is $P_t \n"; 
+    my $P_t; 
+    print STDERR "P(t) is : "; 
+    {
+	my @t = values %text_per_doc; 
+	$P_t = mean(\@t); # (on uniform P(d) )
+    }
+    print STDERR "$P_t \n"; 
 
     ## CONSIDER: we can calculate "N only" version of P(t) by using only 
     ## top N values. 
@@ -674,10 +673,15 @@ sub P_h_t_multithread_index
     # calculate P(h) for each model 
     print STDERR $hypothesis, "\n"; 
     my %hypo_per_doc = P_t_multithread_index($hypothesis, @args); 
+
     # calculate P(h) overall 
-    my @h = values %hypo_per_doc; 
-    my $P_h = mean(\@h); # (on uniform P(d) ) 
-    print STDERR "P(h) is (logprob): $P_h \n"; 
+    my $P_h; 
+    print STDERR "P(h) is : ";
+    {
+	my @h = values %hypo_per_doc; 
+	$P_h = mean(\@h); # (on uniform P(d) ) 
+    }
+    print STDERR "$P_h \n"; 
 
     # dcode
     export_hash_to_file(\%hypo_per_doc, "Ph_per_doc.txt"); 
@@ -685,6 +689,7 @@ sub P_h_t_multithread_index
     # calculate P(h|t,d) for each model 
     # note this %weighted is *non-normalized weight* (for evidence) 
     # and not the final prob. 
+    print STDERR "calculating weighted contribution (evidence) for each doc\n"; 
     my %weighted; 
     my @text;
     my @hypo; 
@@ -703,6 +708,7 @@ sub P_h_t_multithread_index
     # WARNING: we made sure in the previous step, @text and @hypo sorted on the same 
     # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
     # This must be guaranteeded! 
+    print STDERR "Calculating the weighted sum\n"; 
     my $P_h_given_t = weighted_sum(\@text, \@hypo); 
     #print @text, @hypo;     #dcode 
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
