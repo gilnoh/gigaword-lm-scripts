@@ -40,7 +40,10 @@ our $DEBUG=2;
 # 1: P_t_h_multithread will output intermediate result hash as files 
 # 2: the hash output will be sorted (higher value first)      
 
+## GLOBALS 
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
+my $searcher; # an instance of Plucene::Search::IndexSearcher, we will keep only one copy when running. 
+
 
 sub set_num_thread
 {
@@ -407,7 +410,6 @@ sub plucene_query
     $query_str =~ s/not//g; 
     $query_str =~ s/phrase//g; 
       
-    print STDERR "Loading index - "; 
     # prepare query
     my $parser = Plucene::QueryParser->new({
 	analyzer => Plucene::Analysis::SimpleAnalyzer->new(),
@@ -416,10 +418,14 @@ sub plucene_query
     my $query = $parser->parse($query_str); 
 
     # search 
-    my $searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
+    unless ($searcher)
+    {
+	print STDERR "Loading index - \n"; 
+	$searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
+    }
     my $reader = $searcher->reader(); 
     my $total_doc = $reader->num_docs(); 
-    print STDERR "- Index has ", $total_doc, " documents\n"; 
+    print STDERR "The index has ", $total_doc, " documents\n"; 
 
     my @docs; #TBR 
     my %docscore; 
