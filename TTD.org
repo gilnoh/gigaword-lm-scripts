@@ -3,40 +3,9 @@
 ** DONE Reproduce at Home Westy 
 - reproducable fully in Moore, with strange behavior. 
 - (Maybe failure of index? or something like that?) 
-** TODO CHECK on moore. 
+** TODO CHECK on moore (& gillespie) 
 - I doubt exactly this: index failure. model_index should have 207485,
   and only that. No duplicated, or more things. 
-
-* PERFORMANCE WORK 
-- large files in a dir makes (10k>) file locating very, very slow. 
-- GOAL: to make calling "ngram" perl doc as fast as "non-indexed" callings.  
-- Main cause was big-num of files in a dir. Patched by using month/day subdirs. 
-** Index loading only once 
-- indexer, as a global. It will be loaded only if it is null. 
-*** DONE writing 
-*** DONE testing (on Westy) 
-- It makes this even SLOWER!!!! (Memory was too FULL to do other
-  things :-( strange...). 
-- Reverted back. Maybe on servers... again, Maybe not. 
-** Getting list of all model files, only once 
-- path recorder, as a global (same as index). It will be loaded only once, if it is null 
-*** TODO writing 
-*** TODO testing 
-
-
-** DONE GZSet to use Month as dir 
-- make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
-*** DONE writing 
-*** DONE testing 
-    
-** DONE Sort index hit result 
-- this wasn't useful/impactful, and has some side effects. won't use it. 
-*** DONE writing 
-- this will (maybe) make it faster to process indexed ones. (test on gillespie afp2010) 
-*** DONE testing 
-- Only a few dozen seconds. It affects, but not enough. 
-
-
 
 * (POSTPONED FOR THE MOMENT) Testing Work 
 *** TODO Data preparation
@@ -218,6 +187,36 @@ Wow. Finally.
 - Output of result hash: 
 - Debug 1 : output the hash into file, no sorting, file order 
 - Debug 2 : sorting, higher value first. 
+
+*** DONE PERFORMANCE WORK 
+- large files in a dir makes (10k>) file locating very, very slow. 
+- GOAL: to make calling "ngram" perl doc as fast as "non-indexed" callings.  
+- Main cause was big-num of files in a dir. Patched by using month/day subdirs. 
+**** DONE (AS REJECTED) Index loading only once 
+- THIS HAS BEEN CANCELED. (see testing) 
+***** DONE writing 
+***** DONE testing (on Westy) 
+- It makes this even SLOWER!!!! (Memory was too FULL to do other
+  things :-( strange...). 
+- Reverted back. Maybe on servers... again, Maybe not. 
+**** DONE Getting list of all model files, only once 
+- path recorder, as a global (same as index). It will be loaded only once, if it is null 
+***** DONE writing 
+***** DONE testing 
+- looks to be working good. Keep use this. (20 sec? for each trial? good) 
+
+**** DONE GZSet to use Month as dir 
+- make gzset unzipper to use "months" too. This will reduce the number of files in dir. 
+***** DONE writing 
+***** DONE testing 
+      
+**** DONE Sort index hit result 
+- this wasn't useful/impactful, and has some side effects. won't use it. 
+***** DONE writing 
+- this will (maybe) make it faster to process indexed ones. (test on gillespie afp2010) 
+***** DONE testing 
+- Only a few dozen seconds. It affects, but not enough. 
+
 
 
 * EXPERIMENTS 
