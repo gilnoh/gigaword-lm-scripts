@@ -42,7 +42,7 @@ our $DEBUG=2;
 
 ## GLOBALS 
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
-my $searcher; # an instance of Plucene::Search::IndexSearcher, we will keep only one copy when running. 
+## my $searcher; # an instance of Plucene::Search::IndexSearcher, we will keep only one copy when running. 
 
 
 sub set_num_thread
@@ -418,11 +418,11 @@ sub plucene_query
     my $query = $parser->parse($query_str); 
 
     # search 
-    unless ($searcher)
-    {
+    #unless ($searcher)
+    #{
 	print STDERR "Loading index - \n"; 
-	$searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
-    }
+    my $searcher = Plucene::Search::IndexSearcher->new($DOCUMENT_INDEX_DIR);
+    #}
     my $reader = $searcher->reader(); 
     my $total_doc = $reader->num_docs(); 
     print STDERR "The index has ", $total_doc, " documents\n"; 
