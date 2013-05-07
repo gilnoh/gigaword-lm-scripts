@@ -7,8 +7,8 @@ use octave_call;
 use Benchmark qw(:all); 
 
 our $DEBUG = 2; 
-set_num_thread(4); 
-our $APPROXIMATE_WITH_TOP_N_HITS=16000; 
+set_num_thread(2); 
+our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 # test call on 2009 small set -- not that meaningful (since 2009 May doesn't have any aircraft accident, etc 
 #my $text = "there was an airplane accident";  
@@ -46,8 +46,8 @@ my $t0 = Benchmark->new;
 #print "\naverage logprob from the doc-models:", mean(\@a), "\n"; 
 
 ## Some sketch for P_h_t. 
-P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
-#P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
+#P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
+P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
 
 # time out
