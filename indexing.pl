@@ -96,7 +96,9 @@ foreach my $d (@subdir)
     print STDERR "\n"; 
 }
 print STDERR "In total, processed and indexed $file_count .story files, and have ", $writer->doc_count(), " indexed docs\n"; 
-
+print STDERR "Now optimizing/merging the index structure\n"; 
 $writer->optimize(); 
 undef $writer; # close the indexer writer 
+print STDERR "All done\n"; 
+
 
