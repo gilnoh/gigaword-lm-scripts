@@ -1,3 +1,9 @@
+* BUG PATCH - URGENT 
+** uganda example failure (lamda sum) 
+** TODO Reproduce at Home Westy 
+- reproducable fully in Moore, with strange behavior. 
+- (Maybe failure of index? or something like that?) 
+** TODO PATCH 
 
 * PERFORMANCE WORK 
 - large files in a dir makes (10k>) file locating very, very slow. 
@@ -5,8 +11,8 @@
 - Main cause was big-num of files in a dir. Patched by using month/day subdirs. 
 ** Index loading only once 
 - indexer, as a global. It will be loaded only if it is null. 
-*** TODO writing 
-*** TODO testing 
+*** DONE writing 
+*** TODO testing (on Westy) 
 
 ** Getting list of all model files, only once 
 - path recorder, as a global (same as index). It will be loaded only once, if it is null 
