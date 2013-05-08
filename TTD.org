@@ -1,3 +1,13 @@
+* Memory Profiling 
+** Run a Profiler (Westy, afp 2010) 
+*** TODO BRIEF RUN  
+** change codes to reduce memory footage 
+*** FIND and REPLACE returning new array/hash 
+**** TODO LIST those parts 
+**** TODO Update them 
+
+
+
 * BUG PATCH - URGENT 
 ** uganda example failure (lamda sum) 
 ** DONE Reproduce at Home Westy 
@@ -6,6 +16,7 @@
 ** TODO CHECK on moore (& gillespie) 
 - I doubt exactly this: index failure. model_index should have 207485,
   and only that. No duplicated, or more things. 
+
 
 * (POSTPONED FOR THE MOMENT) Testing Work 
 *** TODO Data preparation
