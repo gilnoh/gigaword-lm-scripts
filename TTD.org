@@ -1,12 +1,24 @@
 * Memory Profiling 
-** Run a Profiler (Westy, afp 2010) 
-*** TODO BRIEF RUN  
+** DONE Run a Profiler (Westy, afp 2010) 
+*** DONE BRIEF RUN  NYTProf
+- Eh, didn't really helped on memory issue. Maybe I should call Devel::size on important items. 
+
 ** change codes to reduce memory footage 
+
 *** FIND and REPLACE returning new array/hash 
 **** TODO LIST those parts 
++ P_t_multithread_index return value (hash -> hashref) 
++ P_h_t_multithread_index (hash anon ref -> hashref) 
+
++ ? P_d_runner, return value (hash -> hashref) 
++ ? 
 **** TODO Update them 
 
+*** Reduce "model file ID" by deleting basedir 
+**** TODO One time. 
 
+** Devel::Size on major data structures 
+*** Targets? (Hmm. need this really? ) 
 
 * BUG PATCH - URGENT 
 ** uganda example failure (lamda sum) 
@@ -18,17 +30,21 @@
   and only that. No duplicated, or more things. 
 
 
-* (POSTPONED FOR THE MOMENT) Testing Work 
-*** TODO Data preparation
-**** TODO All AFP 
-- Westy and Gillespie/proj
-**** TODO 2009, 2010 
-- Westy 
-**** TODO 2010 
-- Gillespie/home 
+* RTE Read-Eval
+** TODO Make a experiment sketch code that will read and work on RTE3 data. 
+*** TODO open up a new code, sketch once
 
-*** TODO Test with some sentences from RTE3, for next step. 
-*** TODO Make a experiment sketch code that will read and work on RTE3 data. 
+* TODO Data preparation
+** TODO All AFP 
+- Westy and Gillespie/proj
+** TODO 2009, 2010 
+- Westy 
+** TODO 2010 
+- Gillespie/home 
+  
+
+* (POSTPONED FOR THE MOMENT) Testing Work 
+*** TODO test some of RTE3 sentences, with current sketch. 
 *** TODO Collect first full list of "gain", for RTE3 with default Lambda. 
 - gain, P(t), P(h), (as it is, and collection backoff), P(h|t), t-length,
   h-length

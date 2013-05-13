@@ -444,6 +444,8 @@ sub plucene_query
     {
 	push @sorted_docid, $_; 
     }
+    undef $searcher; # any changes with this? (e.g. early GC?) 
+
     return (\@sorted_docid, \%docscore, $total_doc); 
 }
 
