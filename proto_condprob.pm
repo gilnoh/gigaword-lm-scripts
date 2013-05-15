@@ -397,6 +397,7 @@ sub get_subdirs
 # returns: my ($ref_array_doc_names, $ref_hash_perdoc_score, $total_doc_num) 
 # $ref_array is an ordered array of document names. ("good hit first"). 
 
+# DONNO why, but this code claims more and more memory each time it is being called. Prolly problem within PLUCENE. Dull old code.l Should drop it and replace it with SOLR server calling. 
 sub plucene_query
 { 
     my $query_str = $_[0]; 
@@ -427,14 +428,14 @@ sub plucene_query
     my $total_doc = $reader->num_docs(); 
     print STDERR "The index has ", $total_doc, " documents\n"; 
 
-    my @docs; #TBR 
+    #my @docs; #TBR 
     my %docscore; 
     my $hc = Plucene::Search::HitCollector->new(collect => sub {
 	my ($self, $id, $score) = @_;
 	my $doc = $searcher->doc($id);
-	push @docs, $doc; #TBR
+	#push @docs, $doc; #TBR
 	my $docid = $doc->get("id")->string(); 
-	$docscore{$docid} = $score; # for score. 
+	$docscore{$docid} = $score; # for score.
 						});
 
     $searcher->search_hc($query => $hc);
@@ -444,9 +445,10 @@ sub plucene_query
     {
 	push @sorted_docid, $_; 
     }
-    undef $searcher; # any changes with this? (e.g. early GC?) 
+    #undef $searcher; # any changes with this? (e.g. early GC?) No. 
 
-    return (\@sorted_docid, \%docscore, $total_doc); 
+    #return (\@sorted_docid, \%docscore, $total_doc); 
+    return (\@sorted_docid, $total_doc); 
 }
 
 
@@ -480,7 +482,8 @@ sub P_t_multithread_index
 	die unless (-e $_[4]); 
 	$DOCUMENT_INDEX_DIR = $_[4]; 
     }
-    my ($hits_aref, $hits_href, $total_doc_size) = plucene_query($text); 
+    #my ($hits_aref, $hits_href, $total_doc_size) = plucene_query($text); 
+    my ($hits_aref, $total_doc_size) = plucene_query($text); 
     print STDERR "Search hits returned.\n"; 
 
     # sanity check 
@@ -509,6 +512,8 @@ sub P_t_multithread_index
 	    push @document_model, ($_ . ".model"); 
 	}
     }
+    
+    undef $hits_aref; # memory clean? hmm. 
 
     # call P_coll() 
     print STDERR "Calculating collection model logprob (to be interpolated)";  

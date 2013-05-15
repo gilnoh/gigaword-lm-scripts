@@ -33,7 +33,14 @@
 ** TODO CHECK on moore (& gillespie) 
 - I doubt exactly this: index failure. model_index should have 207485,
   and only that. No duplicated, or more things. 
-  
+
+
+* RTE Read-Eval
+** TODO Make a experiment sketch code that will read and work on RTE3 data. 
+*** DONE open up a new code, sketch once
+    CLOSED: [2013-05-15 Wed 17:16]
+*** TODO make caller without splitta 
+*** TODO add splitta support   
 
 * TODO Data preparation
 ** TODO All AFP 

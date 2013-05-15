@@ -1,25 +1,56 @@
-# this simple script sketches how to call P(h|t) from 
+# this simple script gets an id number and runs  
+# P_h_t() over that problem. 
 # the RTE3 data. 
 
 use warnings; 
 use strict; 
+use POSIX qw(_exit); 
 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
-# simple test 
-my ($t_aref, $h_aref, $d_aref) = read_rte_data("./testdata/English_dev.xml"); 
-for(my $i=0; $i < scalar(@$t_aref); $i++)
-{
-    print "id: ", ($i+1), "\t", $d_aref->[$i] ,"\n"; 
-    print "T: ", $t_aref->[$i]; 
-    print "H: ", $h_aref->[$i]; 
-}
+my $DEVFILE = "./testdata/English_dev.xml"; 
 
+die "Usage: needs one number argument.\n>perl runner.pl 3 will pick problem id 3 and run it." unless ($ARGV[0]); 
+
+# PARAMETERS to set (for proto_condprob.pm) 
+our $DEBUG=0;
+set_num_thread(4);  
+our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
+
+# read data 
+my ($t_aref, $h_aref, $d_aref) = read_rte_data($DEVFILE); 
+#for(my $i=0; $i < scalar(@$t_aref); $i++)
+#{
+#    print "id: ", ($i+1), "\t", $d_aref->[$i] ,"\n"; 
+#    print "T: ", $t_aref->[$i]; 
+#    print "H: ", $h_aref->[$i]; 
+#}
+
+# now select one 
+my $id = $ARGV[0] - 1; 
+die "something wrong with id: $id\n" unless ($id >= 0); 
+
+my $text = call_splitta($t_aref->[$id]); 
+my $hypo = call_splitta($h_aref->[$id]); 
+
+my ($gain, $P_h_given_t, $P_h, $P_t, $weighted_href) = P_h_t_multithread_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
+
+print "###$ARGV[0]|GOLD:$d_aref->[$id]|, $gain, $P_h_given_t, $P_h, $P_t, ", length($hypo), ", ", length($text), "\n";  
+
+_exit(0); 
+
+###
+###
+###
 
 # call splitta for tokenization ... 
 sub call_splitta 
 {
+    # TODO actually call splitta 
 
-
+    my $s = shift; 
+    $s =~ s/.$//; 
+    return lc($s); 
 }
 
 
