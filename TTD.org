@@ -1,26 +1,31 @@
+* RTE Read-Eval
+** TODO Make a experiment sketch code that will read and work on RTE3 data. 
+*** DONE open up a new code, sketch once
+*** TODO make a method to call "splitta" as pre-processing. 
+
+
 * Memory Profiling 
 ** DONE Run a Profiler (Westy, afp 2010) 
 *** DONE BRIEF RUN  NYTProf
 - Eh, didn't really helped on memory issue. Maybe I should call Devel::size on important items. 
 
-** change codes to reduce memory footage 
+** DONE (NOT NOW) Devel::Size on major data structures 
+*** Targets? (Hmm. need this really? ) 
 
+** change codes to reduce memory footage 
 *** FIND and REPLACE returning new array/hash 
-**** TODO LIST those parts 
+**** DONE LIST those parts 
 + P_t_multithread_index return value (hash -> hashref) 
 + P_h_t_multithread_index (hash anon ref -> hashref) 
-
-+ ? P_d_runner, return value (hash -> hashref) 
-+ ? 
++ P_d_runner, return value (hash -> hashref)  
 **** TODO Update them 
 
 *** Reduce "model file ID" by deleting basedir 
 **** TODO One time. 
 
-** Devel::Size on major data structures 
-*** Targets? (Hmm. need this really? ) 
 
-* BUG PATCH - URGENT 
+
+* BUG PATCH
 ** uganda example failure (lamda sum) 
 ** DONE Reproduce at Home Westy 
 - reproducable fully in Moore, with strange behavior. 
@@ -28,11 +33,7 @@
 ** TODO CHECK on moore (& gillespie) 
 - I doubt exactly this: index failure. model_index should have 207485,
   and only that. No duplicated, or more things. 
-
-
-* RTE Read-Eval
-** TODO Make a experiment sketch code that will read and work on RTE3 data. 
-*** TODO open up a new code, sketch once
+  
 
 * TODO Data preparation
 ** TODO All AFP 
