@@ -1,8 +1,9 @@
 * RTE Read-Eval
-** TODO Make a experiment sketch code that will read and work on RTE3 data. 
-*** DONE open up a new code, sketch once
-*** TODO make a method to call "splitta" as pre-processing. 
-
+** DONE Make a experiment sketch code that will read and work on RTE3 data. 
+** DONE open up a new code, sketch once
+** TODO make a method to call "splitta" as pre-processing. 
+** TODO write "outer" script, for collecting all gains and related numbers. 
+** TODO draw box-plot for them. 
 
 * Memory Profiling 
 ** DONE Run a Profiler (Westy, afp 2010) 
