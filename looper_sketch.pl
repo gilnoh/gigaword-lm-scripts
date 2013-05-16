@@ -8,7 +8,7 @@ use warnings;
 use Benchmark qw(:all); 
 
 my $RUNNER_SCRIPT = "rte3_runner.pl"; 
-my $SIZE=200; # 800 
+my $SIZE= 800;
 my $DEF_ARGS = ""; 
 
 my @out; 
@@ -16,7 +16,7 @@ my @out;
 my $t0 = Benchmark->new; 
 
 # simply run them and collect the output 
-for (my $i=57; $i < ($SIZE + 1); $i++)
+for (my $i=1; $i < ($SIZE + 1); $i++)
 {
     print STDERR ">>>>> $i <<<<<\n"; 
     my $stdout = `perl $RUNNER_SCRIPT $i`; 

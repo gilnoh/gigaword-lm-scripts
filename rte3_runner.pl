@@ -8,11 +8,11 @@ use Benchmark qw(:all);
 use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 my $DEVFILE = "./testdata/English_dev.xml"; 
-
+my $TEMP_DIR = "./temp"; 
 die "Usage: needs one number argument.\n>perl runner.pl 3 will pick problem id 3 and run it." unless ($ARGV[0]); 
 
 # PARAMETERS to set (for proto_condprob.pm) 
-our $DEBUG=0;
+our $DEBUG=0; # well, turn it on for quality check. 
 set_num_thread(4);  
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
@@ -53,11 +53,29 @@ _exit(0);
 # call splitta for tokenization ... 
 sub call_splitta 
 {
-    # TODO actually call splitta 
-
+    print STDERR "tokenization ..."; 
     my $s = shift; 
-    $s =~ s/.$//; 
-    return lc($s); 
+
+    # write a temp file
+    my $file = $TEMP_DIR . "/splitta_input.txt"; 
+    open OUTFILE, ">", $file; 
+    print OUTFILE $s; 
+    close OUTFILE; 
+    
+    # my $splitted_output = "$temp_dir" . $file_basename . ".splitted"; 
+    `python ./splitta/sbd.py -m ./splitta/model_nb -t -o $TEMP_DIR/splitted.txt $file 2> /dev/null`;
+    print STDERR " done\n"; 
+
+    open INFILE, "<", $TEMP_DIR . "/splitted.txt"; 
+    my $splitted=""; 
+    while(<INFILE>)
+    {
+	$splitted .= $_; 
+    }
+    close INFILE; 
+
+    $splitted =~ s/.$//; 
+    return lc($splitted); 
 }
 
 

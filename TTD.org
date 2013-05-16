@@ -1,5 +1,3 @@
-* Footage Reduce 
-** TODO DIR "base" remove, from index ID. 
 
 
 * RTE Read-Eval
@@ -10,6 +8,7 @@
 *** TODO add splitta support   
 *** TODO Draw box plot 
 *** TODO (Some analysis) 
+
 
 * MEMO 
 ** Some numbers 
