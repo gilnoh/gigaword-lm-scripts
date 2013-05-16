@@ -1,13 +1,14 @@
-# this small script simply runs runner, which takes care of actual reading. 
-# see actual runner for detail. 
+# this small script simply runs runner, which takes care of actual running. 
+# see rte_runner for its detail (approximate N hit args, etc) 
 
-# this script will get the output and just store them.  
+# This script will get the output and just store them for training purpose. 
+
 use strict; 
 use warnings; 
 use Benchmark qw(:all); 
 
 my $RUNNER_SCRIPT = "rte3_runner.pl"; 
-my $SIZE=20;  
+my $SIZE=20; # 800 
 my $DEF_ARGS = ""; 
 
 my @out; 

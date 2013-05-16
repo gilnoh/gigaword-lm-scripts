@@ -1,6 +1,5 @@
 # this simple script gets an id number and runs  
 # P_h_t() over that problem. 
-# the RTE3 data. 
 
 use warnings; 
 use strict; 
@@ -38,6 +37,7 @@ my $hypo = call_splitta($h_aref->[$id]);
 
 my ($gain, $P_h_given_t, $P_h, $P_t, $weighted_href) = P_h_t_multithread_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
+$| = 1; 
 print "$ARGV[0]|GOLD:$d_aref->[$id]|, $gain, $P_h_given_t, $P_h, $P_t, ", length($hypo), ", ", length($text), "\n";  
 
 #_exit(0); 
@@ -45,7 +45,7 @@ print "$ARGV[0]|GOLD:$d_aref->[$id]|, $gain, $P_h_given_t, $P_h, $P_t, ", length
 my $t1 = Benchmark->new; 
 my $td = timediff($t1, $t0); 
 print STDERR "the code took:", timestr($td), "\n"; 
-exit(0); 
+_exit(0); 
 ###
 ###
 ###
