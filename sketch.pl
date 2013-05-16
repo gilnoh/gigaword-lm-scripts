@@ -48,7 +48,7 @@ my $t0 = Benchmark->new;
 ## Some sketch for P_h_t. 
 #P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
 
-#P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
+P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
 # time out
 my $t1 = Benchmark->new; 

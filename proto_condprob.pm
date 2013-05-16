@@ -435,6 +435,11 @@ sub plucene_query
 	my $doc = $searcher->doc($id);
 	#push @docs, $doc; #TBR
 	my $docid = $doc->get("id")->string(); 
+
+	# reduce docid 
+	$docid =~ s/^$DOCUMENT_MODELS_DIR//; 
+	$docid =~ s/\.story$//; 
+	#print $docid, "\n"; 
 	$docscore{$docid} = $score; # for score.
 						});
 
@@ -498,8 +503,16 @@ sub P_t_multithread_index
 	my $n = 0; 
 	foreach (@{$hits_aref}) # hits_aref is already sorted with search hit score, top first. 
 	{
+	    my $docid = $_; 
+	    # restore the full path: it was reduced like this. 
+	    #$docid =~ s/^$DOCUMENT_MODELS_DIR//; 
+	    #$docid =~ s/\.story$//; 
+
+	    $docid = $DOCUMENT_MODELS_DIR . $docid; 
+	    $docid = $docid . ".story"; 
+
 	    s/\/\.\//\//g;  # /./ -> / 
-	    push @document_model, ($_ . ".model"); 
+	    push @document_model, ($docid . ".model"); 
 	    $n++; 
 	    last if ($n >= $APPROXIMATE_WITH_TOP_N_HITS); 
 	}
@@ -640,7 +653,7 @@ sub P_t_multithread_index
 
     # done. return the result.
     print STDERR "Per model probability now completed\n"; 
-    return %final_result; 
+    return \%final_result; 
 }
 
 
@@ -661,37 +674,34 @@ sub P_h_t_multithread_index
 
     # calculate P(t) for each document model 
     print STDERR $text, "\n"; 
-    my %text_per_doc = P_t_multithread_index($text, @args); # remaining @args will be checked there 
+    my $text_per_doc_href = P_t_multithread_index($text, @args); # remaining @args will be checked there 
     # calculate P(t) overall 
     my $P_t; 
     print STDERR "P(t) is : "; 
     {
-	my @t = values %text_per_doc; 
+	my @t = values %{$text_per_doc_href}; 
 	$P_t = mean(\@t); # (on uniform P(d) )
     }
     print STDERR "$P_t \n"; 
 
-    ## CONSIDER: we can calculate "N only" version of P(t) by using only 
-    ## top N values. 
-
     # dcode 
-    export_hash_to_file(\%text_per_doc, "Pt_per_doc.txt"); 
+    export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt"); 
 
     # calculate P(h) for each model 
     print STDERR $hypothesis, "\n"; 
-    my %hypo_per_doc = P_t_multithread_index($hypothesis, @args); 
+    my $hypo_per_doc_href = P_t_multithread_index($hypothesis, @args); 
 
     # calculate P(h) overall 
     my $P_h; 
     print STDERR "P(h) is : ";
     {
-	my @h = values %hypo_per_doc; 
+	my @h = values %{$hypo_per_doc_href}; 
 	$P_h = mean(\@h); # (on uniform P(d) ) 
     }
     print STDERR "$P_h \n"; 
 
     # dcode
-    export_hash_to_file(\%hypo_per_doc, "Ph_per_doc.txt"); 
+    export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt"); 
 
     # calculate P(h|t,d) for each model 
     # note this %weighted is *non-normalized weight* (for evidence) 
@@ -701,11 +711,11 @@ sub P_h_t_multithread_index
     my @text;
     my @hypo; 
     {
-	foreach (keys %text_per_doc)
+	foreach (keys %{$text_per_doc_href})
 	{
-	    $weighted{$_} = $text_per_doc{$_} + $hypo_per_doc{$_}; 
-	    push @text, $text_per_doc{$_}; 
-	    push @hypo, $hypo_per_doc{$_}; 
+	    $weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_}; 
+	    push @text, $text_per_doc_href->{$_}; 
+	    push @hypo, $hypo_per_doc_href->{$_}; 
 	}
     }
     # dcode
