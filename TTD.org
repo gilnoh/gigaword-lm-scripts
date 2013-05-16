@@ -1,64 +1,15 @@
+* Footage Reduce 
+** TODO DIR "base" remove, from index ID. 
+
+
 * RTE Read-Eval
 ** DONE Make a experiment sketch code that will read and work on RTE3 data. 
-** DONE open up a new code, sketch once
-** TODO make a method to call "splitta" as pre-processing. 
-** TODO write "outer" script, for collecting all gains and related numbers. 
-** TODO draw box-plot for them. 
-
-* Memory Profiling 
-** DONE Run a Profiler (Westy, afp 2010) 
-*** DONE BRIEF RUN  NYTProf
-- Eh, didn't really helped on memory issue. Maybe I should call Devel::size on important items. 
-
-** DONE (NOT NOW) Devel::Size on major data structures 
-*** Targets? (Hmm. need this really? ) 
-
-** change codes to reduce memory footage 
-*** FIND and REPLACE returning new array/hash 
-**** DONE LIST those parts 
-+ P_t_multithread_index return value (hash -> hashref) 
-+ P_h_t_multithread_index (hash anon ref -> hashref) 
-+ P_d_runner, return value (hash -> hashref)  
-**** TODO Update them 
-
-*** Reduce "model file ID" by deleting basedir 
-**** TODO One time. 
-
-
-
-* BUG PATCH
-** uganda example failure (lamda sum) 
-** DONE Reproduce at Home Westy 
-- reproducable fully in Moore, with strange behavior. 
-- (Maybe failure of index? or something like that?) 
-** TODO CHECK on moore (& gillespie) 
-- I doubt exactly this: index failure. model_index should have 207485,
-  and only that. No duplicated, or more things. 
-
-
-* RTE Read-Eval
-** TODO Make a experiment sketch code that will read and work on RTE3 data. 
 *** DONE open up a new code, sketch once
     CLOSED: [2013-05-15 Wed 17:16]
-*** TODO make caller without splitta 
+*** DONE make caller without splitta 
 *** TODO add splitta support   
-
-* TODO Data preparation
-** TODO All AFP 
-- Westy and Gillespie/proj
-** TODO 2009, 2010 
-- Westy 
-** TODO 2010 
-- Gillespie/home 
-  
-
-* (POSTPONED FOR THE MOMENT) Testing Work 
-*** TODO test some of RTE3 sentences, with current sketch. 
-*** TODO Collect first full list of "gain", for RTE3 with default Lambda. 
-- gain, P(t), P(h), (as it is, and collection backoff), P(h|t), t-length,
-  h-length
-- copy and backup evidence file somewhere, 
-
+*** TODO Draw box plot 
+*** TODO (Some analysis) 
 
 * MEMO 
 ** Some numbers 
@@ -253,6 +204,22 @@ Wow. Finally.
 ***** DONE testing 
 - Only a few dozen seconds. It affects, but not enough. 
 
+
+*** DONE (GAVE UP) Memory Profiling 
+**** DONE Run a Profiler (Westy, afp 2010) 
+***** DONE BRIEF RUN  NYTProf
+- Eh, didn't really helped on memory issue. Maybe I should call Devel::size on important items. 
+
+**** DONE (NOT NOW) Devel::Size on major data structures 
+***** Targets? (Hmm. need this really? ) 
+
+**** change codes to reduce memory footage 
+***** FIND and REPLACE returning new array/hash 
+****** DONE LIST those parts 
++ P_t_multithread_index return value (hash -> hashref) 
++ P_h_t_multithread_index (hash anon ref -> hashref) 
++ P_d_runner, return value (hash -> hashref)  
+(IGNORE THIS. path-base would be bigger) 
 
 
 * EXPERIMENTS 
