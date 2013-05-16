@@ -5,7 +5,7 @@
 use warnings; 
 use strict; 
 use POSIX qw(_exit); 
-
+use Benchmark qw(:all); 
 use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 my $DEVFILE = "./testdata/English_dev.xml"; 
@@ -16,6 +16,9 @@ die "Usage: needs one number argument.\n>perl runner.pl 3 will pick problem id 3
 our $DEBUG=0;
 set_num_thread(4);  
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
+
+# time in 
+my $t0 = Benchmark->new; 
 
 # read data 
 my ($t_aref, $h_aref, $d_aref) = read_rte_data($DEVFILE); 
@@ -35,10 +38,14 @@ my $hypo = call_splitta($h_aref->[$id]);
 
 my ($gain, $P_h_given_t, $P_h, $P_t, $weighted_href) = P_h_t_multithread_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
-print "###$ARGV[0]|GOLD:$d_aref->[$id]|, $gain, $P_h_given_t, $P_h, $P_t, ", length($hypo), ", ", length($text), "\n";  
+print "$ARGV[0]|GOLD:$d_aref->[$id]|, $gain, $P_h_given_t, $P_h, $P_t, ", length($hypo), ", ", length($text), "\n";  
 
-_exit(0); 
-
+#_exit(0); 
+# time out
+my $t1 = Benchmark->new; 
+my $td = timediff($t1, $t0); 
+print STDERR "the code took:", timestr($td), "\n"; 
+exit(0); 
 ###
 ###
 ###
