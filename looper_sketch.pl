@@ -1,6 +1,5 @@
 # this small script simply runs runner, which takes care of actual running. 
 # see rte_runner for its detail (approximate N hit args, etc) 
-
 # This script will get the output and just store them for training purpose. 
 
 use strict; 
@@ -16,7 +15,7 @@ my @out;
 my $t0 = Benchmark->new; 
 
 # simply run them and collect the output 
-for (my $i=1; $i < ($SIZE + 1); $i++)
+for (my $i=689; $i < ($SIZE + 1); $i++)
 {
     print STDERR ">>>>> $i <<<<<\n"; 
     my $stdout = `perl $RUNNER_SCRIPT $i`; 

@@ -21,7 +21,6 @@ Word-level "relatedness" can't answer much. But the approach can.
 "Boeing 777 wing assembly" -> 
 
 * Weakness? 
-
 ** One easy way to fool it. 
 - Greb one news, twist something in T to make it the opposite. (still
   highly similar).  Give a sentence as H, extracted from the same
@@ -29,4 +28,11 @@ Word-level "relatedness" can't answer much. But the approach can.
   guess. ) 
 
 - More likely: one additional "Explanatory" sentences;
-  cases. #596 #593. Almost impossible for this approach to solve. 
+  cases. #596 #593 #687 Almost impossible for this approach to
+  solve.   
+
+** When "T" sentence wasn't found. (can be overcome with more text?) 
+
+** Proper-names (entity names), ups and downs 
+
+** 

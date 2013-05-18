@@ -1,53 +1,25 @@
+* RTE3 with AFP2010
 
+* RTE3 with AFP2009+2010 
 
-* RTE Read-Eval
-** DONE Make a experiment sketch code that will read and work on RTE3 data. 
-*** DONE open up a new code, sketch once
-    CLOSED: [2013-05-15 Wed 17:16]
-*** DONE make caller without splitta 
-*** TODO add splitta support   
-*** TODO Draw box plot 
-*** TODO (Some analysis) 
+* RTE3 with early AFP2010 (Jan-June) 
 
+* Things to write: MaxMargin decision maker
+* Things to write: output P(h|t) - P(h) as evidence. 
 
-* MEMO 
-** Some numbers 
-- ALL, 100k (all, but no stop-word), 1k, 100, 10, etc 
-*** ALL 
-P(h) is (logprob): -8.0458 
-P(h|t) is (logprob):  -7.0918 
-P(h|t) / P(h) is (nonlog): 8.99497581530035
-the code took:166 wallclock secs (14.09 usr 120.09 sys + 188.45 cusr 163.45 csys = 486.08 CPU)
-*** 100k (all, but excluding stop word hits) 
-P(h) is (logprob): -8.0458 
-P(h|t) is (logprob):  -7.0889 
-P(h|t) / P(h) is (nonlog): 9.05524072268361
-the code took:67 wallclock secs ( 8.02 usr 35.87 sys + 70.79 cusr 51.31 csys = 165.99 CPU)
-*** 1k 
-P(h) is (logprob): -8.1412 
-P(h|t) is (logprob):  -7.1033 
-P(h|t) / P(h) is (nonlog): 10.911890519552
-the code took:25 wallclock secs ( 4.34 usr  5.96 sys + 21.98 cusr  8.19 csys = 40.47 CPU)
-*** 100 
-P(h) is (logprob): -8.5588 
-P(h|t) is (logprob):  -7.7297 
-P(h|t) / P(h) is (nonlog): 6.74683361398827
-the code took:19 wallclock secs ( 3.73 usr  1.45 sys + 13.94 cusr  1.04 csys = 20.16 CPU)
-*** 10
-(h) is (logprob): -8.9819 
-P(h|t) is (logprob):  -9.0917 
-P(h|t) / P(h) is (nonlog): 0.776604673960837
-the code took:18 wallclock secs ( 3.63 usr  0.84 sys + 13.14 cusr  0.33 csys = 17.94 CPU)
+* Things to Check 
+** Check : query with "\n" is okay... (remove any newline?)
+- #25 (multiple sentence) 
+- #26 (same)
+** Check : Maxprob is lower? Search ordering error? (DEBUG2)
+- #15 TH 
+- #14T
+- #21T
+** Check: RTE data same? (RTE3) - #26 
+- 574 - mountain name? hmm. 
+- 
 
-
-
-
-** Speed test 
-- see speedtest.txt 
-
-
-* Consider The following Improvements 
-** TODO MAYBE? Normalized contribution (of each doc to P(h|t)) 
+** CONSIDER EXPR (removing all , . !) 
 
 
 * Currently
@@ -203,7 +175,6 @@ Wow. Finally.
 ***** DONE testing 
 - Only a few dozen seconds. It affects, but not enough. 
 
-
 *** DONE (GAVE UP) Memory Profiling 
 **** DONE Run a Profiler (Westy, afp 2010) 
 ***** DONE BRIEF RUN  NYTProf
@@ -219,6 +190,13 @@ Wow. Finally.
 + P_h_t_multithread_index (hash anon ref -> hashref) 
 + P_d_runner, return value (hash -> hashref)  
 (IGNORE THIS. path-base would be bigger) 
+
+*** DONE RTE Read-Eval
+**** DONE Make a experiment sketch code that will read and work on RTE3 data. 
+***** DONE open up a new code, sketch once
+      CLOSED: [2013-05-15 Wed 17:16]
+***** DONE make caller without splitta 
+***** DONE add splitta support   
 
 
 * EXPERIMENTS 
