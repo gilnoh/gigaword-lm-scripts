@@ -13,7 +13,7 @@ die "Usage: needs one number argument.\n>perl runner.pl 3 will pick problem id 3
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
-set_num_thread(4);  
+set_num_thread(2);  
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 # time in 

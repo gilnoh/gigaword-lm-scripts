@@ -593,6 +593,10 @@ sub P_t_multithread_index
 
     print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n";     
     print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
+    if ($max_prob < $cut_prob)
+    {
+	print STDERR "WARNING, WARNUNG, WARNING: maxprob was lower than cutprob, possible index/lucene bug\n"; 
+    }
 
 
 
