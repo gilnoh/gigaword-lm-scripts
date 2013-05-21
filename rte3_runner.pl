@@ -7,9 +7,24 @@ use POSIX qw(_exit);
 use Benchmark qw(:all); 
 use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
-my $DEVFILE = "./testdata/English_dev.xml"; 
+my $TRAINFILE = "./testdata/English_dev.xml"; 
+my $TESTFILE = "./testdata/English_test.xml"; 
 my $TEMP_DIR = "./temp"; 
-die "Usage: needs one number argument.\n>perl runner.pl 3 will pick problem id 3 and run it." unless ($ARGV[0]); 
+die "Usage: needs two argument.\n\">perl runner.pl 3 train\" will pick train data  id 3 and run it. [train/test]" unless ($ARGV[1]); 
+
+my $RTEFILE; 
+if ((lc($ARGV[1]) eq "train")  or (lc($ARGV[1]) eq "dev") )
+{
+    $RTEFILE = $TRAINFILE; 
+}
+elsif((lc($ARGV[1]) eq "test"))
+{
+    $RTEFILE = $TESTFILE; 
+}
+else
+{
+    die "unknown ARGV[1]: $ARGV[1]\n"; 
+}
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
@@ -20,7 +35,7 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 my $t0 = Benchmark->new; 
 
 # read data 
-my ($t_aref, $h_aref, $d_aref) = read_rte_data($DEVFILE); 
+my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE); 
 #for(my $i=0; $i < scalar(@$t_aref); $i++)
 #{
 #    print "id: ", ($i+1), "\t", $d_aref->[$i] ,"\n"; 
@@ -74,7 +89,10 @@ sub call_splitta
     }
     close INFILE; 
 
-    $splitted =~ s/.$//; 
+    ## two or more sentences: need a plan. For the moment, only the first sentence. ---> Both of them? hmm. 
+    #$splitted =~ s/\n/ /g; # we will treat them as single big sentences 
+    #$splitted =~ s/ , / /g; # ? and we ignoring commas? ,  
+    $splitted =~ s/.$//; # remove final dot ..  
     return lc($splitted); 
 }
 

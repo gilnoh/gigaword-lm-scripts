@@ -1,11 +1,16 @@
-* RTE3 with AFP2010
-
-* RTE3 with AFP2009+2010 
-
-* RTE3 with early AFP2010 (Jan-June) 
-
-* Things to write: MaxMargin decision maker
-* Things to write: output P(h|t) - P(h) as evidence. 
+* Known bugs (to be fixed) 
+** Two or more sentences in T. 
+- only the first sentence of T is being used in (prolly the reason of
+  search result / maxprob mismatch?), for now. 
+- how to cope with this?: 
+  + using "both sentences" in the T search. 
+  + do two queries. 
+- There are some tricky aspects in this.... well, both of them in
+  query? hmm 
+- See dev #25, #26, test #4, etc. 
+** Top search results makes lower (than cutpoint) generative probability? 
+- sometimes.  (test #16, #24) 
+- Why? Just "lack of corpus?" 
 
 * Things to Check 
 ** Check : query with "\n" is okay... (remove any newline?)
@@ -21,6 +26,71 @@
 
 ** CONSIDER EXPR (removing all , . !) 
 
+
+* Things to Ponter
+** "Dynamic" boundary? 
+- One fixed "boundary" on the gain can be Okay? E.g. Highly covered
+  topic vs. rarely covered topic: "not-related", "somehow related",
+  "I've seen  them" will be different among them.... or not?  
+- Just ... cover all of the topics, and hopes for the best? 
+- Some indicators? (Top search result #10 P(t) and P(h)? hmm) 
+- Think about this: this is not simple 
+- I guess careful "analysis" would be needed. (PtPh list is prepared
+  just for this.) 
+- I mean, analyzing why what doesn't work (or work) is more
+  important.  
+- Then, we can add more "factors".  
+- For example, per-word gain? "more than expected" gain? 
+
+* Some MEMO (Thoughts for paper work) 
+** why it works? 
+*** Lexical level co-occurrence can't answer P(h|t)
+
+Sentence as sum of lexicals. 
+
+**** Example 1
+- Hidelberg castle 
+- "... was destryed in XX" 
+
+Can you find the "..." from search "Heidelberg", or "Castle?" 
+
+**** Example 2
+- Boeing Headquator, Boeing factory, Boeing wing assembly for 777 
+- located in Seattle, in Oclahoma, in Japan, Yokohama, 
+
+Word-level "relatedness" can't answer much. But the approach can. 
+
+"Boeing HQ" -> 
+"Boeing factory" -> 
+"Boeing 777 wing assembly" -> 
+
+** Weakness? 
+*** One easy way to fool it. 
+- Greb one news, twist something in T to make it the opposite. (still
+  highly similar).  Give a sentence as H, extracted from the same
+  doc.( But do we want this? TE is to answer "real-world". so no, I
+  guess. ) 
+
+- More likely: one additional "Explanatory" sentences;
+  cases. #596 #593 #687 Almost impossible for this approach to
+  solve.   
+
+*** When "T" sentence wasn't found. (can be overcome with more text?) 
+
+*** Proper-names (entity names), ups and downs 
+
+*** 
+
+
+
+
+* RTE3 with AFP2010
+
+* RTE3 with AFP2009+2010 
+
+* RTE3 with early AFP2010 (Jan-June) 
+
+* DONE Things to write: MaxMargin decision maker
 
 * Currently
 - Working on Index Work Improvements & Testing Work 
