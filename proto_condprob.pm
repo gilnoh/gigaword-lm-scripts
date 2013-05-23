@@ -107,8 +107,8 @@ sub P_h_t_multithread
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
 
     # calculate P(h|t) / P(h), as supporting measure. 
-    my $gain = 10 ** ($P_h_given_t - $P_h); # note that this is not logprob
-    print STDERR "P(h|t) / P(h) is (nonlog): ", $gain, "\n"; 
+    my $gain = ($P_h_given_t - $P_h); 
+    print STDERR "P(h|t) / P(h) (PMI) is: ", $gain, "\n"; 
 
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
     return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
@@ -735,8 +735,8 @@ sub P_h_t_multithread_index
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
 
     # calculate P(h|t) / P(h), as supporting measure. 
-    my $gain = 10 ** ($P_h_given_t - $P_h); # note that this is not logprob
-    print STDERR "P(h|t) / P(h) is (nonlog): ", $gain, "\n"; 
+    my $gain = ($P_h_given_t - $P_h); 
+    print STDERR "log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
     print STDERR "(calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
     
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
