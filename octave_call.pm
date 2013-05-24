@@ -54,6 +54,18 @@ sub weighted_sum($$)
     return $1; 
 }
 
+sub weighted_sum_native()
+{
+    # weighted_sum(\@doc_logprob, \@seq_logprob) 
+    # gets two (same-size) array of log prob.
+    # @doc_loprob, @sequence_log_prob. 
+    # Calls octave to do the weighted sum in logarithm. 
+    # NOTE: both input and output are *log* probabilities. 
+    
+
+}
+
+
 sub mean($) 
 {
     # gets one list of log probabilities and outputs its 

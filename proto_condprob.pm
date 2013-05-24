@@ -681,13 +681,15 @@ sub P_h_t_multithread_index
     my $text_per_doc_href = P_t_multithread_index($text, @args); # remaining @args will be checked there 
     # calculate P(t) overall 
     my $P_t; 
+    my $nonOOV_len_t = scalar (@collection_seq); # @collection_seq holds current collection seq. 
+
     print STDERR "P(t) is : "; 
     {
 	my @t = values %{$text_per_doc_href}; 
 	$P_t = mean(\@t); # (on uniform P(d) )
     }
-    print STDERR "$P_t \n"; 
-
+    my $P_pw_t = $P_t / $nonOOV_len_t; 
+    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t\n"; 
     # dcode 
     export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt"); 
 
@@ -697,13 +699,15 @@ sub P_h_t_multithread_index
 
     # calculate P(h) overall 
     my $P_h; 
+    my $nonOOV_len_h = scalar (@collection_seq); # holds current collection seq
+ 
     print STDERR "P(h) is : ";
     {
 	my @h = values %{$hypo_per_doc_href}; 
 	$P_h = mean(\@h); # (on uniform P(d) ) 
     }
-    print STDERR "$P_h \n"; 
-
+    my $P_pw_h = $P_h / $nonOOV_len_h; 
+    print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n"; 
     # dcode
     export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt"); 
 
@@ -732,14 +736,21 @@ sub P_h_t_multithread_index
     print STDERR "Calculating the weighted sum\n"; 
     my $P_h_given_t = weighted_sum(\@text, \@hypo); 
     #print @text, @hypo;     #dcode 
-    print STDERR "P(h|t) is (logprob):  $P_h_given_t \n"; 
-
+    my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h; 
+    print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n"; 
     # calculate P(h|t) / P(h), as supporting measure. 
     my $gain = ($P_h_given_t - $P_h); 
     print STDERR "log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
-    print STDERR "(calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
+    my $P_t_given_t = weighted_sum(\@text, \@text); 
+    my $P_pw_t_given_t = $P_t_given_t / $nonOOV_len_t; 
+
+    my $bb_value = 10 ** ($P_pw_h_given_t - $P_pw_t_given_t); 
+    print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n"; 
+    print STDERR "P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n"; 
+    print STDERR "(all calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
     
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+    # TODO: update this. 
     return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
 
     # CONSIDER: return more --- like \@text, \@hypo. 
