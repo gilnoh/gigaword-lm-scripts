@@ -674,7 +674,7 @@ sub P_h_t_multithread_index
     my @args = @_; 
     my $hypothesis = shift @args; 
     my $text = shift @args; 
-    die unless ($hypothesis and $text); 
+    die "Something wrong, either hypothesis or text is missing\n" unless ($hypothesis and $text); 
 
     # calculate P(t) for each document model 
     print STDERR $text, "\n"; 
