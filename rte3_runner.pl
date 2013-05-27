@@ -27,7 +27,7 @@ else
 }
 
 # PARAMETERS to set (for proto_condprob.pm) 
-our $DEBUG=0; # well, turn it on for quality check. 
+our $DEBUG=2; # well, turn it on for quality check. 
 set_num_thread(2);  
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
@@ -50,10 +50,10 @@ die "something wrong with id: $id\n" unless ($id >= 0);
 my $text = call_splitta($t_aref->[$id]); 
 my $hypo = call_splitta($h_aref->[$id]); 
 
-my ($gain, $P_h_given_t, $P_h, $P_t, $weighted_href) = P_h_t_multithread_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
+my ($bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h, $weighted_href) = P_h_t_multithread_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
 $| = 1; 
-print "$ARGV[0]|GOLD:$d_aref->[$id]|, $gain, $P_h_given_t, $P_h, $P_t, ", length($hypo), ", ", length($text), "\n";  
+print "$ARGV[0]|GOLD:$d_aref->[$id]|, $bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h,\n";  
 
 #_exit(0); 
 # time out

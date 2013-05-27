@@ -1,4 +1,9 @@
+
 * Known bugs (to be fixed) 
+** proto_condprob.pm dies in 677 on #test677
+- #test 677 
+- why? (what a coincident 677 - 677) T or H missing ?!? hmm. 
+- we also have one such in DEV data, too. (check #dev 141) 
 ** Two or more sentences in T. 
 - only the first sentence of T is being used in (prolly the reason of
   search result / maxprob mismatch?), for now. 
@@ -10,7 +15,8 @@
 - See dev #25, #26, test #4, etc. 
 ** Top search results makes lower (than cutpoint) generative probability? 
 - sometimes.  (test #16, #24) 
-- Why? Just "lack of corpus?" 
+- Why? Just "lack of corpus observation on content terms?" 
+
 
 * Things to Check 
 ** Check : query with "\n" is okay... (remove any newline?)
@@ -27,7 +33,12 @@
 ** CONSIDER EXPR (removing all , . !) 
 
 
-* Things to Ponter
+* IMPROVE: Add more feature outputs 
+- perword P(h), perword P(t), perword P(h|t), perword P(h|t) - P(h) 
+- Note: "effective number of words" in h and t, from P(t)_methods. 
+
+
+* Things to Ponder
 ** "Dynamic" boundary? 
 - One fixed "boundary" on the gain can be Okay? E.g. Highly covered
   topic vs. rarely covered topic: "not-related", "somehow related",
@@ -41,6 +52,11 @@
   important.  
 - Then, we can add more "factors".  
 - For example, per-word gain? "more than expected" gain? 
+** "Category" of the problem
+- evaluation related 
+- 
+** 
+
 
 * Some MEMO (Thoughts for paper work) 
 ** why it works? 
@@ -89,13 +105,6 @@ Word-level "relatedness" can't answer much. But the approach can.
 * RTE3 with AFP2009+2010 
 
 * RTE3 with early AFP2010 (Jan-June) 
-
-* DONE Things to write: MaxMargin decision maker
-
-* Currently
-- Working on Index Work Improvements & Testing Work 
-
-
 
 * PRESENTPRESENTPRESENTPRESENTPRESENTPRESENTPRESENTPRESENT
 * PASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPASTPAST

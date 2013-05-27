@@ -410,6 +410,8 @@ sub plucene_query
     $query_str =~ s/or//g; 
     $query_str =~ s/not//g; 
     $query_str =~ s/phrase//g; 
+    $query_str =~ s/,//g; 
+    $query_str =~ s/\n/ /g; 
       
     # prepare query
     my $parser = Plucene::QueryParser->new({
@@ -681,7 +683,7 @@ sub P_h_t_multithread_index
     my $text_per_doc_href = P_t_multithread_index($text, @args); # remaining @args will be checked there 
     # calculate P(t) overall 
     my $P_t; 
-    my $nonOOV_len_t = scalar (@collection_seq); # @collection_seq holds current collection seq. 
+    my $nonOOV_len_t = count_non_zero_element (@collection_seq); # @collection_seq holds current collection seq. 
 
     print STDERR "P(t) is : "; 
     {
@@ -699,7 +701,7 @@ sub P_h_t_multithread_index
 
     # calculate P(h) overall 
     my $P_h; 
-    my $nonOOV_len_h = scalar (@collection_seq); # holds current collection seq
+    my $nonOOV_len_h = count_non_zero_element(@collection_seq); # holds current collection seq
  
     print STDERR "P(h) is : ";
     {
@@ -741,6 +743,7 @@ sub P_h_t_multithread_index
     # calculate P(h|t) / P(h), as supporting measure. 
     my $gain = ($P_h_given_t - $P_h); 
     print STDERR "log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
+    print STDERR "Calculating the weighted sum for P(t|t)\n"; 
     my $P_t_given_t = weighted_sum(\@text, \@text); 
     my $P_pw_t_given_t = $P_t_given_t / $nonOOV_len_t; 
 
@@ -750,16 +753,30 @@ sub P_h_t_multithread_index
     print STDERR "(all calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
     
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
-    # TODO: update this. 
-    return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
 
-    # CONSIDER: return more --- like \@text, \@hypo. 
+    #return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
+
+    # returning
+    # BB, PMI, P_pw_h_given_t, P_h_given_t - Ph, len_t, len_h, evidences_hash_ref
+    return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted}); 
+
 }
 
 sub log10 {
     my $n = shift;
     return log($n)/log(10);
 }
+
+sub count_non_zero_element
+{
+    my $count = 0; 
+    foreach (@_)
+    {
+	$count ++ unless ($_ == 0);
+    }
+    return $count; 
+}
+
 
 
 ## TODO someday? 

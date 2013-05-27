@@ -17,7 +17,7 @@ my @out;
 my $t0 = Benchmark->new; 
 
 # simply run them and collect the output 
-for (my $i=220; $i < ($SIZE + 1); $i++)
+for (my $i=575; $i < ($SIZE + 1); $i++)
 {
     print STDERR ">>>>> $i <<<<<\n"; 
     my $stdout = `perl $RUNNER_SCRIPT $i $DEF_ARGS`; 
