@@ -1,0 +1,641 @@
+INFO  - 2013-06-04 20:53:33.553; org.eclipse.jetty.server.Server; jetty-8.1.8.v20121106
+INFO  - 2013-06-04 20:53:33.617; org.eclipse.jetty.deploy.providers.ScanningAppProvider; Deployment monitor /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts at interval 0
+INFO  - 2013-06-04 20:53:33.634; org.eclipse.jetty.deploy.DeploymentManager; Deployable added: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts/solr-jetty-context.xml
+INFO  - 2013-06-04 20:53:33.984; org.eclipse.jetty.webapp.WebInfConfiguration; Extract jar:file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war!/ to /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp
+INFO  - 2013-06-04 20:53:36.736; org.eclipse.jetty.webapp.StandardDescriptorProcessor; NO JSP Support for /solr, did not find org.apache.jasper.servlet.JspServlet
+INFO  - 2013-06-04 20:53:36.799; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:53:36.800; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:53:36.831; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init()
+INFO  - 2013-06-04 20:53:36.868; org.apache.solr.core.SolrResourceLoader; JNDI not configured for solr (NoInitialContextEx)
+INFO  - 2013-06-04 20:53:36.869; org.apache.solr.core.SolrResourceLoader; solr home defaulted to 'solr/' (could not find system property or JNDI)
+INFO  - 2013-06-04 20:53:36.890; org.apache.solr.core.CoreContainer$Initializer; looking for solr config file: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/solr.xml
+INFO  - 2013-06-04 20:53:36.895; org.apache.solr.core.CoreContainer; New CoreContainer 977706986
+INFO  - 2013-06-04 20:53:36.896; org.apache.solr.core.CoreContainer; Loading CoreContainer using Solr Home: 'solr/'
+INFO  - 2013-06-04 20:53:36.897; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/'
+INFO  - 2013-06-04 20:53:37.780; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting socketTimeout to: 0
+INFO  - 2013-06-04 20:53:37.783; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting urlScheme to: http://
+INFO  - 2013-06-04 20:53:37.789; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting connTimeout to: 0
+INFO  - 2013-06-04 20:53:37.797; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxConnectionsPerHost to: 20
+INFO  - 2013-06-04 20:53:37.801; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting corePoolSize to: 0
+INFO  - 2013-06-04 20:53:37.801; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maximumPoolSize to: 2147483647
+INFO  - 2013-06-04 20:53:37.802; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxThreadIdleTime to: 5
+INFO  - 2013-06-04 20:53:37.802; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting sizeOfQueue to: -1
+INFO  - 2013-06-04 20:53:37.803; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting fairnessPolicy to: false
+INFO  - 2013-06-04 20:53:37.840; org.apache.solr.client.solrj.impl.HttpClientUtil; Creating new http client, config:maxConnectionsPerHost=20&maxConnections=10000&socketTimeout=0&connTimeout=0&retry=false
+INFO  - 2013-06-04 20:53:38.147; org.apache.solr.core.CoreContainer; Registering Log Listener
+INFO  - 2013-06-04 20:53:38.206; org.apache.solr.core.CoreContainer; Creating SolrCore 'collection1' using instanceDir: solr/collection1
+INFO  - 2013-06-04 20:53:38.207; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/collection1/'
+INFO  - 2013-06-04 20:53:38.342; org.apache.solr.core.SolrConfig; Adding specified lib dirs to ClassLoader
+INFO  - 2013-06-04 20:53:38.348; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-core-0.7.2.jar' to classloader
+INFO  - 2013-06-04 20:53:38.349; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-dom-0.7.2.jar' to classloader
+INFO  - 2013-06-04 20:53:38.349; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcmail-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 20:53:38.350; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcprov-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 20:53:38.350; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/boilerpipe-1.1.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.351; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/commons-compress-1.4.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.351; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/dom4j-1.6.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.352; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/fontbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.352; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/icu4j-49.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.353; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/isoparser-1.0-RC-1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.353; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jdom-1.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.354; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jempbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.354; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/juniversalchardet-1.0.3.jar' to classloader
+INFO  - 2013-06-04 20:53:38.355; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/metadata-extractor-2.6.2.jar' to classloader
+INFO  - 2013-06-04 20:53:38.364; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/netcdf-4.2-min.jar' to classloader
+INFO  - 2013-06-04 20:53:38.365; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/pdfbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.365; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-3.8.jar' to classloader
+INFO  - 2013-06-04 20:53:38.366; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-3.8.jar' to classloader
+INFO  - 2013-06-04 20:53:38.367; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-schemas-3.8.jar' to classloader
+INFO  - 2013-06-04 20:53:38.368; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-scratchpad-3.8.jar' to classloader
+INFO  - 2013-06-04 20:53:38.368; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/rome-0.9.jar' to classloader
+INFO  - 2013-06-04 20:53:38.369; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tagsoup-1.2.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.370; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-core-1.3.jar' to classloader
+INFO  - 2013-06-04 20:53:38.370; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-parsers-1.3.jar' to classloader
+INFO  - 2013-06-04 20:53:38.371; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-core-0.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.372; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-tika-0.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.372; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xercesImpl-2.9.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.373; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xmlbeans-2.3.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.374; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xz-1.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.385; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-cell-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.387; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/attributes-binder-1.0.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.387; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/carrot2-mini-3.6.2.jar' to classloader
+INFO  - 2013-06-04 20:53:38.388; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/hppc-0.4.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.388; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-core-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 20:53:38.389; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-mapper-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 20:53:38.390; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-collections-1.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.390; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-math-0.6.jar' to classloader
+INFO  - 2013-06-04 20:53:38.391; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/simple-xml-2.6.4.jar' to classloader
+INFO  - 2013-06-04 20:53:38.392; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-clustering-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.393; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/jsonic-1.2.7.jar' to classloader
+INFO  - 2013-06-04 20:53:38.394; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/langdetect-1.1-20120112.jar' to classloader
+INFO  - 2013-06-04 20:53:38.396; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-langid-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.397; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-beanutils-1.7.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.398; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-collections-3.2.1.jar' to classloader
+INFO  - 2013-06-04 20:53:38.398; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-1.7.jar' to classloader
+INFO  - 2013-06-04 20:53:38.398; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-tools-2.0.jar' to classloader
+INFO  - 2013-06-04 20:53:38.400; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-velocity-4.3.0.jar' to classloader
+WARN  - 2013-06-04 20:53:38.402; org.apache.solr.core.SolrResourceLoader; Can't find (or read) directory to add to classloader: /non/existent/dir/yields/warning (resolved as: /non/existent/dir/yields/warning).
+INFO  - 2013-06-04 20:53:38.859; org.apache.solr.core.SolrConfig; Using Lucene MatchVersion: LUCENE_43
+INFO  - 2013-06-04 20:53:39.279; org.apache.solr.core.SolrConfig; Loaded SolrConfig: solrconfig.xml
+INFO  - 2013-06-04 20:53:39.302; org.apache.solr.schema.IndexSchema; Reading Solr Schema from schema.xml
+INFO  - 2013-06-04 20:53:39.446; org.apache.solr.schema.IndexSchema; Schema name=example
+INFO  - 2013-06-04 20:53:40.987; org.apache.solr.schema.IndexSchema; unique key field: id
+INFO  - 2013-06-04 20:53:41.222; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 20:53:41.247; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 20:53:41.522; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 20:53:41.536; org.apache.solr.core.SolrCore; [collection1] Opening new SolrCore at solr/collection1/, dataDir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/
+INFO  - 2013-06-04 20:53:41.538; org.apache.solr.core.JmxMonitoredMap; JMX monitoring is enabled. Adding Solr mbeans to JMX Server: com.sun.jmx.mbeanserver.JmxMBeanServer@45243a0f
+INFO  - 2013-06-04 20:53:41.590; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for newSearcher: org.apache.solr.core.QuerySenderListener{queries=[]}
+INFO  - 2013-06-04 20:53:41.591; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for firstSearcher: org.apache.solr.core.QuerySenderListener{queries=[{q=static firstSearcher warming in solrconfig.xml}]}
+INFO  - 2013-06-04 20:53:41.599; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 20:53:41.618; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 20:53:41.619; org.apache.solr.core.SolrCore; New index directory detected: old=null new=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index/
+WARN  - 2013-06-04 20:53:41.620; org.apache.solr.core.SolrCore; [collection1] Solr index directory '/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index' doesn't exist. Creating new index...
+INFO  - 2013-06-04 20:53:41.641; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 20:53:41.733; org.apache.solr.core.SolrDeletionPolicy; SolrDeletionPolicy.onCommit: commits:num=1
+	commit{dir=NRTCachingDirectory(org.apache.lucene.store.NIOFSDirectory@/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index lockFactory=org.apache.lucene.store.NativeFSLockFactory@614c0482; maxCacheMB=48.0 maxMergeSizeMB=4.0),segFN=segments_1,generation=1,filenames=[segments_1]
+INFO  - 2013-06-04 20:53:41.734; org.apache.solr.core.SolrDeletionPolicy; newest commit = 1[segments_1]
+INFO  - 2013-06-04 20:53:41.742; org.apache.solr.core.SolrCore; created json: solr.JSONResponseWriter
+INFO  - 2013-06-04 20:53:41.743; org.apache.solr.core.SolrCore; adding lazy queryResponseWriter: solr.VelocityResponseWriter
+INFO  - 2013-06-04 20:53:41.744; org.apache.solr.core.SolrCore; created velocity: solr.VelocityResponseWriter
+INFO  - 2013-06-04 20:53:41.751; org.apache.solr.core.SolrCore; created xslt: solr.XSLTResponseWriter
+INFO  - 2013-06-04 20:53:41.752; org.apache.solr.response.XSLTResponseWriter; xsltCacheLifetimeSeconds=5
+INFO  - 2013-06-04 20:53:41.959; org.apache.solr.core.RequestHandlers; created /select: solr.SearchHandler
+INFO  - 2013-06-04 20:53:41.962; org.apache.solr.core.RequestHandlers; created /query: solr.SearchHandler
+INFO  - 2013-06-04 20:53:41.968; org.apache.solr.core.RequestHandlers; created /get: solr.RealTimeGetHandler
+INFO  - 2013-06-04 20:53:41.971; org.apache.solr.core.RequestHandlers; created /browse: solr.SearchHandler
+INFO  - 2013-06-04 20:53:41.980; org.apache.solr.core.RequestHandlers; created /update: solr.UpdateRequestHandler
+INFO  - 2013-06-04 20:53:41.987; org.apache.solr.core.RequestHandlers; created /update/json: solr.JsonUpdateRequestHandler
+INFO  - 2013-06-04 20:53:41.993; org.apache.solr.core.RequestHandlers; created /update/csv: solr.CSVRequestHandler
+INFO  - 2013-06-04 20:53:42.003; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 20:53:42.005; org.apache.solr.core.RequestHandlers; created /update/extract: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 20:53:42.006; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 20:53:42.007; org.apache.solr.core.RequestHandlers; created /analysis/field: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 20:53:42.008; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 20:53:42.009; org.apache.solr.core.RequestHandlers; created /analysis/document: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 20:53:42.014; org.apache.solr.core.RequestHandlers; created /admin/: solr.admin.AdminHandlers
+INFO  - 2013-06-04 20:53:42.028; org.apache.solr.core.RequestHandlers; created /admin/ping: solr.PingRequestHandler
+INFO  - 2013-06-04 20:53:42.037; org.apache.solr.core.RequestHandlers; created /debug/dump: solr.DumpRequestHandler
+INFO  - 2013-06-04 20:53:42.067; org.apache.solr.core.RequestHandlers; created /replication: solr.ReplicationHandler
+INFO  - 2013-06-04 20:53:42.068; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.069; org.apache.solr.core.RequestHandlers; created /spell: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.069; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.069; org.apache.solr.core.RequestHandlers; created /tvrh: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.070; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.070; org.apache.solr.core.RequestHandlers; created /terms: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.071; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.072; org.apache.solr.core.RequestHandlers; created /elevate: solr.SearchHandler
+INFO  - 2013-06-04 20:53:42.108; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:53:42.112; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:53:42.114; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:53:42.138; org.apache.solr.search.SolrIndexSearcher; Opening Searcher@5d791d43 main
+INFO  - 2013-06-04 20:53:42.168; org.apache.solr.update.CommitTracker; Hard AutoCommit: if uncommited for 15000ms; 
+INFO  - 2013-06-04 20:53:42.168; org.apache.solr.update.CommitTracker; Soft AutoCommit: disabled
+INFO  - 2013-06-04 20:53:42.170; org.apache.solr.handler.component.SpellCheckComponent; Initializing spell checkers
+INFO  - 2013-06-04 20:53:42.187; org.apache.solr.spelling.DirectSolrSpellChecker; init: {name=default,field=text,classname=solr.DirectSolrSpellChecker,distanceMeasure=internal,accuracy=0.5,maxEdits=2,minPrefix=1,maxInspections=5,minQueryLength=4,maxQueryFrequency=0.01}
+INFO  - 2013-06-04 20:53:42.201; org.apache.solr.handler.component.SpellCheckComponent; No queryConverter defined, using default converter
+INFO  - 2013-06-04 20:53:42.206; org.apache.solr.handler.component.QueryElevationComponent; Loading QueryElevation from: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/conf/elevate.xml
+INFO  - 2013-06-04 20:53:42.469; org.apache.solr.handler.ReplicationHandler; Commits will be reserved for  10000
+INFO  - 2013-06-04 20:53:42.470; org.apache.solr.core.QuerySenderListener; QuerySenderListener sending requests to Searcher@5d791d43 main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 20:53:42.558; org.apache.solr.core.SolrCore; [collection1] webapp=null path=null params={event=firstSearcher&q=static+firstSearcher+warming+in+solrconfig.xml&distrib=false} hits=0 status=0 QTime=83 
+INFO  - 2013-06-04 20:53:42.559; org.apache.solr.core.QuerySenderListener; QuerySenderListener done.
+INFO  - 2013-06-04 20:53:42.560; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: default
+INFO  - 2013-06-04 20:53:42.560; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: wordbreak
+INFO  - 2013-06-04 20:53:42.568; org.apache.solr.core.SolrCore; [collection1] Registered new searcher Searcher@5d791d43 main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 20:53:42.576; org.apache.solr.core.CoreContainer; registering core: collection1
+INFO  - 2013-06-04 20:53:42.579; org.apache.solr.servlet.SolrDispatchFilter; user.dir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories
+INFO  - 2013-06-04 20:53:42.579; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init() done
+INFO  - 2013-06-04 20:53:42.663; org.eclipse.jetty.server.AbstractConnector; Started SocketConnector@0.0.0.0:8983
+INFO  - 2013-06-04 20:56:59.057; org.apache.solr.servlet.SolrDispatchFilter; [admin] webapp=null path=/admin/cores params={indexInfo=false&_=1370372218997&wt=json} status=0 QTime=3 
+INFO  - 2013-06-04 20:56:59.289; org.apache.solr.core.SolrCore; [collection1] webapp=/solr path=/admin/system params={_=1370372219162&wt=json} status=0 QTime=101 
+INFO  - 2013-06-04 20:57:07.672; org.eclipse.jetty.server.Server; Graceful shutdown SocketConnector@0.0.0.0:8983
+INFO  - 2013-06-04 20:57:07.673; org.eclipse.jetty.server.Server; Graceful shutdown o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:57:08.685; org.apache.solr.core.CoreContainer; Shutting down CoreContainer instance=977706986
+INFO  - 2013-06-04 20:57:08.693; org.apache.solr.core.SolrCore; [collection1]  CLOSING SolrCore org.apache.solr.core.SolrCore@bd1f554
+INFO  - 2013-06-04 20:57:08.708; org.apache.solr.update.DirectUpdateHandler2; closing DirectUpdateHandler2{commits=0,autocommit maxTime=15000ms,autocommits=0,soft autocommits=0,optimizes=0,rollbacks=0,expungeDeletes=0,docsPending=0,adds=0,deletesById=0,deletesByQuery=0,errors=0,cumulative_adds=0,cumulative_deletesById=0,cumulative_deletesByQuery=0,cumulative_errors=0}
+INFO  - 2013-06-04 20:57:08.709; org.apache.solr.update.SolrCoreState; Closing SolrCoreState
+INFO  - 2013-06-04 20:57:08.709; org.apache.solr.update.DefaultSolrCoreState; SolrCoreState ref count has reached 0 - closing IndexWriter
+INFO  - 2013-06-04 20:57:08.710; org.apache.solr.update.DefaultSolrCoreState; closing IndexWriter with IndexWriterCloser
+INFO  - 2013-06-04 20:57:08.711; org.apache.solr.core.SolrCore; [collection1] Closing main searcher on request.
+INFO  - 2013-06-04 20:57:08.712; org.apache.solr.core.CachingDirectoryFactory; Closing NRTCachingDirectoryFactory - 2 directories currently being tracked
+INFO  - 2013-06-04 20:57:08.714; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data;done=false>>]
+INFO  - 2013-06-04 20:57:08.714; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 20:57:08.715; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index;done=false>>]
+INFO  - 2013-06-04 20:57:08.715; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 20:57:08.719; org.eclipse.jetty.server.handler.ContextHandler; stopped o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:57:08.776; org.eclipse.jetty.util.thread.ShutdownThread; shutdown already commenced
+INFO  - 2013-06-04 20:58:28.473; org.eclipse.jetty.server.Server; jetty-8.1.8.v20121106
+INFO  - 2013-06-04 20:58:28.531; org.eclipse.jetty.deploy.providers.ScanningAppProvider; Deployment monitor /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts at interval 0
+INFO  - 2013-06-04 20:58:28.555; org.eclipse.jetty.deploy.DeploymentManager; Deployable added: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts/solr-jetty-context.xml
+INFO  - 2013-06-04 20:58:30.491; org.eclipse.jetty.webapp.StandardDescriptorProcessor; NO JSP Support for /solr, did not find org.apache.jasper.servlet.JspServlet
+INFO  - 2013-06-04 20:58:30.543; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:58:30.544; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:58:30.579; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init()
+INFO  - 2013-06-04 20:58:30.623; org.apache.solr.core.SolrResourceLoader; JNDI not configured for solr (NoInitialContextEx)
+INFO  - 2013-06-04 20:58:30.624; org.apache.solr.core.SolrResourceLoader; solr home defaulted to 'solr/' (could not find system property or JNDI)
+INFO  - 2013-06-04 20:58:30.649; org.apache.solr.core.CoreContainer$Initializer; looking for solr config file: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/solr.xml
+INFO  - 2013-06-04 20:58:30.654; org.apache.solr.core.CoreContainer; New CoreContainer 1810542352
+INFO  - 2013-06-04 20:58:30.655; org.apache.solr.core.CoreContainer; Loading CoreContainer using Solr Home: 'solr/'
+INFO  - 2013-06-04 20:58:30.657; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/'
+INFO  - 2013-06-04 20:58:31.521; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting socketTimeout to: 0
+INFO  - 2013-06-04 20:58:31.522; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting urlScheme to: http://
+INFO  - 2013-06-04 20:58:31.523; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting connTimeout to: 0
+INFO  - 2013-06-04 20:58:31.528; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxConnectionsPerHost to: 20
+INFO  - 2013-06-04 20:58:31.529; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting corePoolSize to: 0
+INFO  - 2013-06-04 20:58:31.531; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maximumPoolSize to: 2147483647
+INFO  - 2013-06-04 20:58:31.532; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxThreadIdleTime to: 5
+INFO  - 2013-06-04 20:58:31.532; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting sizeOfQueue to: -1
+INFO  - 2013-06-04 20:58:31.533; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting fairnessPolicy to: false
+INFO  - 2013-06-04 20:58:31.548; org.apache.solr.client.solrj.impl.HttpClientUtil; Creating new http client, config:maxConnectionsPerHost=20&maxConnections=10000&socketTimeout=0&connTimeout=0&retry=false
+INFO  - 2013-06-04 20:58:31.843; org.apache.solr.core.CoreContainer; Registering Log Listener
+INFO  - 2013-06-04 20:58:31.900; org.apache.solr.core.CoreContainer; Creating SolrCore 'collection1' using instanceDir: solr/collection1
+INFO  - 2013-06-04 20:58:31.901; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/collection1/'
+INFO  - 2013-06-04 20:58:32.022; org.apache.solr.core.SolrConfig; Adding specified lib dirs to ClassLoader
+INFO  - 2013-06-04 20:58:32.027; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-core-0.7.2.jar' to classloader
+INFO  - 2013-06-04 20:58:32.027; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-dom-0.7.2.jar' to classloader
+INFO  - 2013-06-04 20:58:32.028; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcmail-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 20:58:32.028; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcprov-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 20:58:32.029; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/boilerpipe-1.1.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.029; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/commons-compress-1.4.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.030; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/dom4j-1.6.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.030; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/fontbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.031; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/icu4j-49.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.031; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/isoparser-1.0-RC-1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.032; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jdom-1.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.032; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jempbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.033; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/juniversalchardet-1.0.3.jar' to classloader
+INFO  - 2013-06-04 20:58:32.034; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/metadata-extractor-2.6.2.jar' to classloader
+INFO  - 2013-06-04 20:58:32.034; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/netcdf-4.2-min.jar' to classloader
+INFO  - 2013-06-04 20:58:32.035; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/pdfbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.035; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-3.8.jar' to classloader
+INFO  - 2013-06-04 20:58:32.036; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-3.8.jar' to classloader
+INFO  - 2013-06-04 20:58:32.036; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-schemas-3.8.jar' to classloader
+INFO  - 2013-06-04 20:58:32.037; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-scratchpad-3.8.jar' to classloader
+INFO  - 2013-06-04 20:58:32.037; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/rome-0.9.jar' to classloader
+INFO  - 2013-06-04 20:58:32.037; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tagsoup-1.2.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.038; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-core-1.3.jar' to classloader
+INFO  - 2013-06-04 20:58:32.038; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-parsers-1.3.jar' to classloader
+INFO  - 2013-06-04 20:58:32.039; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-core-0.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.039; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-tika-0.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.040; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xercesImpl-2.9.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.040; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xmlbeans-2.3.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.041; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xz-1.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.043; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-cell-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.045; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/attributes-binder-1.0.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.045; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/carrot2-mini-3.6.2.jar' to classloader
+INFO  - 2013-06-04 20:58:32.046; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/hppc-0.4.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.046; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-core-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 20:58:32.047; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-mapper-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 20:58:32.048; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-collections-1.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.048; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-math-0.6.jar' to classloader
+INFO  - 2013-06-04 20:58:32.049; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/simple-xml-2.6.4.jar' to classloader
+INFO  - 2013-06-04 20:58:32.050; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-clustering-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.052; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/jsonic-1.2.7.jar' to classloader
+INFO  - 2013-06-04 20:58:32.052; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/langdetect-1.1-20120112.jar' to classloader
+INFO  - 2013-06-04 20:58:32.054; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-langid-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.055; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-beanutils-1.7.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.056; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-collections-3.2.1.jar' to classloader
+INFO  - 2013-06-04 20:58:32.056; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-1.7.jar' to classloader
+INFO  - 2013-06-04 20:58:32.057; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-tools-2.0.jar' to classloader
+INFO  - 2013-06-04 20:58:32.058; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-velocity-4.3.0.jar' to classloader
+WARN  - 2013-06-04 20:58:32.059; org.apache.solr.core.SolrResourceLoader; Can't find (or read) directory to add to classloader: /non/existent/dir/yields/warning (resolved as: /non/existent/dir/yields/warning).
+INFO  - 2013-06-04 20:58:32.416; org.apache.solr.core.SolrConfig; Using Lucene MatchVersion: LUCENE_43
+INFO  - 2013-06-04 20:58:32.860; org.apache.solr.core.SolrConfig; Loaded SolrConfig: solrconfig.xml
+INFO  - 2013-06-04 20:58:32.875; org.apache.solr.schema.IndexSchema; Reading Solr Schema from schema.xml
+INFO  - 2013-06-04 20:58:33.050; org.apache.solr.schema.IndexSchema; Schema name=example
+INFO  - 2013-06-04 20:58:34.478; org.apache.solr.schema.IndexSchema; unique key field: id
+INFO  - 2013-06-04 20:58:34.706; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 20:58:34.723; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 20:58:35.020; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 20:58:35.034; org.apache.solr.core.SolrCore; [collection1] Opening new SolrCore at solr/collection1/, dataDir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/
+INFO  - 2013-06-04 20:58:35.037; org.apache.solr.core.JmxMonitoredMap; JMX monitoring is enabled. Adding Solr mbeans to JMX Server: com.sun.jmx.mbeanserver.JmxMBeanServer@70de484c
+INFO  - 2013-06-04 20:58:35.086; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for newSearcher: org.apache.solr.core.QuerySenderListener{queries=[]}
+INFO  - 2013-06-04 20:58:35.087; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for firstSearcher: org.apache.solr.core.QuerySenderListener{queries=[{q=static firstSearcher warming in solrconfig.xml}]}
+INFO  - 2013-06-04 20:58:35.095; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 20:58:35.114; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 20:58:35.115; org.apache.solr.core.SolrCore; New index directory detected: old=null new=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index/
+INFO  - 2013-06-04 20:58:35.116; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 20:58:35.135; org.apache.solr.core.SolrCore; created json: solr.JSONResponseWriter
+INFO  - 2013-06-04 20:58:35.135; org.apache.solr.core.SolrCore; adding lazy queryResponseWriter: solr.VelocityResponseWriter
+INFO  - 2013-06-04 20:58:35.136; org.apache.solr.core.SolrCore; created velocity: solr.VelocityResponseWriter
+INFO  - 2013-06-04 20:58:35.145; org.apache.solr.core.SolrCore; created xslt: solr.XSLTResponseWriter
+INFO  - 2013-06-04 20:58:35.146; org.apache.solr.response.XSLTResponseWriter; xsltCacheLifetimeSeconds=5
+INFO  - 2013-06-04 20:58:35.352; org.apache.solr.core.RequestHandlers; created /select: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.355; org.apache.solr.core.RequestHandlers; created /query: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.361; org.apache.solr.core.RequestHandlers; created /get: solr.RealTimeGetHandler
+INFO  - 2013-06-04 20:58:35.363; org.apache.solr.core.RequestHandlers; created /browse: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.372; org.apache.solr.core.RequestHandlers; created /update: solr.UpdateRequestHandler
+INFO  - 2013-06-04 20:58:35.378; org.apache.solr.core.RequestHandlers; created /update/json: solr.JsonUpdateRequestHandler
+INFO  - 2013-06-04 20:58:35.384; org.apache.solr.core.RequestHandlers; created /update/csv: solr.CSVRequestHandler
+INFO  - 2013-06-04 20:58:35.385; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 20:58:35.387; org.apache.solr.core.RequestHandlers; created /update/extract: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 20:58:35.388; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 20:58:35.395; org.apache.solr.core.RequestHandlers; created /analysis/field: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 20:58:35.396; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 20:58:35.396; org.apache.solr.core.RequestHandlers; created /analysis/document: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 20:58:35.401; org.apache.solr.core.RequestHandlers; created /admin/: solr.admin.AdminHandlers
+INFO  - 2013-06-04 20:58:35.409; org.apache.solr.core.RequestHandlers; created /admin/ping: solr.PingRequestHandler
+INFO  - 2013-06-04 20:58:35.416; org.apache.solr.core.RequestHandlers; created /debug/dump: solr.DumpRequestHandler
+INFO  - 2013-06-04 20:58:35.436; org.apache.solr.core.RequestHandlers; created /replication: solr.ReplicationHandler
+INFO  - 2013-06-04 20:58:35.437; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.438; org.apache.solr.core.RequestHandlers; created /spell: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.439; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.439; org.apache.solr.core.RequestHandlers; created /tvrh: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.440; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.444; org.apache.solr.core.RequestHandlers; created /terms: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.445; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.446; org.apache.solr.core.RequestHandlers; created /elevate: solr.SearchHandler
+INFO  - 2013-06-04 20:58:35.477; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:58:35.482; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:58:35.484; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:58:35.543; org.apache.solr.search.SolrIndexSearcher; Opening Searcher@42a60159 main
+INFO  - 2013-06-04 20:58:35.574; org.apache.solr.update.CommitTracker; Hard AutoCommit: if uncommited for 15000ms; 
+INFO  - 2013-06-04 20:58:35.575; org.apache.solr.update.CommitTracker; Soft AutoCommit: disabled
+INFO  - 2013-06-04 20:58:35.577; org.apache.solr.handler.component.SpellCheckComponent; Initializing spell checkers
+INFO  - 2013-06-04 20:58:35.591; org.apache.solr.spelling.DirectSolrSpellChecker; init: {name=default,field=text,classname=solr.DirectSolrSpellChecker,distanceMeasure=internal,accuracy=0.5,maxEdits=2,minPrefix=1,maxInspections=5,minQueryLength=4,maxQueryFrequency=0.01}
+INFO  - 2013-06-04 20:58:35.607; org.apache.solr.handler.component.SpellCheckComponent; No queryConverter defined, using default converter
+INFO  - 2013-06-04 20:58:35.611; org.apache.solr.handler.component.QueryElevationComponent; Loading QueryElevation from: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/conf/elevate.xml
+INFO  - 2013-06-04 20:58:35.895; org.apache.solr.handler.ReplicationHandler; Commits will be reserved for  10000
+INFO  - 2013-06-04 20:58:35.896; org.apache.solr.core.QuerySenderListener; QuerySenderListener sending requests to Searcher@42a60159 main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 20:58:35.974; org.apache.solr.core.SolrCore; [collection1] webapp=null path=null params={event=firstSearcher&q=static+firstSearcher+warming+in+solrconfig.xml&distrib=false} hits=0 status=0 QTime=74 
+INFO  - 2013-06-04 20:58:35.975; org.apache.solr.core.QuerySenderListener; QuerySenderListener done.
+INFO  - 2013-06-04 20:58:35.976; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: default
+INFO  - 2013-06-04 20:58:35.976; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: wordbreak
+INFO  - 2013-06-04 20:58:35.984; org.apache.solr.core.SolrCore; [collection1] Registered new searcher Searcher@42a60159 main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 20:58:35.993; org.apache.solr.core.CoreContainer; registering core: collection1
+INFO  - 2013-06-04 20:58:35.996; org.apache.solr.servlet.SolrDispatchFilter; user.dir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories
+INFO  - 2013-06-04 20:58:35.996; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init() done
+INFO  - 2013-06-04 20:58:36.068; org.eclipse.jetty.server.AbstractConnector; Started SocketConnector@0.0.0.0:8983
+INFO  - 2013-06-04 20:58:39.555; org.eclipse.jetty.server.Server; Graceful shutdown SocketConnector@0.0.0.0:8983
+INFO  - 2013-06-04 20:58:39.556; org.eclipse.jetty.server.Server; Graceful shutdown o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:58:40.561; org.apache.solr.core.CoreContainer; Shutting down CoreContainer instance=1810542352
+INFO  - 2013-06-04 20:58:40.579; org.apache.solr.core.SolrCore; [collection1]  CLOSING SolrCore org.apache.solr.core.SolrCore@6fd134fc
+INFO  - 2013-06-04 20:58:40.592; org.apache.solr.update.DirectUpdateHandler2; closing DirectUpdateHandler2{commits=0,autocommit maxTime=15000ms,autocommits=0,soft autocommits=0,optimizes=0,rollbacks=0,expungeDeletes=0,docsPending=0,adds=0,deletesById=0,deletesByQuery=0,errors=0,cumulative_adds=0,cumulative_deletesById=0,cumulative_deletesByQuery=0,cumulative_errors=0}
+INFO  - 2013-06-04 20:58:40.593; org.apache.solr.update.SolrCoreState; Closing SolrCoreState
+INFO  - 2013-06-04 20:58:40.594; org.apache.solr.update.DefaultSolrCoreState; SolrCoreState ref count has reached 0 - closing IndexWriter
+INFO  - 2013-06-04 20:58:40.594; org.apache.solr.update.DefaultSolrCoreState; closing IndexWriter with IndexWriterCloser
+INFO  - 2013-06-04 20:58:40.595; org.apache.solr.core.SolrCore; [collection1] Closing main searcher on request.
+INFO  - 2013-06-04 20:58:40.597; org.apache.solr.core.CachingDirectoryFactory; Closing NRTCachingDirectoryFactory - 2 directories currently being tracked
+INFO  - 2013-06-04 20:58:40.605; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index;done=false>>]
+INFO  - 2013-06-04 20:58:40.606; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 20:58:40.610; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data;done=false>>]
+INFO  - 2013-06-04 20:58:40.611; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 20:58:40.615; org.eclipse.jetty.server.handler.ContextHandler; stopped o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:58:40.670; org.eclipse.jetty.util.thread.ShutdownThread; shutdown already commenced
+INFO  - 2013-06-04 20:59:00.609; org.eclipse.jetty.server.Server; jetty-8.1.8.v20121106
+INFO  - 2013-06-04 20:59:00.664; org.eclipse.jetty.deploy.providers.ScanningAppProvider; Deployment monitor /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts at interval 0
+INFO  - 2013-06-04 20:59:00.685; org.eclipse.jetty.deploy.DeploymentManager; Deployable added: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts/solr-jetty-context.xml
+INFO  - 2013-06-04 20:59:02.805; org.eclipse.jetty.webapp.StandardDescriptorProcessor; NO JSP Support for /solr, did not find org.apache.jasper.servlet.JspServlet
+INFO  - 2013-06-04 20:59:02.861; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:59:02.862; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:59:02.894; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init()
+INFO  - 2013-06-04 20:59:02.930; org.apache.solr.core.SolrResourceLoader; JNDI not configured for solr (NoInitialContextEx)
+INFO  - 2013-06-04 20:59:02.931; org.apache.solr.core.SolrResourceLoader; solr home defaulted to 'solr/' (could not find system property or JNDI)
+INFO  - 2013-06-04 20:59:02.953; org.apache.solr.core.CoreContainer$Initializer; looking for solr config file: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/solr.xml
+INFO  - 2013-06-04 20:59:02.959; org.apache.solr.core.CoreContainer; New CoreContainer 1243851750
+INFO  - 2013-06-04 20:59:02.961; org.apache.solr.core.CoreContainer; Loading CoreContainer using Solr Home: 'solr/'
+INFO  - 2013-06-04 20:59:02.962; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/'
+INFO  - 2013-06-04 20:59:03.832; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting socketTimeout to: 0
+INFO  - 2013-06-04 20:59:03.833; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting urlScheme to: http://
+INFO  - 2013-06-04 20:59:03.834; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting connTimeout to: 0
+INFO  - 2013-06-04 20:59:03.839; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxConnectionsPerHost to: 20
+INFO  - 2013-06-04 20:59:03.839; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting corePoolSize to: 0
+INFO  - 2013-06-04 20:59:03.840; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maximumPoolSize to: 2147483647
+INFO  - 2013-06-04 20:59:03.841; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxThreadIdleTime to: 5
+INFO  - 2013-06-04 20:59:03.841; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting sizeOfQueue to: -1
+INFO  - 2013-06-04 20:59:03.842; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting fairnessPolicy to: false
+INFO  - 2013-06-04 20:59:03.857; org.apache.solr.client.solrj.impl.HttpClientUtil; Creating new http client, config:maxConnectionsPerHost=20&maxConnections=10000&socketTimeout=0&connTimeout=0&retry=false
+INFO  - 2013-06-04 20:59:04.151; org.apache.solr.core.CoreContainer; Registering Log Listener
+INFO  - 2013-06-04 20:59:04.194; org.apache.solr.core.CoreContainer; Creating SolrCore 'collection1' using instanceDir: solr/collection1
+INFO  - 2013-06-04 20:59:04.195; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/collection1/'
+INFO  - 2013-06-04 20:59:04.319; org.apache.solr.core.SolrConfig; Adding specified lib dirs to ClassLoader
+INFO  - 2013-06-04 20:59:04.324; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-core-0.7.2.jar' to classloader
+INFO  - 2013-06-04 20:59:04.324; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-dom-0.7.2.jar' to classloader
+INFO  - 2013-06-04 20:59:04.325; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcmail-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 20:59:04.325; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcprov-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 20:59:04.326; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/boilerpipe-1.1.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.326; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/commons-compress-1.4.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.327; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/dom4j-1.6.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.327; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/fontbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.328; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/icu4j-49.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.328; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/isoparser-1.0-RC-1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.329; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jdom-1.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.329; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jempbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.330; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/juniversalchardet-1.0.3.jar' to classloader
+INFO  - 2013-06-04 20:59:04.339; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/metadata-extractor-2.6.2.jar' to classloader
+INFO  - 2013-06-04 20:59:04.342; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/netcdf-4.2-min.jar' to classloader
+INFO  - 2013-06-04 20:59:04.343; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/pdfbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.344; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-3.8.jar' to classloader
+INFO  - 2013-06-04 20:59:04.344; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-3.8.jar' to classloader
+INFO  - 2013-06-04 20:59:04.344; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-schemas-3.8.jar' to classloader
+INFO  - 2013-06-04 20:59:04.345; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-scratchpad-3.8.jar' to classloader
+INFO  - 2013-06-04 20:59:04.345; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/rome-0.9.jar' to classloader
+INFO  - 2013-06-04 20:59:04.346; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tagsoup-1.2.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.346; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-core-1.3.jar' to classloader
+INFO  - 2013-06-04 20:59:04.347; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-parsers-1.3.jar' to classloader
+INFO  - 2013-06-04 20:59:04.347; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-core-0.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.348; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-tika-0.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.348; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xercesImpl-2.9.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.349; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xmlbeans-2.3.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.349; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xz-1.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.354; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-cell-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.356; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/attributes-binder-1.0.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.357; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/carrot2-mini-3.6.2.jar' to classloader
+INFO  - 2013-06-04 20:59:04.358; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/hppc-0.4.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.358; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-core-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 20:59:04.359; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-mapper-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 20:59:04.367; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-collections-1.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.368; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-math-0.6.jar' to classloader
+INFO  - 2013-06-04 20:59:04.368; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/simple-xml-2.6.4.jar' to classloader
+INFO  - 2013-06-04 20:59:04.371; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-clustering-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.372; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/jsonic-1.2.7.jar' to classloader
+INFO  - 2013-06-04 20:59:04.377; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/langdetect-1.1-20120112.jar' to classloader
+INFO  - 2013-06-04 20:59:04.379; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-langid-4.3.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.380; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-beanutils-1.7.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.380; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-collections-3.2.1.jar' to classloader
+INFO  - 2013-06-04 20:59:04.381; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-1.7.jar' to classloader
+INFO  - 2013-06-04 20:59:04.381; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-tools-2.0.jar' to classloader
+INFO  - 2013-06-04 20:59:04.383; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-velocity-4.3.0.jar' to classloader
+WARN  - 2013-06-04 20:59:04.383; org.apache.solr.core.SolrResourceLoader; Can't find (or read) directory to add to classloader: /non/existent/dir/yields/warning (resolved as: /non/existent/dir/yields/warning).
+INFO  - 2013-06-04 20:59:04.759; org.apache.solr.core.SolrConfig; Using Lucene MatchVersion: LUCENE_43
+INFO  - 2013-06-04 20:59:05.153; org.apache.solr.core.SolrConfig; Loaded SolrConfig: solrconfig.xml
+INFO  - 2013-06-04 20:59:05.222; org.apache.solr.schema.IndexSchema; Reading Solr Schema from schema.xml
+INFO  - 2013-06-04 20:59:05.390; org.apache.solr.schema.IndexSchema; Schema name=example
+INFO  - 2013-06-04 20:59:06.863; org.apache.solr.schema.IndexSchema; unique key field: id
+INFO  - 2013-06-04 20:59:07.086; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 20:59:07.103; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 20:59:07.398; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 20:59:07.412; org.apache.solr.core.SolrCore; [collection1] Opening new SolrCore at solr/collection1/, dataDir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/
+INFO  - 2013-06-04 20:59:07.414; org.apache.solr.core.JmxMonitoredMap; JMX monitoring is enabled. Adding Solr mbeans to JMX Server: com.sun.jmx.mbeanserver.JmxMBeanServer@115caf78
+INFO  - 2013-06-04 20:59:07.465; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for newSearcher: org.apache.solr.core.QuerySenderListener{queries=[]}
+INFO  - 2013-06-04 20:59:07.465; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for firstSearcher: org.apache.solr.core.QuerySenderListener{queries=[{q=static firstSearcher warming in solrconfig.xml}]}
+INFO  - 2013-06-04 20:59:07.473; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 20:59:07.492; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 20:59:07.493; org.apache.solr.core.SolrCore; New index directory detected: old=null new=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index/
+INFO  - 2013-06-04 20:59:07.494; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 20:59:07.513; org.apache.solr.core.SolrCore; created json: solr.JSONResponseWriter
+INFO  - 2013-06-04 20:59:07.514; org.apache.solr.core.SolrCore; adding lazy queryResponseWriter: solr.VelocityResponseWriter
+INFO  - 2013-06-04 20:59:07.515; org.apache.solr.core.SolrCore; created velocity: solr.VelocityResponseWriter
+INFO  - 2013-06-04 20:59:07.522; org.apache.solr.core.SolrCore; created xslt: solr.XSLTResponseWriter
+INFO  - 2013-06-04 20:59:07.522; org.apache.solr.response.XSLTResponseWriter; xsltCacheLifetimeSeconds=5
+INFO  - 2013-06-04 20:59:07.732; org.apache.solr.core.RequestHandlers; created /select: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.734; org.apache.solr.core.RequestHandlers; created /query: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.740; org.apache.solr.core.RequestHandlers; created /get: solr.RealTimeGetHandler
+INFO  - 2013-06-04 20:59:07.742; org.apache.solr.core.RequestHandlers; created /browse: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.750; org.apache.solr.core.RequestHandlers; created /update: solr.UpdateRequestHandler
+INFO  - 2013-06-04 20:59:07.756; org.apache.solr.core.RequestHandlers; created /update/json: solr.JsonUpdateRequestHandler
+INFO  - 2013-06-04 20:59:07.761; org.apache.solr.core.RequestHandlers; created /update/csv: solr.CSVRequestHandler
+INFO  - 2013-06-04 20:59:07.762; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 20:59:07.764; org.apache.solr.core.RequestHandlers; created /update/extract: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 20:59:07.764; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 20:59:07.765; org.apache.solr.core.RequestHandlers; created /analysis/field: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 20:59:07.765; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 20:59:07.765; org.apache.solr.core.RequestHandlers; created /analysis/document: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 20:59:07.770; org.apache.solr.core.RequestHandlers; created /admin/: solr.admin.AdminHandlers
+INFO  - 2013-06-04 20:59:07.777; org.apache.solr.core.RequestHandlers; created /admin/ping: solr.PingRequestHandler
+INFO  - 2013-06-04 20:59:07.783; org.apache.solr.core.RequestHandlers; created /debug/dump: solr.DumpRequestHandler
+INFO  - 2013-06-04 20:59:07.808; org.apache.solr.core.RequestHandlers; created /replication: solr.ReplicationHandler
+INFO  - 2013-06-04 20:59:07.808; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.817; org.apache.solr.core.RequestHandlers; created /spell: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.817; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.818; org.apache.solr.core.RequestHandlers; created /tvrh: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.818; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.819; org.apache.solr.core.RequestHandlers; created /terms: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.819; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.819; org.apache.solr.core.RequestHandlers; created /elevate: solr.SearchHandler
+INFO  - 2013-06-04 20:59:07.918; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:59:07.923; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:59:07.926; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 20:59:07.963; org.apache.solr.search.SolrIndexSearcher; Opening Searcher@20a29c3e main
+INFO  - 2013-06-04 20:59:07.996; org.apache.solr.update.CommitTracker; Hard AutoCommit: if uncommited for 15000ms; 
+INFO  - 2013-06-04 20:59:07.997; org.apache.solr.update.CommitTracker; Soft AutoCommit: disabled
+INFO  - 2013-06-04 20:59:08.008; org.apache.solr.handler.component.SpellCheckComponent; Initializing spell checkers
+INFO  - 2013-06-04 20:59:08.023; org.apache.solr.spelling.DirectSolrSpellChecker; init: {name=default,field=text,classname=solr.DirectSolrSpellChecker,distanceMeasure=internal,accuracy=0.5,maxEdits=2,minPrefix=1,maxInspections=5,minQueryLength=4,maxQueryFrequency=0.01}
+INFO  - 2013-06-04 20:59:08.038; org.apache.solr.handler.component.SpellCheckComponent; No queryConverter defined, using default converter
+INFO  - 2013-06-04 20:59:08.042; org.apache.solr.handler.component.QueryElevationComponent; Loading QueryElevation from: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/conf/elevate.xml
+INFO  - 2013-06-04 20:59:08.125; org.apache.solr.handler.ReplicationHandler; Commits will be reserved for  10000
+INFO  - 2013-06-04 20:59:08.127; org.apache.solr.core.QuerySenderListener; QuerySenderListener sending requests to Searcher@20a29c3e main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 20:59:08.211; org.apache.solr.core.SolrCore; [collection1] webapp=null path=null params={event=firstSearcher&q=static+firstSearcher+warming+in+solrconfig.xml&distrib=false} hits=0 status=0 QTime=80 
+INFO  - 2013-06-04 20:59:08.212; org.apache.solr.core.QuerySenderListener; QuerySenderListener done.
+INFO  - 2013-06-04 20:59:08.212; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: default
+INFO  - 2013-06-04 20:59:08.213; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: wordbreak
+INFO  - 2013-06-04 20:59:08.221; org.apache.solr.core.SolrCore; [collection1] Registered new searcher Searcher@20a29c3e main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 20:59:08.229; org.apache.solr.core.CoreContainer; registering core: collection1
+INFO  - 2013-06-04 20:59:08.232; org.apache.solr.servlet.SolrDispatchFilter; user.dir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories
+INFO  - 2013-06-04 20:59:08.232; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init() done
+INFO  - 2013-06-04 20:59:08.300; org.eclipse.jetty.server.AbstractConnector; Started SocketConnector@0.0.0.0:8983
+INFO  - 2013-06-04 20:59:25.552; org.apache.solr.servlet.SolrDispatchFilter; [admin] webapp=null path=/admin/cores params={indexInfo=false&_=1370372365529&wt=json} status=0 QTime=4 
+INFO  - 2013-06-04 20:59:25.695; org.apache.solr.core.SolrCore; [collection1] webapp=/solr path=/admin/system params={_=1370372365605&wt=json} status=0 QTime=59 
+INFO  - 2013-06-04 20:59:34.773; org.eclipse.jetty.server.Server; Graceful shutdown SocketConnector@0.0.0.0:8983
+INFO  - 2013-06-04 20:59:34.776; org.eclipse.jetty.server.Server; Graceful shutdown o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:59:35.789; org.apache.solr.core.CoreContainer; Shutting down CoreContainer instance=1243851750
+INFO  - 2013-06-04 20:59:35.799; org.apache.solr.core.SolrCore; [collection1]  CLOSING SolrCore org.apache.solr.core.SolrCore@fedc5be
+INFO  - 2013-06-04 20:59:35.902; org.apache.solr.update.DirectUpdateHandler2; closing DirectUpdateHandler2{commits=0,autocommit maxTime=15000ms,autocommits=0,soft autocommits=0,optimizes=0,rollbacks=0,expungeDeletes=0,docsPending=0,adds=0,deletesById=0,deletesByQuery=0,errors=0,cumulative_adds=0,cumulative_deletesById=0,cumulative_deletesByQuery=0,cumulative_errors=0}
+INFO  - 2013-06-04 20:59:35.903; org.apache.solr.update.SolrCoreState; Closing SolrCoreState
+INFO  - 2013-06-04 20:59:35.904; org.apache.solr.update.DefaultSolrCoreState; SolrCoreState ref count has reached 0 - closing IndexWriter
+INFO  - 2013-06-04 20:59:35.904; org.apache.solr.update.DefaultSolrCoreState; closing IndexWriter with IndexWriterCloser
+INFO  - 2013-06-04 20:59:35.915; org.apache.solr.core.SolrCore; [collection1] Closing main searcher on request.
+INFO  - 2013-06-04 20:59:35.917; org.apache.solr.core.CachingDirectoryFactory; Closing NRTCachingDirectoryFactory - 2 directories currently being tracked
+INFO  - 2013-06-04 20:59:35.919; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data;done=false>>]
+INFO  - 2013-06-04 20:59:35.920; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 20:59:35.920; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index;done=false>>]
+INFO  - 2013-06-04 20:59:35.921; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 20:59:35.930; org.eclipse.jetty.server.handler.ContextHandler; stopped o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 20:59:35.988; org.eclipse.jetty.util.thread.ShutdownThread; shutdown already commenced
+INFO  - 2013-06-04 21:02:22.368; org.eclipse.jetty.server.Server; jetty-8.1.8.v20121106
+INFO  - 2013-06-04 21:02:22.423; org.eclipse.jetty.deploy.providers.ScanningAppProvider; Deployment monitor /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts at interval 0
+INFO  - 2013-06-04 21:02:22.450; org.eclipse.jetty.deploy.DeploymentManager; Deployable added: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/contexts/solr-jetty-context.xml
+INFO  - 2013-06-04 21:02:24.426; org.eclipse.jetty.webapp.StandardDescriptorProcessor; NO JSP Support for /solr, did not find org.apache.jasper.servlet.JspServlet
+INFO  - 2013-06-04 21:02:24.488; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 21:02:24.489; org.eclipse.jetty.server.handler.ContextHandler; started o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 21:02:24.521; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init()
+INFO  - 2013-06-04 21:02:24.558; org.apache.solr.core.SolrResourceLoader; JNDI not configured for solr (NoInitialContextEx)
+INFO  - 2013-06-04 21:02:24.559; org.apache.solr.core.SolrResourceLoader; solr home defaulted to 'solr/' (could not find system property or JNDI)
+INFO  - 2013-06-04 21:02:24.582; org.apache.solr.core.CoreContainer$Initializer; looking for solr config file: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/solr.xml
+INFO  - 2013-06-04 21:02:24.589; org.apache.solr.core.CoreContainer; New CoreContainer 1810542352
+INFO  - 2013-06-04 21:02:24.590; org.apache.solr.core.CoreContainer; Loading CoreContainer using Solr Home: 'solr/'
+INFO  - 2013-06-04 21:02:24.592; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/'
+INFO  - 2013-06-04 21:02:25.447; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting socketTimeout to: 0
+INFO  - 2013-06-04 21:02:25.447; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting urlScheme to: http://
+INFO  - 2013-06-04 21:02:25.448; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting connTimeout to: 0
+INFO  - 2013-06-04 21:02:25.453; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxConnectionsPerHost to: 20
+INFO  - 2013-06-04 21:02:25.454; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting corePoolSize to: 0
+INFO  - 2013-06-04 21:02:25.454; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maximumPoolSize to: 2147483647
+INFO  - 2013-06-04 21:02:25.455; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting maxThreadIdleTime to: 5
+INFO  - 2013-06-04 21:02:25.455; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting sizeOfQueue to: -1
+INFO  - 2013-06-04 21:02:25.456; org.apache.solr.handler.component.HttpShardHandlerFactory; Setting fairnessPolicy to: false
+INFO  - 2013-06-04 21:02:25.479; org.apache.solr.client.solrj.impl.HttpClientUtil; Creating new http client, config:maxConnectionsPerHost=20&maxConnections=10000&socketTimeout=0&connTimeout=0&retry=false
+INFO  - 2013-06-04 21:02:25.751; org.apache.solr.core.CoreContainer; Registering Log Listener
+INFO  - 2013-06-04 21:02:25.811; org.apache.solr.core.CoreContainer; Creating SolrCore 'collection1' using instanceDir: solr/collection1
+INFO  - 2013-06-04 21:02:25.812; org.apache.solr.core.SolrResourceLoader; new SolrResourceLoader for directory: 'solr/collection1/'
+INFO  - 2013-06-04 21:02:25.929; org.apache.solr.core.SolrConfig; Adding specified lib dirs to ClassLoader
+INFO  - 2013-06-04 21:02:25.934; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-core-0.7.2.jar' to classloader
+INFO  - 2013-06-04 21:02:25.934; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/apache-mime4j-dom-0.7.2.jar' to classloader
+INFO  - 2013-06-04 21:02:25.935; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcmail-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 21:02:25.935; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/bcprov-jdk15-1.45.jar' to classloader
+INFO  - 2013-06-04 21:02:25.936; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/boilerpipe-1.1.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.936; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/commons-compress-1.4.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.937; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/dom4j-1.6.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.937; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/fontbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.938; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/icu4j-49.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.938; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/isoparser-1.0-RC-1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.939; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jdom-1.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.939; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/jempbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.940; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/juniversalchardet-1.0.3.jar' to classloader
+INFO  - 2013-06-04 21:02:25.940; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/metadata-extractor-2.6.2.jar' to classloader
+INFO  - 2013-06-04 21:02:25.941; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/netcdf-4.2-min.jar' to classloader
+INFO  - 2013-06-04 21:02:25.941; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/pdfbox-1.7.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.942; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-3.8.jar' to classloader
+INFO  - 2013-06-04 21:02:25.942; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-3.8.jar' to classloader
+INFO  - 2013-06-04 21:02:25.943; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-ooxml-schemas-3.8.jar' to classloader
+INFO  - 2013-06-04 21:02:25.943; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/poi-scratchpad-3.8.jar' to classloader
+INFO  - 2013-06-04 21:02:25.944; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/rome-0.9.jar' to classloader
+INFO  - 2013-06-04 21:02:25.944; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tagsoup-1.2.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.945; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-core-1.3.jar' to classloader
+INFO  - 2013-06-04 21:02:25.945; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/tika-parsers-1.3.jar' to classloader
+INFO  - 2013-06-04 21:02:25.946; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-core-0.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.946; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/vorbis-java-tika-0.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.947; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xercesImpl-2.9.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.948; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xmlbeans-2.3.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.948; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/extraction/lib/xz-1.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.950; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-cell-4.3.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.956; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/attributes-binder-1.0.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.957; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/carrot2-mini-3.6.2.jar' to classloader
+INFO  - 2013-06-04 21:02:25.958; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/hppc-0.4.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.959; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-core-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 21:02:25.960; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/jackson-mapper-asl-1.7.4.jar' to classloader
+INFO  - 2013-06-04 21:02:25.961; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-collections-1.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.961; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/mahout-math-0.6.jar' to classloader
+INFO  - 2013-06-04 21:02:25.962; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/clustering/lib/simple-xml-2.6.4.jar' to classloader
+INFO  - 2013-06-04 21:02:25.964; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-clustering-4.3.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.966; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/jsonic-1.2.7.jar' to classloader
+INFO  - 2013-06-04 21:02:25.967; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/langid/lib/langdetect-1.1-20120112.jar' to classloader
+INFO  - 2013-06-04 21:02:25.969; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-langid-4.3.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.974; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-beanutils-1.7.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.974; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/commons-collections-3.2.1.jar' to classloader
+INFO  - 2013-06-04 21:02:25.975; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-1.7.jar' to classloader
+INFO  - 2013-06-04 21:02:25.975; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/contrib/velocity/lib/velocity-tools-2.0.jar' to classloader
+INFO  - 2013-06-04 21:02:25.977; org.apache.solr.core.SolrResourceLoader; Adding 'file:/Users/tailblues/progs/solrwork/solr-4.3.0/dist/solr-velocity-4.3.0.jar' to classloader
+WARN  - 2013-06-04 21:02:25.978; org.apache.solr.core.SolrResourceLoader; Can't find (or read) directory to add to classloader: /non/existent/dir/yields/warning (resolved as: /non/existent/dir/yields/warning).
+INFO  - 2013-06-04 21:02:26.355; org.apache.solr.core.SolrConfig; Using Lucene MatchVersion: LUCENE_43
+INFO  - 2013-06-04 21:02:26.741; org.apache.solr.core.SolrConfig; Loaded SolrConfig: solrconfig.xml
+INFO  - 2013-06-04 21:02:26.756; org.apache.solr.schema.IndexSchema; Reading Solr Schema from schema.xml
+INFO  - 2013-06-04 21:02:26.914; org.apache.solr.schema.IndexSchema; Schema name=example
+INFO  - 2013-06-04 21:02:28.364; org.apache.solr.schema.IndexSchema; unique key field: id
+INFO  - 2013-06-04 21:02:28.606; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 21:02:28.623; org.apache.solr.schema.FileExchangeRateProvider; Reloading exchange rates from file currency.xml
+INFO  - 2013-06-04 21:02:28.949; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 21:02:28.968; org.apache.solr.core.SolrCore; [collection1] Opening new SolrCore at solr/collection1/, dataDir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/
+INFO  - 2013-06-04 21:02:28.970; org.apache.solr.core.JmxMonitoredMap; JMX monitoring is enabled. Adding Solr mbeans to JMX Server: com.sun.jmx.mbeanserver.JmxMBeanServer@13bb6020
+INFO  - 2013-06-04 21:02:29.021; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for newSearcher: org.apache.solr.core.QuerySenderListener{queries=[]}
+INFO  - 2013-06-04 21:02:29.022; org.apache.solr.core.SolrCore; [collection1] Added SolrEventListener for firstSearcher: org.apache.solr.core.QuerySenderListener{queries=[{q=static firstSearcher warming in solrconfig.xml}]}
+INFO  - 2013-06-04 21:02:29.029; org.apache.solr.core.SolrCore; solr.NRTCachingDirectoryFactory
+INFO  - 2013-06-04 21:02:29.049; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 21:02:29.050; org.apache.solr.core.SolrCore; New index directory detected: old=null new=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index/
+INFO  - 2013-06-04 21:02:29.051; org.apache.solr.core.CachingDirectoryFactory; return new directory for /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 21:02:29.071; org.apache.solr.core.SolrCore; created json: solr.JSONResponseWriter
+INFO  - 2013-06-04 21:02:29.071; org.apache.solr.core.SolrCore; adding lazy queryResponseWriter: solr.VelocityResponseWriter
+INFO  - 2013-06-04 21:02:29.073; org.apache.solr.core.SolrCore; created velocity: solr.VelocityResponseWriter
+INFO  - 2013-06-04 21:02:29.080; org.apache.solr.core.SolrCore; created xslt: solr.XSLTResponseWriter
+INFO  - 2013-06-04 21:02:29.081; org.apache.solr.response.XSLTResponseWriter; xsltCacheLifetimeSeconds=5
+INFO  - 2013-06-04 21:02:29.317; org.apache.solr.core.RequestHandlers; created /select: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.319; org.apache.solr.core.RequestHandlers; created /query: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.326; org.apache.solr.core.RequestHandlers; created /get: solr.RealTimeGetHandler
+INFO  - 2013-06-04 21:02:29.329; org.apache.solr.core.RequestHandlers; created /browse: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.339; org.apache.solr.core.RequestHandlers; created /update: solr.UpdateRequestHandler
+INFO  - 2013-06-04 21:02:29.348; org.apache.solr.core.RequestHandlers; created /update/json: solr.JsonUpdateRequestHandler
+INFO  - 2013-06-04 21:02:29.364; org.apache.solr.core.RequestHandlers; created /update/csv: solr.CSVRequestHandler
+INFO  - 2013-06-04 21:02:29.364; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 21:02:29.374; org.apache.solr.core.RequestHandlers; created /update/extract: solr.extraction.ExtractingRequestHandler
+INFO  - 2013-06-04 21:02:29.375; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 21:02:29.376; org.apache.solr.core.RequestHandlers; created /analysis/field: solr.FieldAnalysisRequestHandler
+INFO  - 2013-06-04 21:02:29.377; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 21:02:29.378; org.apache.solr.core.RequestHandlers; created /analysis/document: solr.DocumentAnalysisRequestHandler
+INFO  - 2013-06-04 21:02:29.383; org.apache.solr.core.RequestHandlers; created /admin/: solr.admin.AdminHandlers
+INFO  - 2013-06-04 21:02:29.396; org.apache.solr.core.RequestHandlers; created /admin/ping: solr.PingRequestHandler
+INFO  - 2013-06-04 21:02:29.421; org.apache.solr.core.RequestHandlers; created /debug/dump: solr.DumpRequestHandler
+INFO  - 2013-06-04 21:02:29.453; org.apache.solr.core.RequestHandlers; created /replication: solr.ReplicationHandler
+INFO  - 2013-06-04 21:02:29.454; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.454; org.apache.solr.core.RequestHandlers; created /spell: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.455; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.455; org.apache.solr.core.RequestHandlers; created /tvrh: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.456; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.456; org.apache.solr.core.RequestHandlers; created /terms: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.456; org.apache.solr.core.RequestHandlers; adding lazy requestHandler: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.457; org.apache.solr.core.RequestHandlers; created /elevate: solr.SearchHandler
+INFO  - 2013-06-04 21:02:29.498; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 21:02:29.503; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 21:02:29.505; org.apache.solr.handler.loader.XMLLoader; xsltCacheLifetimeSeconds=60
+INFO  - 2013-06-04 21:02:29.541; org.apache.solr.search.SolrIndexSearcher; Opening Searcher@2c5af885 main
+INFO  - 2013-06-04 21:02:29.574; org.apache.solr.update.CommitTracker; Hard AutoCommit: if uncommited for 15000ms; 
+INFO  - 2013-06-04 21:02:29.575; org.apache.solr.update.CommitTracker; Soft AutoCommit: disabled
+INFO  - 2013-06-04 21:02:29.578; org.apache.solr.handler.component.SpellCheckComponent; Initializing spell checkers
+INFO  - 2013-06-04 21:02:29.593; org.apache.solr.spelling.DirectSolrSpellChecker; init: {name=default,field=text,classname=solr.DirectSolrSpellChecker,distanceMeasure=internal,accuracy=0.5,maxEdits=2,minPrefix=1,maxInspections=5,minQueryLength=4,maxQueryFrequency=0.01}
+INFO  - 2013-06-04 21:02:29.608; org.apache.solr.handler.component.SpellCheckComponent; No queryConverter defined, using default converter
+INFO  - 2013-06-04 21:02:29.612; org.apache.solr.handler.component.QueryElevationComponent; Loading QueryElevation from: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/conf/elevate.xml
+INFO  - 2013-06-04 21:02:29.904; org.apache.solr.handler.ReplicationHandler; Commits will be reserved for  10000
+INFO  - 2013-06-04 21:02:29.905; org.apache.solr.core.QuerySenderListener; QuerySenderListener sending requests to Searcher@2c5af885 main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 21:02:29.995; org.apache.solr.core.SolrCore; [collection1] webapp=null path=null params={event=firstSearcher&q=static+firstSearcher+warming+in+solrconfig.xml&distrib=false} hits=0 status=0 QTime=86 
+INFO  - 2013-06-04 21:02:29.996; org.apache.solr.core.QuerySenderListener; QuerySenderListener done.
+INFO  - 2013-06-04 21:02:29.996; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: default
+INFO  - 2013-06-04 21:02:29.997; org.apache.solr.handler.component.SpellCheckComponent$SpellCheckerListener; Loading spell index for spellchecker: wordbreak
+INFO  - 2013-06-04 21:02:30.005; org.apache.solr.core.SolrCore; [collection1] Registered new searcher Searcher@2c5af885 main{StandardDirectoryReader(segments_1:1)}
+INFO  - 2013-06-04 21:02:30.012; org.apache.solr.core.CoreContainer; registering core: collection1
+INFO  - 2013-06-04 21:02:30.015; org.apache.solr.servlet.SolrDispatchFilter; user.dir=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories
+INFO  - 2013-06-04 21:02:30.016; org.apache.solr.servlet.SolrDispatchFilter; SolrDispatchFilter.init() done
+INFO  - 2013-06-04 21:02:30.099; org.eclipse.jetty.server.AbstractConnector; Started SocketConnector@0.0.0.0:9911
+INFO  - 2013-06-04 21:02:41.595; org.eclipse.jetty.server.Server; Graceful shutdown SocketConnector@0.0.0.0:9911
+INFO  - 2013-06-04 21:02:41.597; org.eclipse.jetty.server.Server; Graceful shutdown o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 21:02:42.600; org.apache.solr.core.CoreContainer; Shutting down CoreContainer instance=1810542352
+INFO  - 2013-06-04 21:02:42.619; org.apache.solr.core.SolrCore; [collection1]  CLOSING SolrCore org.apache.solr.core.SolrCore@7529b3fd
+INFO  - 2013-06-04 21:02:42.639; org.apache.solr.update.DirectUpdateHandler2; closing DirectUpdateHandler2{commits=0,autocommit maxTime=15000ms,autocommits=0,soft autocommits=0,optimizes=0,rollbacks=0,expungeDeletes=0,docsPending=0,adds=0,deletesById=0,deletesByQuery=0,errors=0,cumulative_adds=0,cumulative_deletesById=0,cumulative_deletesByQuery=0,cumulative_errors=0}
+INFO  - 2013-06-04 21:02:42.640; org.apache.solr.update.SolrCoreState; Closing SolrCoreState
+INFO  - 2013-06-04 21:02:42.641; org.apache.solr.update.DefaultSolrCoreState; SolrCoreState ref count has reached 0 - closing IndexWriter
+INFO  - 2013-06-04 21:02:42.641; org.apache.solr.update.DefaultSolrCoreState; closing IndexWriter with IndexWriterCloser
+INFO  - 2013-06-04 21:02:42.648; org.apache.solr.core.SolrCore; [collection1] Closing main searcher on request.
+INFO  - 2013-06-04 21:02:42.650; org.apache.solr.core.CachingDirectoryFactory; Closing NRTCachingDirectoryFactory - 2 directories currently being tracked
+INFO  - 2013-06-04 21:02:42.657; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data;done=false>>]
+INFO  - 2013-06-04 21:02:42.657; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data
+INFO  - 2013-06-04 21:02:42.658; org.apache.solr.core.CachingDirectoryFactory; looking to close /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index [CachedDir<<refCount=0;path=/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index;done=false>>]
+INFO  - 2013-06-04 21:02:42.658; org.apache.solr.core.CachingDirectoryFactory; Closing directory: /Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr/collection1/data/index
+INFO  - 2013-06-04 21:02:42.663; org.eclipse.jetty.server.handler.ContextHandler; stopped o.e.j.w.WebAppContext{/solr,file:/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/solr-webapp/webapp/},/Users/tailblues/progs/solrwork/solr-4.3.0/gigaword_stories/webapps/solr.war
+INFO  - 2013-06-04 21:02:42.721; org.eclipse.jetty.util.thread.ShutdownThread; shutdown already commenced
