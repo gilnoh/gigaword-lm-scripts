@@ -43,8 +43,13 @@ $solr->add(\@docs);
 #     print $doc->value_for( $name ); 
 # }
 
-my $query  = WebService::Solr::Query->new( { article => ['among', 'test', 'driver', 'virus', 'stone', 'horses'] } );
-my $response = $solr->search ( $query ); 
+#my $query = WebService::Solr::Query->new ( {-default => 'driver bus'} ); 
+# --> this will search a "phrase"
+# the following will search with "ORs"
+my $query = WebService::Solr::Query->new ( { -default => ['driver', 'bus', 'stone'] }); 
+my $query_options =  {rows => "10000"}; # maximum number of returns 
+
+my $response = $solr->search ( $query, $query_options ); 
 for my $doc ( $response->docs ) {
     print $doc->value_for( 'id' ), "\t";
     print $doc->value_for( 'article' ), "\n"; 
