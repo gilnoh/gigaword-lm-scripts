@@ -57,9 +57,8 @@ for my $doc ( $response->docs ) {
 
 
 END {
-
-#    $solr->delete_by_id($id1); 
-#    $solr->delete_by_id($id2); 
+    $solr->delete_by_id($id1); 
+    $solr->delete_by_id($id2); 
 }
 
 
