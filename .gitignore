@@ -9,4 +9,6 @@ stdout
 stderr
 *.csv
 *per_doc.txt
+solr-4.3.0/
+*.log
 
