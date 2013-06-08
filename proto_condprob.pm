@@ -11,6 +11,11 @@ use octave_call;
 use threads; 
 use Carp; 
 
+use WebService::Solr; 
+use WebService::Solr::Document; 
+use WebService::Solr::Query; 
+
+# to be removed: plucene 
 use Plucene; 
 use Plucene::Document; 
 use Plucene::Document::Field; 
@@ -22,9 +27,11 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 # some globals 
+# let's assume local host 
+our $SOLR_URL = "http://localhost:9911/solr"; 
 our $COLLECTION_MODEL = "./models/collection/collection.model"; 
 #our $DOCUMENT_MODELS = "./models/document/afp_eng_2009/*.model"; 
 our $DOCUMENT_MODELS_DIR = "./models/document"; 
@@ -390,6 +397,45 @@ sub get_subdirs
     return @subdir; 
 }
 
+# sole_query($text_str) 
+# gets a (already tokenized) string, and query SOLR; 
+# returns: my ($aref_doc_ids); 
+
+sub solr_query
+{
+    my $query_str = $_[0]; 
+    
+    # prepare query terms 
+    $query_str =~ s/\"//g; 
+    $query_str =~ s/\'//g; # cases like "Amy's" can't happen, if it is properly tokenized. And all target documents are already tokenized. So. 
+    # $query_str =~ s/ and //g; # for special relation terms for Plucene::SEARCH::QUERY. 
+    # $query_str =~ s/ or //g; 
+    # $query_str =~ s/ not //g; 
+    # $query_str =~ s/ phrase //g; 
+    $query_str =~ s/,//g; 
+    $query_str =~ s/\n/ /g; 
+
+    my @term_list = split(/\s+/, $query_str); 
+
+    # prepare solr, and the query 
+    my $solr = WebService::Solr->new($SOLR_URL);
+    my $query = WebService::Solr::Query->new ( { -default => [@term_list] }); 
+    my $query_options =  {rows => "$APPROXIMATE_WITH_TOP_N_HITS"}; # maximum number of returns 
+
+    # sending query, if the port is not accessible, it will raise carp die
+    my $response = $solr->search ( $query, $query_options ); 
+    
+
+    my @result_id; 
+    for my $doc ( $response->docs ) {
+	# the response docs are already sorted with relevancy. 
+	push @result_id, $doc->value_for('id'); 
+    }
+
+    return \@result_id; 
+}
+
+
 
 # plucene_query($text_str) 
 # : a query method that query on Plucene index $DOCUMENT_INDEX_DIR 
@@ -406,10 +452,10 @@ sub plucene_query
     # remove any \" from query string 
     $query_str =~ s/\"//g; 
     $query_str =~ s/\'//g; # cases like "Amy's" can't happen, if it is properly tokenized. And all target documents are already tokenized. So. 
-    $query_str =~ s/and//g; # for special relation terms for Plucene::SEARCH::QUERY. 
-    $query_str =~ s/or//g; 
-    $query_str =~ s/not//g; 
-    $query_str =~ s/phrase//g; 
+    $query_str =~ s/ and //g; # for special relation terms for Plucene::SEARCH::QUERY. 
+    $query_str =~ s/ or //g; 
+    $query_str =~ s/ not //g; 
+    $query_str =~ s/ phrase //g; 
     $query_str =~ s/,//g; 
     $query_str =~ s/\n/ /g; 
       
