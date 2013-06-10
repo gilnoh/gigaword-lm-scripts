@@ -27,7 +27,7 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query get_path_from_docid plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index); 
 
 # some globals 
 # let's assume local host 
@@ -823,16 +823,212 @@ sub count_non_zero_element
     return $count; 
 }
 
-
-
-## TODO someday? 
-## for experiment to test impact of adding "one" or a set of "good
-## document". 
-## Input: \@text, \@hypo, 
-## and new evidence as P_doc(t), P_doc(h) for added evidence 
-sub add_evidence_to
+sub get_path_from_docid
 {
+    # note that : our $DOCUMENT_MODELS_DIR = "./models/document"; 
+    my $id = shift; 
+    die "invalid doc id: %id" unless ($id); 
+
+    $id =~ /(.+?)_(.+?)_(\d\d\d\d)(\d\d)(\d\d)\./; 
+    my $agency = $1; 
+    my $lang = $2; 
+    my $year = $3; 
+    my $month = $4; 
+    my $date = $5; 
+
+    die "something wrong with the id: $id" unless ($date); 
+
+    my $path = "/" . (lc ($agency)) . "_" . (lc ($lang)) . "_" . $year . $month . "/" . $date . "/"; 
     
+    $path = $DOCUMENT_MODELS_DIR . $path . $id; 
+    return $path; 
+}
+
+# SOLR based P_t_index 
+sub P_t_index
+{
+    # argument: text, lambda, collection model path, document model glob 
+    # out: a hash (model name, prob of given text produced from the model) 
+
+    my %result; # $result{"model_id"} = log prob of $text from 'model_id' 
+    
+    # argument copy & sanity check 
+    my $text = $_[0]; 
+    die unless ($text); 
+    if ($_[1]) { # lambda 
+	die unless ($_[1] >=0 and $_[1] <= 1); 
+	$LAMBDA = $_[1]; 
+    }
+    if ($_[2]) { # collection model (single file) 
+	die unless (-r $_[2]);
+	$COLLECTION_MODEL = $_[2]; 
+    }
+    if ($_[3]) { # document model path 
+	die unless (-e $_[3]); 
+	$DOCUMENT_MODELS_DIR = $_[3]; 
+    }
+
+    my $hits_aref = solr_query($text); 
+    print STDERR "Search hits returned.\n"; 
+
+    # sanity check 
+    my $hit_size = scalar (@{$hits_aref}); 
+    warn "$text resulted no hits in plucene index" unless ($hit_size); 
+
+    #my $total_doc_size; #deprecated. remove when all code ready. 
+
+    # prepare list of models 
+    my @document_model; 
+    
+    if ( $APPROXIMATE_WITH_TOP_N_HITS > 0 )
+    { 	# use top N only. 
+	my $n = 0; 
+	foreach (@{$hits_aref}) # hits_aref is already sorted with search hit score, top first. 
+	{
+	    my $docid = $_; 
+	    my $doc_full_path = get_path_from_docid($docid); 
+	    push @document_model, ($doc_full_path . ".model"); 
+	    $n++; 
+	    last if ($n >= $APPROXIMATE_WITH_TOP_N_HITS); 
+	}
+    }
+    else 
+    {   # use all of them. 
+	foreach (@{$hits_aref}) 
+	{
+	    my $docid = $_; 
+	    my $doc_full_path = get_path_from_docid($docid); 
+	    push @document_model, ($doc_full_path . ".model"); 
+	}
+    }
+    
+    undef $hits_aref; # not really needed but. 
+
+    # call P_coll() 
+    print STDERR "Calculating collection model logprob (to be interpolated)";  
+    my @r = P_coll($text); # return value already saved in global @collection_seq
+    my $coll_logprob = lambda_sum2(1, \@r, \@r); 
+    print STDERR $coll_logprob, "\n"; 
+
+    # for each model, call P_doc()     
+    print STDERR "Calculating per-document model logprobs for ", scalar(@document_model), " files \n"; 
+
+    # generate the threads, and run them with 1/number_thread array parts. 
+    my @thread; 
+    my $n = int ((scalar (@document_model)) / ($NUM_THREAD+0.0)); 
+    my $start = 0; 
+    my $end = $n-1; 
+
+    for (my $i=0; $i < $NUM_THREAD; $i++)
+    {
+	# dcode
+	#print STDERR "$start - $end\n"; 
+	#print STDERR "$document_model[$start] - $document_model[$end]\n"; 
+
+    	($thread[$i]) = threads->create(\&P_d_runner, @document_model[$start .. $end]); # () needed: array context. see http://perldoc.perl.org/threads.html#THREAD-CONTEXT
+
+    	# update start-end for the next array
+    	$start += $n; 
+    	$end = $start + $n - 1; 
+    	$end = ((scalar @document_model) -1) if (($i+1) == $NUM_THREAD -1); # last part special case
+    }
+       
+    # wait for threads to end. 
+    my %parts; 
+    for (my $i=0; $i < $NUM_THREAD; $i++)
+    {
+    	my %r = $thread[$i]->join(); 
+    	#print $r[0], "\t", $r[1], "\n"; 
+    	%parts = (%parts, %r); 
+    }
+    # sum up the results from the thread 
+    %result = %parts; 
+
+    # for debug code 
+    my $max_prob = P_doc($document_model[0]); 
+    my $cut_prob = 0; 
+    #if ($APPROXIMATE_WITH_TOP_N_HITS < (scalar @document_model))
+    my $last = $APPROXIMATE_WITH_TOP_N_HITS -1; 
+    $last = ($hit_size - 1) if ($last > ($hit_size - 1)); 
+    $cut_prob = P_doc($document_model[$last]); 
+
+    # now, fill in the prob of "no-hit" document models 
+    # first, calculate the minimum no-hit prob. 
+    my %final_result; 
+    my $min_prob; 
+    {
+	my @t; 
+	push @t, 0 foreach (@r); 
+	$min_prob = lambda_sum2($LAMBDA, \@t, \@r); 
+    }
+
+    # get all docmodel list 
+
+    print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n";     
+    print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
+    if ($max_prob < $cut_prob)
+    {
+	print STDERR "WARNING, WARNUNG, WARNING: maxprob was lower than cutprob, possible index/lucene bug\n"; 
+    }
+
+    if ( ((scalar @all_model) == 0) or ($all_model_top_path ne $DOCUMENT_MODELS_DIR)) # cached value not exist, or different 
+    {
+	@all_model = (); 
+	my @subdir = get_subdirs($DOCUMENT_MODELS_DIR); 
+	print STDERR "$DOCUMENT_MODELS_DIR has ", scalar (@subdir), " dirs (subdirs + itself) to follow;\n";
+	foreach my $d (@subdir)
+	{
+	    #print STDERR "$d: "; 
+	    my @ls = glob($d . "/*.model"); 
+	    #print STDERR scalar(@ls), " model files\n"; 
+	    
+	    # converting file name into standard form. 
+	    # so it is compatible with the file name in Index. 
+	    foreach (@ls) 
+	    {
+		s/\/\.\//\//g;  # /./ -> /
+	    }
+	    push @all_model, @ls; 
+	}
+	$all_model_top_path = $DOCUMENT_MODELS_DIR; 
+    }
+
+    #print "$_ \n" foreach (@document_model); 
+    #print "===***===\n"
+    #print "$_ \n" foreach (@all_model); 
+    foreach (@all_model)
+    {
+	if ($result{$_})
+	{
+	    $final_result{$_} = $result{$_} if ($result{$_}); 
+	}
+	else
+	{
+	    $final_result{$_} = $min_prob; 
+	}
+    }
+    # sanity check 
+    foreach (keys %result)
+    {
+	unless ($final_result{$_} == $result{$_}) #(exists $final_result{$_})
+	{
+	    die "Internal sanity check failure: model result found by index-fetching not found in the final result. File name match failure? Bad code? (Blame Gil for this.)\n" 
+	}
+    }
+
+    # Debug CODE 
+    # cutpoint average & all average 
+    if (0) #($DEBUG)
+    {
+	my @ca = values %result; 
+	print "average logprob from the cut point ", scalar (@ca), " doc-models:", mean(\@ca), "\n"; 
+	my @aa = values %final_result; 
+	print "average logprob from the all ", scalar(@aa)," (approximated, min-fill) doc-models:", mean(\@aa), "\n"; 
+    }
+
+    # done. return the result.
+    print STDERR "Per model probability now completed\n"; 
+    return \%final_result; 
 }
 
 

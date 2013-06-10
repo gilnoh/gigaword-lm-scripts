@@ -4,8 +4,8 @@ use strict;
 use warnings; 
 use octave_call; 
 use srilm_call; 
-use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query solr_query $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG $APPROXIMATE_WITH_TOP_N_HITS); 
-use Test::Simple tests => 3; 
+use proto_condprob qw(:DEFAULT set_num_thread P_coll P_doc plucene_query solr_query get_path_from_docid $COLLECTION_MODEL $DOCUMENT_INDEX_DIR $DEBUG $APPROXIMATE_WITH_TOP_N_HITS); 
+use Test::Simple tests => 5; 
 
 our $DEBUG = 2; 
 set_num_thread(2); 
@@ -61,4 +61,28 @@ for(my $i=1000; $i < 1005; $i++)
     print $q3_result_aref->[$i], "\n"; 
 }
 ok ((scalar @$q3_result_aref) == 4000); 
+
+my $path1 = get_path_from_docid("AFP_ENG_20100701.0001.story"); 
+my $path2 = get_path_from_docid("AFP_ENG_20100916.0268.story"); 
+
+print $path1, "\n"; 
+if (-d "./models/document/afp_eng_201007")
+{
+    ok (-r $path1)
+}
+else 
+{ 
+    ok (1); 
+}
+
+print $path2, "\n"; 
+if (-d "./models/document/afp_eng_201009")
+{
+    ok (-r $path2)
+}
+else 
+{ 
+    ok (1); 
+}
+    
 
