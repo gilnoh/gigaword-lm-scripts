@@ -25,14 +25,15 @@ my $t0 = Benchmark->new;
 #my %r = P_t_multithread($text, 0.5, "./models/collection/collection.model", "./models/document"); 
 ##P_h_t_multithread($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document/afp_eng_2010"); 
 
-## Some tweaking for P_t_multithread_index
 
+## testing new P_t_index, with P_t_multithread_index 
+#my $href = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index"); 
 my $href = P_t_index($text, 0.5, "./models/collection/collection.model", "./models/document"); 
 export_hash_to_file($href, "sketch_test.txt"); 
 
 # The following two lines need octave. 
-#my @a = values %{$href}; 
-#print "\naverage logprob from the doc-models:", mean(\@a), "\n"; 
+my @a = values %{$href}; 
+print "\naverage logprob from the doc-models:", mean(\@a), "\n"; 
 
 #P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
@@ -42,5 +43,4 @@ my $td = timediff($t1, $t0);
 $| = 1; # for _exit
 print "the code took:", timestr($td), "\n"; 
 
-_exit(0); 
 
