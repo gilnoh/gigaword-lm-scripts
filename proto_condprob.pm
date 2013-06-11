@@ -1032,6 +1032,103 @@ sub P_t_index
 }
 
 
+# SOLR based P(h|t). 
+sub P_h_t_index
+{
+    # argument: hypothesis, text, lambda, collection model path, document model top path 
+    # output (return): 
+    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+
+    # argument check 
+    my @args = @_; 
+    my $hypothesis = shift @args; 
+    my $text = shift @args; 
+    die "Something wrong, either hypothesis or text is missing\n" unless ($hypothesis and $text); 
+
+    # calculate P(t) for each document model 
+    print STDERR $text, "\n"; 
+    my $text_per_doc_href = P_t_index($text, @args); # remaining @args will be checked there 
+    # calculate P(t) overall 
+    my $P_t; 
+    my $nonOOV_len_t = count_non_zero_element (@collection_seq); # @collection_seq holds current collection seq. 
+
+    print STDERR "P(t) is : "; 
+    {
+	my @t = values %{$text_per_doc_href}; 
+	$P_t = mean(\@t); # (on uniform P(d) )
+    }
+    my $P_pw_t = $P_t / $nonOOV_len_t; 
+    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t\n"; 
+    # dcode 
+    export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt"); 
+
+    # calculate P(h) for each model 
+    print STDERR $hypothesis, "\n"; 
+    my $hypo_per_doc_href = P_t_index($hypothesis, @args); 
+
+    # calculate P(h) overall 
+    my $P_h; 
+    my $nonOOV_len_h = count_non_zero_element(@collection_seq); # holds current collection seq
+ 
+    print STDERR "P(h) is : ";
+    {
+	my @h = values %{$hypo_per_doc_href}; 
+	$P_h = mean(\@h); # (on uniform P(d) ) 
+    }
+    my $P_pw_h = $P_h / $nonOOV_len_h; 
+    print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n"; 
+    # dcode
+    export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt"); 
+
+    # calculate P(h|t,d) for each model 
+    # note this %weighted is *non-normalized weight* (for evidence) 
+    # and not the final prob. 
+    print STDERR "calculating weighted contribution (evidence) for each doc\n"; 
+    my %weighted; 
+    my @text;
+    my @hypo; 
+    {
+	foreach (keys %{$text_per_doc_href})
+	{
+	    $weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_}; 
+	    push @text, $text_per_doc_href->{$_}; 
+	    push @hypo, $hypo_per_doc_href->{$_}; 
+	}
+    }
+    # dcode
+    export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
+
+    # calculate P(h|t) overall (that is, P(h|t,d)) 
+    # WARNING: we made sure in the previous step, @text and @hypo sorted on the same 
+    # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
+    # This must be guaranteeded! 
+    print STDERR "Calculating the weighted sum\n"; 
+    my $P_h_given_t = weighted_sum(\@text, \@hypo); 
+    #print @text, @hypo;     #dcode 
+    my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h; 
+    print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n"; 
+    # calculate P(h|t) / P(h), as supporting measure. 
+    my $gain = ($P_h_given_t - $P_h); 
+    print STDERR "log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
+    print STDERR "Calculating the weighted sum for P(t|t)\n"; 
+    my $P_t_given_t = weighted_sum(\@text, \@text); 
+    my $P_pw_t_given_t = $P_t_given_t / $nonOOV_len_t; 
+
+    my $bb_value = 10 ** ($P_pw_h_given_t - $P_pw_t_given_t); 
+    print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n"; 
+    print STDERR "P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n"; 
+    print STDERR "(all calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
+    
+    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
+
+    #return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
+
+    # returning
+    # BB, PMI, P_pw_h_given_t, P_h_given_t - Ph, len_t, len_h, evidences_hash_ref
+    return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted}); 
+}
+
+
 1; 
 
 __END__
