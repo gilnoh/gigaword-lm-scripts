@@ -26,8 +26,8 @@ use Plucene::Index::Writer;
 use Plucene::QueryParser; 
 
 our @ISA = qw(Exporter); 
-our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query get_path_from_docid plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index); 
+our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index P_h_t_index P_t_index); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query get_path_from_docid plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 # some globals 
 # let's assume local host 

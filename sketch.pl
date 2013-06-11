@@ -2,7 +2,7 @@
 
 use warnings; 
 use strict; 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index); 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index); 
 use octave_call; 
 use Benchmark qw(:all); 
 use POSIX qw(_exit); 
@@ -28,14 +28,15 @@ my $t0 = Benchmark->new;
 
 ## testing new P_t_index, with P_t_multithread_index 
 #my $href = P_t_multithread_index($text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index"); 
-my $href = P_t_index($text, 0.5, "./models/collection/collection.model", "./models/document"); 
-export_hash_to_file($href, "sketch_test.txt"); 
+#my $href = P_t_index($text, 0.5, "./models/collection/collection.model", "./models/document"); 
+#export_hash_to_file($href, "sketch_test.txt"); 
 
 # The following two lines need octave. 
-my @a = values %{$href}; 
-print "\naverage logprob from the doc-models:", mean(\@a), "\n"; 
+#my @a = values %{$href}; 
+#print "\naverage logprob from the doc-models:", mean(\@a), "\n"; 
 
 #P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
+P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
 
 # time out
 my $t1 = Benchmark->new; 
