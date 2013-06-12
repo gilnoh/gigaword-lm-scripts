@@ -36,8 +36,8 @@ my $t0 = Benchmark->new;
 #print "\naverage logprob from the doc-models:", mean(\@a), "\n"; 
 
 #P_h_t_multithread_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
-#P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
-P_h_t_index($text, $hypothesis, 0.5, "./models/collection/collection.model", "./models/document");
+P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
+#P_h_t_index($text, $hypothesis, 0.5, "./models/collection/collection.model", "./models/document");
 #P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
 
 # time out

@@ -1109,23 +1109,30 @@ sub P_h_t_index
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n"; 
     # calculate P(h|t) / P(h), as supporting measure. 
     my $gain = ($P_h_given_t - $P_h); 
-    print STDERR "log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
+
     print STDERR "Calculating the weighted sum for P(t|t)\n"; 
     my $P_t_given_t = weighted_sum(\@text, \@text); 
     my $P_pw_t_given_t = $P_t_given_t / $nonOOV_len_t; 
 
+    my $per_word_minus = (10 ** $P_pw_h_given_t) - (10 ** $P_pw_h); 
     my $bb_value = 10 ** ($P_pw_h_given_t - $P_pw_t_given_t); 
     print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n"; 
-    print STDERR "P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n"; 
-    print STDERR "(all calculated from ", scalar(@text), " doc_model files, by using $APPROXIMATE_WITH_TOP_N_HITS top hits and fill-ins)\n"; 
+    print STDERR "===\n"; 
+    print STDERR "0] P(h|t) is: ", $P_h_given_t, "\n"; 
+    print STDERR "1] log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
+    print STDERR "2] P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n";
+    print STDERR "3] P_pw(h|t) - P_pw(h) (Minus) is : ", $per_word_minus, "\n"; 
+    print STDERR "(all calculated from ", scalar(@text), " doc_models, by approx with $APPROXIMATE_WITH_TOP_N_HITS top hits)\n"; 
+    print STDERR "===\n"; 
     
     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ). 
 
     #return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted}); 
 
     # returning
-    # BB, PMI, P_pw_h_given_t, P_h_given_t - Ph, len_t, len_h, evidences_hash_ref
-    return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted}); 
+    # BB, PMI, P_pw_h_given_t, P_pw(h|t) - P_pw(h), len_t, len_h, evidences_hash_ref
+    return ($bb_value, $gain, $P_pw_h_given_t, $per_word_minus, $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted}); 
+    #return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted}); 
 }
 
 
