@@ -1116,12 +1116,12 @@ sub P_h_t_index
 
     my $per_word_minus = (10 ** $P_pw_h_given_t) - (10 ** $P_pw_h); 
     my $bb_value = 10 ** ($P_pw_h_given_t - $P_pw_t_given_t); 
-    print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n"; 
+#    print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n"; 
     print STDERR "===\n"; 
-    print STDERR "0] P(h|t) is: ", $P_h_given_t, "\n"; 
-    print STDERR "1] log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
-    print STDERR "2] P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n";
-    print STDERR "3] P_pw(h|t) - P_pw(h) (Minus) is : ", $per_word_minus, "\n"; 
+    print STDERR "1] P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n";
+    print STDERR "2] log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n"; 
+    print STDERR "3] P_pw(h|t) (per word P(h|t)) is: ", $P_pw_h_given_t, "\n"; 
+    print STDERR "4] P_pw(h|t) - P_pw(h) (MINUS) is : ", $per_word_minus, "\n"; 
     print STDERR "(all calculated from ", scalar(@text), " doc_models, by approx with $APPROXIMATE_WITH_TOP_N_HITS top hits)\n"; 
     print STDERR "===\n"; 
     
