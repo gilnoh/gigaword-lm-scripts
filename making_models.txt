@@ -51,6 +51,7 @@ Time to index them for fast calculation.
 Command to run: 
 > perl indexing.pl ./models/document
 
+** TODO: update the text for indexing_SOLR.pl ** 
 Note: this will index all news documents (*.story) within the given
 dir and its direct sub dirs, with Plucene (lucene perl implementation) 
 Note: the resulting index will be stored in ./models_index. (This dir 

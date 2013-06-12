@@ -17,8 +17,14 @@ our $IGNORE_END_S = 1;
 
 my $MATFILE = "matrix4_weightedsum.csv"; 
 
+sub weighted_sum
+{
+#    return weighted_sum_octave(@_); 
+    return weighted_sum_native(@_); 
+}
+
 # all calculation will call the corresponding octave code...  
-sub weighted_sum($$) 
+sub weighted_sum_octave($$) 
 {
     # weighted_sum(\@doc_logprob, \@seq_logprob) 
     # gets two (same-size) array of log prob.
@@ -54,17 +60,66 @@ sub weighted_sum($$)
     return $1; 
 }
 
-sub weighted_sum_native()
+sub weighted_sum_native
 {
     # weighted_sum(\@doc_logprob, \@seq_logprob) 
     # gets two (same-size) array of log prob.
     # @doc_loprob, @sequence_log_prob. 
     # Calls octave to do the weighted sum in logarithm. 
     # NOTE: both input and output are *log* probabilities. 
+    my $doc_logprob_aref = $_[0]; 
+    my $seq_logprob_aref = $_[1]; 
     
+    my $result = 0; 
+    my $col1_sum = 0; 
+ 
+    for (my $i=0; $i < scalar (@{$doc_logprob_aref}); $i++)
+    {
+	my $doc_logprob = $doc_logprob_aref->[$i]; 
+	my $seq_logprob = $seq_logprob_aref->[$i]; 
+	my $this_log_prob = $doc_logprob + $seq_logprob; 
+	
+	if ($result == 0)
+	{
+	    $result = $this_log_prob; 
+	}
+	else
+	{
+	    $result = logprob_sum($result, $this_log_prob); 
+	}
 
+	if ($col1_sum == 0)
+	{
+	    $col1_sum = $doc_logprob; 
+	}
+	{
+	    $col1_sum = logprob_sum($col1_sum, $doc_logprob); 
+	}
+    }
+
+    my $weighted_sum = $result - $col1_sum; 
+    return $weighted_sum;  
 }
 
+# base 10, sum of log probability 
+sub logprob_sum
+{
+    my $a = $_[0]; 
+    my $b = $_[1]; 
+    
+    my $m; 
+    if ($a > $b)
+    {
+	$m = $a; 
+    }
+    else
+    {
+	$m = $b; 
+    }
+
+    my $logprob = log10 ( 10 ** ($a - $m) + 10 ** ($b - $m) ) + $m; 
+    return $logprob; 
+}
 
 sub mean($) 
 {
