@@ -3,6 +3,9 @@
 
 package srilm_call; 
 
+use threads; 
+use threads::shared; 
+
 use strict; 
 use warnings; 
 use Exporter;
@@ -58,8 +61,7 @@ sub call_ngram($;$$) {
     # call 
     #print STDERR $command; 
     my @result = `$command 2> /dev/null`; 
-    #print @result; 
-
+    return @result; 
 }
 
 sub read_debug3_p {

@@ -10,14 +10,17 @@ use Benchmark qw(:all);
 
 my $RUNNER_SCRIPT = "rte3_runner.pl"; 
 my $SIZE= 800;
-my $DEF_ARGS = "test"; 
+my $DEF_ARGS = "train"; 
 
 my @out; 
+
+my $start = 0; 
+$start = $ARGV[0] if ($ARGV[0]); 
 
 my $t0 = Benchmark->new; 
 
 # simply run them and collect the output 
-for (my $i=575; $i < ($SIZE + 1); $i++)
+for (my $i=$start; $i < ($SIZE + 1); $i++)
 {
     print STDERR ">>>>> $i <<<<<\n"; 
     my $stdout = `perl $RUNNER_SCRIPT $i $DEF_ARGS`; 

@@ -8,7 +8,7 @@ use Benchmark qw(:all);
 use POSIX qw(_exit); 
 
 our $DEBUG = 2; 
-set_num_thread(2); 
+set_num_thread(4); 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 

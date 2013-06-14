@@ -3,12 +3,13 @@
 
 package proto_condprob; 
 
+use threads; 
+use threads::shared; 
 use warnings; 
 use strict; 
 use Exporter; 
 use srilm_call qw(read_debug3_p call_ngram); 
 use octave_call;
-use threads; 
 use Carp; 
 
 use WebService::Solr; 
@@ -27,7 +28,7 @@ use Plucene::QueryParser;
 
 our @ISA = qw(Exporter); 
 our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index P_h_t_index P_t_index); 
-our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query get_path_from_docid plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query get_path_from_docid plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS $SOLR_URL export_hash_to_file); 
 
 # some globals 
 # let's assume local host 
@@ -237,7 +238,7 @@ sub P_d_runner
     my $count = 0; 
     foreach (@_)
     {
-	$r{$_} = P_doc($_); 
+	$r{$_} =  P_doc($_); 
 	print STDERR "." unless ($count++ % 100); 
     }
     return %r;

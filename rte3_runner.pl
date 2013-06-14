@@ -5,7 +5,7 @@ use warnings;
 use strict; 
 use POSIX qw(_exit); 
 use Benchmark qw(:all); 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
 
 my $TRAINFILE = "./testdata/English_dev.xml"; 
 my $TESTFILE = "./testdata/English_test.xml"; 
@@ -27,8 +27,9 @@ else
 }
 
 # PARAMETERS to set (for proto_condprob.pm) 
-our $DEBUG=2; # well, turn it on for quality check. 
+our $DEBUG=0; # well, turn it on for quality check. 
 set_num_thread(2);  
+our $SOLR_URL = "http://localhost:9911/solr"; 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 # time in 
@@ -54,15 +55,14 @@ my $hypo = call_splitta($h_aref->[$id]);
 
 my ($bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h, $weighted_href) = P_h_t_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document");
 
-$| = 1; 
+#$| = 1; 
 print "$ARGV[0]|GOLD:$d_aref->[$id]|, $bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h,\n";  
 
-#_exit(0); 
-# time out
+# time stamp
 my $t1 = Benchmark->new; 
 my $td = timediff($t1, $t0); 
 print STDERR "the code took:", timestr($td), "\n"; 
-_exit(0); 
+exit(0); 
 ###
 ###
 ###
@@ -91,10 +91,10 @@ sub call_splitta
     }
     close INFILE; 
 
-    ## two or more sentences: need a plan. For the moment, only the first sentence. ---> Both of them? hmm. 
     #$splitted =~ s/\n/ /g; # we will treat them as single big sentences 
     #$splitted =~ s/ , / /g; # ? and we ignoring commas? ,  
-    $splitted =~ s/.$//; # remove final dot ..  
+    $splitted =~ s/\.\n/\n/g; # remove end-of-line dots ... 
+
     return lc($splitted); 
 }
 
