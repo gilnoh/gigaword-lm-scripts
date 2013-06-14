@@ -14,7 +14,7 @@ my $DEF_ARGS = "train";
 
 my @out; 
 
-my $start = 0; 
+my $start = 1; 
 $start = $ARGV[0] if ($ARGV[0]); 
 
 my $t0 = Benchmark->new; 
