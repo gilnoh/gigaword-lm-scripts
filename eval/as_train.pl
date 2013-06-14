@@ -11,22 +11,27 @@ my @pmi;
 my @value_itself; 
 my @diff; 
 
-# todo 
-# my @tlen
-# my @hlen
-# my @t
-# my @ht
+my @len_t; 
+my @len_h; 
+my @h_t; 
+my @t; 
+my @h; 
 
 while (<STDIN>)
 {
     my $line = $_; 
-    $line =~ /^(.+?),(.+?),(.+?),(.+?),(.+?),/; 
+    $line =~ /^(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),(.+?),/; 
 
     my $marker = $1; 
     push @bb, $2;
     push @pmi, $3; 
     push @value_itself, $4; 
     push @diff, $5; 
+    push @len_t, $6; 
+    push @len_h, $7; 
+    push @h_t, $8; 
+    push @t, $9; 
+    push @h, $10; 
 
     if ($marker =~ /NONENTAILMENT/)
     {
@@ -41,7 +46,8 @@ while (<STDIN>)
 
 for (my $i=0; $i < scalar(@marker); $i ++)
 {
-    print "$marker[$i] 1:$bb[$i] 2:$pmi[$i] 3:$value_itself[$i] 4:$diff[$i]\n";
+    print "$marker[$i] 1:$bb[$i] 2:$pmi[$i] 3:$value_itself[$i] 4:$diff[$i] 5:$len_t[$i] 6:$len_h[$i] 7:$h_t[$i] 8:$t[$i] 9:$h[$i]\n";
+#    print "$marker[$i] 1:$bb[$i] 2:$pmi[$i] 3:$value_itself[$i] 4:$diff[$i]\n";
 #    print "$marker[$i] 1:$pmi[$i]\n"; 
 #    print "$marker[$i] 1:$diff[$i]\n"; 
 }
