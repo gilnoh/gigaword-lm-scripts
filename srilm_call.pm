@@ -61,6 +61,7 @@ sub call_ngram($;$$) {
     # call 
     #print STDERR $command; 
     my @result = `$command 2> /dev/null`; 
+    #my @result = `$command`; 
     return @result; 
 }
 
