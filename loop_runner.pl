@@ -103,6 +103,13 @@ sub call_splitta
     }
     close INFILE; 
 
+    ## SPLITTA has some strange bugs. 
+    unless ($splitted)
+    {
+	print STDERR "SPLITTA FAIL: on $s, returned null\n"; 
+	$splitted = $s; # well, let's use string as it is....
+    }
+
     #$splitted =~ s/\n/ /g; # we will treat them as single big sentences 
     #$splitted =~ s/ , / /g; # ? and we ignoring commas? ,  
     $splitted =~ s/\.\n/\n/g; # remove end-of-line dots ... 
