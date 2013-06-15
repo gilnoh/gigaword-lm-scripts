@@ -4,7 +4,7 @@
 package proto_condprob; 
 
 use threads; 
-use threads::shared; 
+#use threads::shared; 
 use warnings; 
 use strict; 
 use Exporter; 

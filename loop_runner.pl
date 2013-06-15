@@ -1,6 +1,7 @@
 # this simple script gets one data file (RTE5 like EXCI format), and 
 # run P_h_t() over that problem, and outputs the result as a CSV file. 
 
+use forks; 
 use warnings; 
 use strict; 
 use POSIX qw(_exit); 
@@ -12,7 +13,7 @@ my $TEMP_DIR = "./temp"; # for splitta sentence splitter.
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
-set_num_thread(1);  
+set_num_thread(4);  
 our $SOLR_URL = "http://localhost:9911/solr"; 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
@@ -41,6 +42,7 @@ for(my $id = $start; $id < $end +1; $id ++)
 
 my $t1 = Benchmark->new; 
 my $td = timediff($t1, $t0); 
+print STDERR "In total for ", $end - $start + 1, " cases: ", timestr($td), "\n"; 
 
 #for(my $i=0; $i < scalar(@$t_aref); $i++)
 #{

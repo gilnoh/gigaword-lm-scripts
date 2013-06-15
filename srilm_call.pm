@@ -3,9 +3,6 @@
 
 package srilm_call; 
 
-use threads; 
-use threads::shared; 
-
 use strict; 
 use warnings; 
 use Exporter;
