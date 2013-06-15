@@ -28,7 +28,7 @@ else
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
-set_num_thread(2);  
+set_num_thread(1);  
 our $SOLR_URL = "http://localhost:9911/solr"; 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
