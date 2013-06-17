@@ -1,4 +1,4 @@
-* AFP2010 data 
+* AFP2010 data (   articles) 
 ** PMI 
 *** best boundaries 
 - DEV: 1.85 (0.5896) 
@@ -11,7 +11,7 @@
 - TEST: 
 *** actual result  
 
-* AFP2009-2010 data 
+* AFP2009-2010 data (   articles) 
 ** PMI
 *** best boundaries 
 - DEV: 2.4 (0.5833) 
@@ -27,7 +27,7 @@
 - MINUS 0.0016 on test: 0.5887 
 
 
-* AFP2007-2010 data 
+* AFP2007-2010 data (   articles) 
 ** PMI 
 *** best boundaries 
 - DEV: 1.9 (0.5995) 
