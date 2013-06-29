@@ -2,12 +2,13 @@
 
 use warnings; 
 use strict; 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index); 
+use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index $SOLR_URL); 
 use octave_call; 
 use Benchmark qw(:all); 
 use POSIX qw(_exit); 
 
 our $DEBUG = 2; 
+our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
 set_num_thread(4); 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
