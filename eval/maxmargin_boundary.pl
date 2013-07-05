@@ -58,7 +58,8 @@ foreach (@nont_gains)
     $line2 .= "$_ ,"; 
 }
 
-unless ($ARGV[1] =~ /minus|bb/)
+#unless ($ARGV[1] =~ /minus|bb/)
+unless(0)
 {
     `GNUTERM=X11 octave --eval "pkg load statistics; a = [$line1]; b= [$line2]; boxplot({a, b}); pause();"`; 
 }

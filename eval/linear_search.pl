@@ -8,15 +8,6 @@ my $unit = $ARGV[0];
 my $start = $ARGV[1]; 
 my $end = $ARGV[2]; 
 my $incr = $ARGV[3]; 
-
-my $ent_correct=0; 
-my $ent_wrong=0;
-my $nont_correct=0; 
-my $nont_wrong=0; 
-my $total_gold_ent = 0; 
-my $total_gold_nonent = 0; 
-my $total_ent_predict = 0; 
-my $total_nont_predict = 0; 
     
 my @result_lines; 
 while(<STDIN>)
@@ -46,6 +37,15 @@ for(@sorted_boundaries)
 
 sub get_accuracy
 {
+    my $ent_correct=0; 
+    my $ent_wrong=0;
+    my $nont_correct=0; 
+    my $nont_wrong=0; 
+    my $total_gold_ent = 0; 
+    my $total_gold_nonent = 0; 
+    my $total_ent_predict = 0; 
+    my $total_nont_predict = 0; 
+
     my @result_lines = @{$_[0]}; 
     my $unit = $_[1]; 
     my $boundary = $_[2]; 
@@ -119,9 +119,9 @@ sub get_accuracy
     my $accuracy = $up / $denom; 
      print "accuracy at $boundary, with $unit: $accuracy\n";  
 
-#    print "correct: ", $ent_correct + $nont_correct, "\n"; 
-#    print "wrong: ", $ent_wrong + $nont_wrong, "\n"; 
-#     print "total accuracy: $accuracy\n"; 
+    print "correct: ", $ent_correct + $nont_correct, "\n"; 
+    print "wrong: ", $ent_wrong + $nont_wrong, "\n"; 
+    print "total accuracy: $accuracy\n"; 
 #    print "precision on ENT: ", ($ent_correct / $total_ent_predict), "\n"; 
 #    print "recall on ENT: ", ($ent_correct / $total_gold_ent), "\n"; 
 #    print "precision on NONENT: ", ($nont_correct / $total_nont_predict), "\n";
