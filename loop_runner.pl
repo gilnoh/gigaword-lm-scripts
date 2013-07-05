@@ -17,11 +17,12 @@ set_num_thread(6);
 our $SOLR_URL = "http://localhost:9911/solr"; 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
-die "Usage: needs three arguments.\n\">perl loop_runner.pl [xml_rte5+_file] [start] [end]\n" unless ($ARGV[2]); 
+die "Usage: needs three arguments.\n\">perl loop_runner.pl [xml_rte5+_file] [start] [end] ([top_N])\n The fourth argument is an option; as number of top N hits\n" unless ($ARGV[2]); 
 
 my $target_file = $ARGV[0]; 
 my $start = $ARGV[1]; 
 my $end = $ARGV[2]; 
+$APPROXIMATE_WITH_TOP_N_HITS= $ARGV[3] if ($ARGV[3]); # only if it is given 
 
 unless (-r $target_file)
 {
