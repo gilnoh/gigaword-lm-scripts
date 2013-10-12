@@ -10,7 +10,7 @@ use Benchmark qw(:all);
 
 my $RUNNER_SCRIPT = "rte3_runner.pl"; 
 my $SIZE= 800;
-my $DEF_ARGS = "train"; 
+my $DEF_ARGS = "test"; 
 
 my @out; 
 

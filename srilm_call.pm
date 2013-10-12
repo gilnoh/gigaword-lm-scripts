@@ -59,6 +59,9 @@ sub call_ngram($;$$) {
     #print STDERR $command; 
     my @result = `$command 2> /dev/null`; 
     #my @result = `$command`; 
+
+    # sanity check 
+    die "\n ngram call fails, or problematic - no stdout from SRILM ngram. Check that commandline program ngram is in path \n" unless (@result); 
     return @result; 
 }
 
