@@ -644,10 +644,8 @@ sub P_t_multithread_index
     print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
     if ($max_prob < $cut_prob)
     {
-	print STDERR "WARNING, WARNUNG, WARNING: maxprob was lower than cutprob, possible index/lucene bug\n"; 
+	print STDERR "\t(maxprob was lower than cutprob, possible, but might mean cut was a bit pre-mature)\n"; 
     }
-
-
 
     if ( ((scalar @all_model) == 0) or ($all_model_top_path ne $DOCUMENT_MODELS_DIR)) # cached value not exist, or different 
     {
@@ -969,7 +967,7 @@ sub P_t_index
     print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n"; 
     if ($max_prob < $cut_prob)
     {
-	print STDERR "WARNING, WARNUNG, WARNING: maxprob was lower than cutprob, possible index/lucene bug\n"; 
+	print STDERR "(maxprob < cutprob: Okay, but might mean cut was a bit pre-mature)\n"; 
     }
 
     if ( ((scalar @all_model) == 0) or ($all_model_top_path ne $DOCUMENT_MODELS_DIR)) # cached value not exist, or different 

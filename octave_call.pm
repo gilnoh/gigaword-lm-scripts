@@ -20,7 +20,8 @@ my $MATFILE = "matrix4_weightedsum.csv";
 sub weighted_sum
 {
 #    return weighted_sum_octave(@_); 
-    return weighted_sum_native(@_); 
+#    return weighted_sum_native(@_); 
+    return weighted_sum_native2(@_); 
 }
 
 # all calculation will call the corresponding octave code...  
@@ -65,7 +66,6 @@ sub weighted_sum_native
     # weighted_sum(\@doc_logprob, \@seq_logprob) 
     # gets two (same-size) array of log prob.
     # @doc_loprob, @sequence_log_prob. 
-    # Calls octave to do the weighted sum in logarithm. 
     # NOTE: both input and output are *log* probabilities. 
     my $doc_logprob_aref = $_[0]; 
     my $seq_logprob_aref = $_[1]; 
@@ -96,10 +96,103 @@ sub weighted_sum_native
 	    $col1_sum = logprob_sum($col1_sum, $doc_logprob); 
 	}
     }
-
     my $weighted_sum = $result - $col1_sum; 
     return $weighted_sum;  
 }
+
+
+sub weighted_sum_native2
+{
+    # weighted_sum(\@doc_logprob, \@seq_logprob) 
+
+    # DIFF:
+    # why 2?: slightly faster version for specific cases: 
+    # if there is tons of "min_value" filled items, this code is 
+    # far faster than others. 
+    # (see main pm code for more description about min-value fill: 
+    # "fill in the prob of "no-hit" document models". ) 
+
+    # WHAT it does: 
+    # Gets two (same-size) array of log prob.
+    # @doc_loprob, @sequence_log_prob. 
+    # NOTE: both input and output are *log* probabilities. 
+
+
+    # get min on both. 
+    my $doc_logprob_aref = $_[0]; 
+    my $seq_logprob_aref = $_[1]; 
+    
+    my $doc_min=0; 
+    my $seq_min=0; 
+    foreach (@$doc_logprob_aref)	
+    {
+	$doc_min = $_ if ($_ < $doc_min ) 
+    }
+    foreach (@$seq_logprob_aref)
+    {
+	$seq_min = $_ if ($_ < $seq_min )
+    }
+    die "weighted_sum_native2: sanity check failure\n" if ($doc_min == 0 or $seq_min ==0);  # sanity check 
+
+    my $min_log_prob = $doc_min + $seq_min; 
+
+    
+    # main loop 
+    my $result = 0; 
+    my $col1_sum = 0; 
+ 
+    my $num_min_min_case = 0; # number of cases where doc_logprob == doc_min 
+                              # and seq_logprob == seq_min. 
+
+    for (my $i=0; $i < scalar (@{$doc_logprob_aref}); $i++)
+    {
+	my $doc_logprob = $doc_logprob_aref->[$i]; 
+	my $seq_logprob = $seq_logprob_aref->[$i]; 
+	my $this_log_prob = $doc_logprob + $seq_logprob; 
+
+	if (($doc_logprob == $doc_min) and ($seq_logprob == $seq_min))
+	{
+	    $num_min_min_case++; 
+	    next; 
+	}
+	
+	if ($result == 0)
+	{
+	    $result = $this_log_prob; 
+	}
+	else
+	{
+	    $result = logprob_sum($result, $this_log_prob); 
+	}
+
+	if ($col1_sum == 0)
+	{
+	    $col1_sum = $doc_logprob; 
+	}
+	{
+	    $col1_sum = logprob_sum($col1_sum, $doc_logprob); 
+	}
+    }
+
+    # okay. Now we have to add 
+    # a) num_min_min_case (times) min_log_prob 
+    #    to result, 
+    # b) num_min_min_case (times) doc_min
+    #    to col1_sum, 
+
+    # case a) 
+    my $val_a = log10($num_min_min_case) + $min_log_prob; 
+    $result = logprob_sum($result, $val_a); 
+
+    # case b)
+    my $val_b = log10($num_min_min_case) + $doc_min; 
+    $col1_sum = logprob_sum($col1_sum, $val_b); 
+ 
+    # now we have result and col1_sum. divide. (in log) 
+    my $weighted_sum = $result - $col1_sum; 
+    return $weighted_sum;  
+}
+
 
 # base 10, sum of log probability 
 sub logprob_sum
