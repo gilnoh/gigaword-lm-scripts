@@ -1082,20 +1082,31 @@ sub P_h_t_index
     # calculate P(h|t,d) for each model 
     # note this %weighted is *non-normalized weight* (for evidence) 
     # and not the final prob. 
-    print STDERR "calculating weighted contribution (evidence) for each doc\n"; 
+
+    if ($DEBUG)
+    {
+	print STDERR "calculating weighted contribution (evidence) for each doc\n"; 
+    }
+    
     my %weighted; 
     my @text;
     my @hypo; 
     {
 	foreach (keys %{$text_per_doc_href})
 	{
-	    $weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_}; 
+	    if ($DEBUG) # do only when debug flag is up 
+	    {
+		$weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_}; 
+	    }
 	    push @text, $text_per_doc_href->{$_}; 
 	    push @hypo, $hypo_per_doc_href->{$_}; 
 	}
     }
-    # dcode
-    export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
+    if ($DEBUG) # do only when debug flag is up. 
+    {
+	# dcode
+	export_hash_to_file(\%weighted, "PtPh_per_doc.txt"); 
+    }
 
     # calculate P(h|t) overall (that is, P(h|t,d)) 
     # WARNING: we made sure in the previous step, @text and @hypo sorted on the same 

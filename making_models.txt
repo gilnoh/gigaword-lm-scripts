@@ -40,7 +40,7 @@ Commands to run:
 Note: The model files (*.model) will be generated in the same
 directory where the story (news article, *.story) file is located,
 with the same name (*.story.model). (as binary SRILM ngram model) 
-Note: This also takes some time, according to the corpus size. 
+Note: This also takes SOME time, according to the corpus size. 
 
 ===
 4. Now the model files are ready. Collection-wide model on
@@ -74,6 +74,9 @@ command:
 > perl indexing_solr.pl "./models/document" 
 (the command checks each document and index each with SOLR.) 
 
+This will take some time. (but much faster than per-doc model
+generation.) 
+
 --- 
 
 Once it is all done, you can look into indexed (gigaword) documents by
@@ -82,28 +85,12 @@ visiting SOLR web interface.
 2) On the SOLR interface, click left tab "Core Admin" 
 3) Check number of documents indexed, under "Index", "numDocs". 
 
-=== 
-
-
-# Command to run: 
-# > perl indexing.pl ./models/document
-
-# ** TODO: update the text for indexing_SOLR.pl ** 
-# Note: this will index all news documents (*.story) within the given
-# dir and its direct sub dirs, with Plucene (lucene perl implementation) 
-# Note: the resulting index will be stored in ./models_index. (This dir 
-# can be changed within the script, but in that case, you should also
-# change the global DOCUMENT_INDEX_DIR in proto_condprob.pm. 
-
-# NOTE: If you want to keep multiple indexes --- rename the default
-# models_index into something else, and pass this path to the index
-# using methods. In that case, you have to pass the path (full arguments
-# for P_t and P_t_h index methods, and no longer rely on default index
-# paths). 
-
 ===
-5. Done. 
+5. All model preparation is done. Now run a test. 
 
-See next section (calc_cond_prob.txt?) for how to call the scripts 
-that uses the models. 
+> perl sketch.pl 
+
+This short code gives you minimal running example of calling codes to
+calculate P(text1 | text2). 
+
 
