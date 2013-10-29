@@ -12,9 +12,12 @@ our @EXPORT = qw(lambda_sum2 lambda_sum weighted_sum mean);
 my $OCTAVE_COMMAND="octave -q "; 
 my $OCTAVE_EVAL_OPTION = "--eval "; 
 my $WEIGHTED_SUM_FUNCTION = "weighted_sum"; 
-#my $WEIGHTED_SUM_FUNCTION = "reference_weightedsum";  # Even faster, but inaccurate with low values :-( 
-our $IGNORE_END_S = 1; 
+#my $WEIGHTED_SUM_FUNCTION = "reference_weightedsum";  # Even faster, but inaccurate with low values :-(
 
+#DEPRECATED (do not turn this on!) 
+our $IGNORE_END_S = 0; # if this is non-0, the last \s will be ignored...
+
+#DEPRECATED (octave call has been deprecated)
 my $MATFILE = "matrix4_weightedsum.csv"; 
 
 sub weighted_sum
