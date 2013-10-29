@@ -7,9 +7,10 @@ use octave_call;
 use Benchmark qw(:all); 
 use POSIX qw(_exit); 
 
-our $DEBUG = 2; 
+our $DEBUG = 0; 
 our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
-set_num_thread(4); 
+#set_num_thread(4); 
+set_num_thread(6); 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
@@ -44,7 +45,16 @@ P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./
 # time out
 my $t1 = Benchmark->new; 
 my $td = timediff($t1, $t0); 
-$| = 1; # for _exit
+#$| = 1; # for _exit
 print "the code took:", timestr($td), "\n"; 
 
+#exit() 
 
+# 2nd run, real, normal expected time for pairs. 
+
+P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
+
+my $t2 = Benchmark->new; 
+my $td = timediff($t2, $t1); 
+
+print "2nd time (the normal time) it took: ", timestr($td), "\n"; 
