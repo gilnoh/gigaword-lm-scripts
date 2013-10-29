@@ -807,6 +807,31 @@ sub P_h_t_multithread_index
 
 }
 
+
+##
+## Utility methods 
+## 
+
+# gets one log prob, returns perplexity of that. 
+# calc_ppl(-19.55, 6, 1) # logprob was -19.55, non OOV number of words were 6, and one sentence. 
+sub calc_ppl {
+    my $logprob = shift; 
+    my $count_non_oov_words = shift; 
+    my $count_sentences = shift; 
+    # ppl = 10^(-logprob/(words - OOVs + sentences))
+    # ppl1 = 10^(-logprob/(words - OOVs)) 
+    my $ppl = 10 ** (- $logprob / ($count_non_oov_words + $count_sentences)); 
+    return $ppl; 
+}
+
+sub count_sentence {
+    # count sentence of input. 
+    my $text = shift;  
+    # TODO 
+    # (as count of \n + 1?) 
+    return 1; 
+}
+
 sub log10 {
     my $n = shift;
     return log($n)/log(10);
@@ -843,7 +868,9 @@ sub get_path_from_docid
     return $path; 
 }
 
-# SOLR based P_t_index 
+
+## The latest, main methods based on SOLR-index. 
+## SOLR based P_t_index 
 sub P_t_index
 {
     # argument: text, lambda, collection model path, document model glob 
@@ -859,11 +886,11 @@ sub P_t_index
 	$LAMBDA = $_[1]; 
     }
     if ($_[2]) { # collection model (single file) 
-	die unless (-r $_[2]);
+	die "unable to open collection model file" unless (-r $_[2]);
 	$COLLECTION_MODEL = $_[2]; 
     }
     if ($_[3]) { # document model path 
-	die unless (-e $_[3]); 
+	die "document model path does not exist" unless (-e $_[3]); 
 	$DOCUMENT_MODELS_DIR = $_[3]; 
     }
 
@@ -907,7 +934,8 @@ sub P_t_index
     print STDERR "Calculating collection model logprob (to be interpolated)";  
     my @r = P_coll($text); # return value already saved in global @collection_seq
     my $coll_logprob = lambda_sum2(1, \@r, \@r); 
-    print STDERR $coll_logprob, "\n"; 
+    print STDERR $coll_logprob, "\t"; 
+    print STDERR "Perplexity is ", calc_ppl($coll_logprob, count_non_zero_element(@collection_seq), count_sentence($text)), "\n";  
 
     # for each model, call P_doc()     
     print STDERR "Calculating per-document model logprobs for ", scalar(@document_model), " files \n"; 
@@ -1057,7 +1085,8 @@ sub P_h_t_index
 	$P_t = mean(\@t); # (on uniform P(d) )
     }
     my $P_pw_t = $P_t / $nonOOV_len_t; 
-    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t\n"; 
+    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t,"; 
+    print STDERR "Perplexity is ", calc_ppl($P_t, $nonOOV_len_t, count_sentence($text)), "\n";  
     # dcode 
     export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt"); 
 
@@ -1076,6 +1105,7 @@ sub P_h_t_index
     }
     my $P_pw_h = $P_h / $nonOOV_len_h; 
     print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n"; 
+    print STDERR "Perplexity is ", calc_ppl($P_h, $nonOOV_len_h, count_sentence($hypothesis)), "\n";  
     # dcode
     export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt"); 
 

@@ -55,6 +55,6 @@ print "the code took:", timestr($td), "\n";
 P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
 
 my $t2 = Benchmark->new; 
-my $td = timediff($t2, $t1); 
+$td = timediff($t2, $t1); 
 
 print "2nd time (the normal time) it took: ", timestr($td), "\n"; 
