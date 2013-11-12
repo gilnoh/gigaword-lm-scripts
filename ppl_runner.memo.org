@@ -1,30 +1,30 @@
-(Memo for PPL runner scripts) 
+(devel Memo for PPL runner scripts. permanent memos should go to memo.org ) 
 
-** TODO clean condprob code 
-** TODO finish multiple sentence PPL checking (lost code) 
+** DONE clean condprob code 
+** DONE finish multiple sentence PPL checking (lost code) 
+** TODO work on ppl_t and ppl_t_given_h 
+-  [writing on condprob.pm] PPL oriented P(b|a) 
+*** PPL_X(text, context) needs to return 
+- length of the text: two numbers: count nonOOV words, count sentence. 
+- probability: P_col(text), P_model(text), P_model(text | context) 
+- Maybe also ppl? but this can be easily get by calc_ppl(logprob, nonOOV, count_sent). 
+- well, but maybe: PPL_col (text), PPL_model(text), PPL_conditioned_model(text | context)  
 
-various test scripts for PPL checking ... and design/test memos
+** TODO work on PPL runner once
+
 
 * SOME checks to run 
-** Sanity check of PPL sum equation. 
+** Sanity check of PPL sum on document level. 
 *** TODO compare PPL sum of collection over the sentences and ngram ppl output itself. 
 - when PPL_X(text,context) is completed with its PPL for the doc. 
 
-* [writing on proto_prob) PPL oriented P(b|a) 
-** each PPL_X(text, context) needs to return 
-- length of the text: two numbers: count nonOOV words, count sentence
-- (per-word) PPL of the text: three numbers: collection_ppl, P(text) ppl, P(text | context) ppl. 
-- (well, this is the actual value, so why not?) logprobs: three numbers: P_coll(text), P(text), P(t|c)
-*** TODO write PPL_calc
-- copy P_h_give_t_index, tune it for this. 
-*** TODO write PPL_sum 
-- as you see in the equation.
 
 * ppl_sum: the equation: of getting multiple per-word-ppl of sentences to get per-word-ppl of the doc. 
 - equation 
 10^SUM where SUM is:  
 (part_a_len  / total_len) * log10 ppl_a + ... + (part_n_len / total_len) * log10 ppl_n 
 - note that it is base10, due to the fact we are using SRILM based numbers. 
+- note really needed... just sum logprob, and calc_ppl(logprob, countNonOOV, countSent)
 
 * Different way of giving context 
 - just previous sentence 

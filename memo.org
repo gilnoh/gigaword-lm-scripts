@@ -1,1 +1,12 @@
+* Splitta bug(?) 
 
+- somehow it generates some strange outputs. 
+- The following two cases are being patched after Splitta work. 
+- (From gigaword_split_file.pl) 
+    # fixing tokenization error of Splitta (the end of sentence) 
+    # case 1) Period (\w.$) at the end  -> (\w .$) 
+    s/\.$/ \. /; 
+    # case 2) Period space quote (\w. " $) at the end. -> (\w . " $) 
+    s/\. " $/ \. " /;
+
+- Note that new inputs should go through the same process. 

@@ -87,13 +87,18 @@ sub call_splitta
     my $splitted=""; 
     while(<INFILE>)
     {
+	# NOTE: this process must be the same as training data generated
+	# in gigaword_split_file.pl 
+
+	# fixing tokenization error of Splitta (the end of sentence) 
+	# case 1) Period (\w.$) at the end  -> (\w .$) 
+	s/\.$/ \. /; 
+	# case 2) Period space quote (\w. " $) at the end. -> (\w . " $) 
+	s/\. " $/ \. " /;
+
 	$splitted .= $_; 
     }
     close INFILE; 
-
-    #$splitted =~ s/\n/ /g; # we will treat them as single big sentences 
-    #$splitted =~ s/ , / /g; # ? and we ignoring commas? ,  
-    $splitted =~ s/\.\n/\n/g; # remove end-of-line dots ... 
 
     return lc($splitted); 
 }

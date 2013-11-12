@@ -304,11 +304,13 @@ sub calc_ppl {
 sub count_sentence {
     # count sentence of input.
     my $text = shift;
-    # TODO
+
     # (as count of \n + 1?)
-    # - clear ending newline 
+    # - clear ending whitespaces including newline 
+    $text =~ s/\s+$//; 
     # - count number of \n. 
-    return 1;
+    my $count = $text =~ tr/\n//; 
+    return ($count + 1);
 }
 
 # utility method that gets log10 
