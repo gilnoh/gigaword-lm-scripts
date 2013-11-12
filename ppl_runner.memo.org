@@ -1,5 +1,8 @@
 (Memo for PPL runner scripts) 
 
+** TODO clean condprob code 
+** TODO finish multiple sentence PPL checking (lost code) 
+
 various test scripts for PPL checking ... and design/test memos
 
 * SOME checks to run 
