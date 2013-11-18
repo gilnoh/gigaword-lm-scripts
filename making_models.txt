@@ -5,6 +5,17 @@
 - Python 2.x needed by the sentence splitter. (Splitta, in /splitta) 
 - Java 1.6 or later (required for SOLR search engine) 
 
+0.b Installation 
+- clone git 
+- unpack solr-4.3.0 binary tarball in the following path. 
+  /gigaword-lm-scripts/solr-4.3.0 
+ (when freshly cloned, the path only has configurations, no solr binaries)
+ (unpack can be done simply by running the following command in the 
+  /gigaword-lm-script. 
+  > tar xvzf /path-to-downloaded-file/solr-4.3.0.tgz 
+  the command will unpack files in the expected 
+  /gigaword-lm-script/solr-4.3.0
+ )
 === 
 1. Unpack (the selected) GigaWord target gz files, and run splitta to
 do tokenization & sentence splitting. This will form your corpus. 
