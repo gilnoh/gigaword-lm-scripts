@@ -1,5 +1,5 @@
-# a perl module that uses srilm_call.pm & octave_call.pm
-# to calculate "common sense" as "conditional probability on LM over documents"
+# prototype of "conditional probability on LM over documents"
+# (includes some sketches and evolutino of ideas, too...) 
 
 package proto_condprob;
 
@@ -27,7 +27,7 @@ use Plucene::Index::Writer;
 use Plucene::QueryParser;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index P_h_t_index P_t_index);
+our @EXPORT = qw(P_t P_t_multithread P_h_t_multithread P_t_multithread_index P_h_t_multithread_index P_h_t_index P_t_index calc_ppl);
 our @EXPORT_OK = qw (set_num_thread P_coll P_doc solr_query get_path_from_docid plucene_query $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $APPROXIMATE_WITH_TOP_N_HITS $SOLR_URL export_hash_to_file);
 
 # some globals

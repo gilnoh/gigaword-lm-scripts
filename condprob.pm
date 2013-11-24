@@ -27,7 +27,7 @@ use WebService::Solr::Document;
 use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS); 
+our @EXPORT = qw(condprob_h_given_t P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS); 
 our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $LAMBDA $SOLR_URL export_hash_to_file); 
 
 ###
@@ -680,7 +680,7 @@ sub P_h_t_index
 # output (returns in one array):
 # P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence
 
-sub condprob_t_given_h
+sub condprob_h_given_t
 {
     # argument check
     my @args = @_;
@@ -763,7 +763,7 @@ sub condprob_t_given_h
     my $P_h_given_t = weighted_sum(\@text, \@hypo);
     #print @text, @hypo;     #dcode
     my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
-    my $count_h_sent = count_sentences($hypothesis); 
+    my $count_h_sent = count_sentence($hypothesis); 
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n";
     print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, $count_h_sent), "\n"; 
 

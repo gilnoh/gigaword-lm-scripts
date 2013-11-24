@@ -7,10 +7,9 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS expo
 use octave_call; 
 use Benchmark qw(:all); 
 
-our $DEBUG = 0; 
+our $DEBUG = 0; # no debug output 
 our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
 set_num_thread(4); 
-#set_num_thread(6); 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 my $TEMP_DIR = "./temp"; # for splitta, text splitter. 
@@ -26,7 +25,8 @@ if ($ARGV[0] and $ARGV[1])
 # time in 
 my $t0 = Benchmark->new; 
 # arguments: (context, text, lamda, collection model file, document models top path)
-P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
+#P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
+condprob_h_given_t($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
 
 # time out
 my $t1 = Benchmark->new; 
