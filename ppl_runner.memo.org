@@ -1,7 +1,9 @@
 (devel Memo for PPL runner scripts. permanent memos should go to memo.org ) 
 
-** DONE clean condprob code 
+** DONE clean condprob code
+ 
 ** DONE finish multiple sentence PPL checking (lost code) 
+
 ** DONE work on ppl_t and ppl_h_given_t 
 *** result is now as condprob_h_given_h 
 -  [writing on condprob.pm] PPL oriented P(b|a) 
@@ -11,10 +13,17 @@
 - Maybe also ppl? but this can be easily get by calc_ppl(logprob, nonOOV, count_sent). 
 - well, but maybe: PPL_col (text), PPL_model(text), PPL_conditioned_model(text | context)  
 
-** TODO check new method works Okay 
+
+** DONE check new method works Okay 
 - compare same sentence with old method. write down output values and check the same. 
 - also check the collection value output is the same, with SRILM value. 
-** TODO work on PPL runner once
+
+** TODO work on PPL runner 
+*** DONE main outline 
+*** TODO continue work on ppl_one_doc 
+*** TODO expand it to work on multiple files (files in dir) 
+
+** PPL runner systemically 
 
 
 * SOME checks to run 
@@ -29,6 +38,7 @@
 (part_a_len  / total_len) * log10 ppl_a + ... + (part_n_len / total_len) * log10 ppl_n 
 - note that it is base10, due to the fact we are using SRILM based numbers. 
 - note really needed... just sum logprob, and calc_ppl(logprob, countNonOOV, countSent)
+
 
 * Different way of giving context 
 - just previous sentence 
