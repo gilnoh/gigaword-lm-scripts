@@ -2,7 +2,8 @@
 
 ** DONE clean condprob code 
 ** DONE finish multiple sentence PPL checking (lost code) 
-** TODO work on ppl_t and ppl_t_given_h 
+** DONE work on ppl_t and ppl_h_given_t 
+*** result is now as condprob_h_given_h 
 -  [writing on condprob.pm] PPL oriented P(b|a) 
 *** PPL_X(text, context) needs to return 
 - length of the text: two numbers: count nonOOV words, count sentence. 
@@ -10,6 +11,9 @@
 - Maybe also ppl? but this can be easily get by calc_ppl(logprob, nonOOV, count_sent). 
 - well, but maybe: PPL_col (text), PPL_model(text), PPL_conditioned_model(text | context)  
 
+** TODO check new method works Okay 
+- compare same sentence with old method. write down output values and check the same. 
+- also check the collection value output is the same, with SRILM value. 
 ** TODO work on PPL runner once
 
 
