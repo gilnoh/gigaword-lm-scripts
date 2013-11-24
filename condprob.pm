@@ -1,9 +1,11 @@
+# The main module of this project. 
 # a perl module that uses srilm_call.pm & octave_call.pm
 # to calculate "conditional probability on LM over documents"
 # this module is a restructured version of proto_condprob.pm 
 # (hopefully final for the paper) 
 
-# TODO in the long term.  
+# TODO in the long term
+# a. more modularity? 
 # Conditional Probability part and "SOLR", "GigaWord" (or document 
 # model stroing) specific parts are actually mixed up somewhat. 
 # Maybe in future versions we should clearly separate them. 
@@ -667,6 +669,110 @@ sub P_h_t_index
     return ($bb_value, $gain, $P_pw_h_given_t, $per_word_minus, $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted});
     #return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted});
 }
+
+
+# "streamlined", the main work method. 
+# (SOLR-based approximated) P(text | context). 
+# gets text, context, and returns the conditional probability of P(text | context). 
+# This method is the *latest* one. 
+
+# argument: hypothesis, text, lambda, collection model path, document model top path
+# output (returns in one array):
+# P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence
+
+sub condprob_t_given_h
+{
+    # argument check
+    my @args = @_;
+    my $hypothesis = shift @args;
+    my $text = shift @args;
+    die "Something wrong, either hypothesis or text is missing\n" unless ($hypothesis and $text);
+
+    # calculate P(t) for each document model
+    print STDERR $text, "\n";
+    my $text_per_doc_href = P_t_index($text, @args); # remaining @args will be checked there
+    # calculate P(t) overall
+    my $P_t;
+    my $nonOOV_len_t = count_non_zero_element (@collection_seq) - count_sentence($text);
+
+    print STDERR "P(t) is : ";
+    {
+        my @t = values %{$text_per_doc_href};
+        $P_t = mean(\@t); # (on uniform P(d) )
+    }
+    my $P_pw_t = $P_t / $nonOOV_len_t;
+    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t,";
+    print STDERR "Perplexity is ", calc_ppl($P_t, $nonOOV_len_t, count_sentence($text)), "\n";
+    # dcode
+    export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt");
+
+    # calculate P(h) for each model
+    print STDERR $hypothesis, "\n";
+    my $hypo_per_doc_href = P_t_index($hypothesis, @args);
+
+    # calculate P(h) overall
+    my $P_h;
+    my $nonOOV_len_h = count_non_zero_element(@collection_seq) - count_sentence($hypothesis);
+    my $P_h_coll = lambda_sum2(1, \@collection_seq, \@collection_seq); 
+
+    print STDERR "P(h) is : ";
+    {
+        my @h = values %{$hypo_per_doc_href};
+        $P_h = mean(\@h); # (on uniform P(d) )
+    }
+    my $P_pw_h = $P_h / $nonOOV_len_h;
+    print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n";
+    print STDERR "Perplexity is ", calc_ppl($P_h, $nonOOV_len_h, count_sentence($hypothesis)), "\n";
+    # dcode
+    export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt");
+
+    # calculate P(h|t,d) for each model
+    # note this %weighted is *non-normalized weight* (for evidence)
+    # and not the final prob.
+
+    if ($DEBUG)
+    {
+        print STDERR "calculating weighted contribution (evidence) for each doc\n";
+    }
+
+    my %weighted;
+    my @text;
+    my @hypo;
+    {
+        foreach (keys %{$text_per_doc_href})
+        {
+            if ($DEBUG) # do only when debug flag is up
+            {
+                $weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_};
+            }
+            push @text, $text_per_doc_href->{$_};
+            push @hypo, $hypo_per_doc_href->{$_};
+        }
+    }
+    if ($DEBUG) # do only when debug flag is up.
+    {
+        # dcode
+        export_hash_to_file(\%weighted, "PtPh_per_doc.txt");
+    }
+
+    # calculate P(h|t) overall (that is, P(h|t,d))
+    # WARNING: we made sure in the previous step, @text and @hypo sorted on the same
+    # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
+    # This must be guaranteeded!
+    print STDERR "Calculating the weighted sum\n";
+    my $P_h_given_t = weighted_sum(\@text, \@hypo);
+    #print @text, @hypo;     #dcode
+    my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
+    my $count_h_sent = count_sentences($hypothesis); 
+    print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n";
+    print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, $count_h_sent), "\n"; 
+
+    # collection prob, model prob (Without context), model prob with cond, wcount, scount 
+    print "P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
+    return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent); 
+}
+
+
 
 
 1;
