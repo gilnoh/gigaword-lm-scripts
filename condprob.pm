@@ -27,8 +27,8 @@ use WebService::Solr::Document;
 use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(condprob_h_given_t P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $LAMBDA $SOLR_URL export_hash_to_file); 
+our @EXPORT = qw(condprob_h_given_t P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $LAMBDA $SOLR_URL export_hash_to_file $TEMP_DIR); 
 
 ###
 ### Configurable values. Mostly Okay with default! 
@@ -62,6 +62,10 @@ our $APPROXIMATE_WITH_TOP_N_HITS = 1000;
 # P(text | context) 
 our $DEBUG=2;
 
+# Temporary output dir 
+# mainly for splitta, text splitter. 
+our $TEMP_DIR = "./temp"; 
+
 ###
 ### end of configurable values 
 ###
@@ -74,6 +78,46 @@ my $all_model_top_path; # Associated value to @all_models. (@all_models does not
 ### 
 ### Utility methods 
 ###
+
+# a utility that call splitta for tokenization ... 
+# note that this method permits only single instance. 
+# input: one string 
+# output: one string, tokenzied and sentence splitted. 
+#         (one sentence per line) 
+sub call_splitta 
+{
+    print STDERR "tokenization ..."; 
+    my $s = shift; 
+
+    # write a temp file
+    my $file = $TEMP_DIR . "/splitta_input.txt"; 
+    open OUTFILE, ">", $file; 
+    print OUTFILE $s; 
+    close OUTFILE; 
+    
+    # my $splitted_output = "$temp_dir" . $file_basename . ".splitted"; 
+    `python ./splitta/sbd.py -m ./splitta/model_nb -t -o $TEMP_DIR/splitted.txt $file 2> /dev/null`;
+    print STDERR " done\n"; 
+
+    open INFILE, "<", $TEMP_DIR . "/splitted.txt"; 
+    my $splitted=""; 
+    while(<INFILE>)
+    {
+	# NOTE: this process must be the same as training data generated
+	# in gigaword_split_file.pl 
+
+	# fixing tokenization error of Splitta (the end of sentence) 
+	# case 1) Period (\w.$) at the end  -> (\w .$) 
+	s/\.$/ \. /; 
+	# case 2) Period space quote (\w. " $) at the end. -> (\w . " $) 
+	s/\. " $/ \. " /;
+
+	$splitted .= $_; 
+    }
+    close INFILE; 
+
+    return lc($splitted); 
+}
 
 # set number of threads/processes to be used for per-document run. 
 sub set_num_thread
@@ -768,7 +812,7 @@ sub condprob_h_given_t
     print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, $count_h_sent), "\n"; 
 
     # collection prob, model prob (Without context), model prob with cond, wcount, scount 
-    print "P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
+    print "$P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
     return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent); 
 }
 
