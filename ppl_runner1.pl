@@ -6,25 +6,46 @@
 use warnings; 
 use strict; 
 use Benchmark qw(:all); 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
 ## configurable values 
 ## 
 
-our $SELECT_CONTEXT = \&prev_one; #\&all_else;  # prev_one, etc. 
+# from condprob.pm  
+#
+our $DEBUG = 0; # no debug output 
+set_num_thread(4); 
+our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
+
+# own configuration values
+#
+# - method to select context 
+our $SELECT_CONTEXT = \&prev_two; 
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
-# $SELECT_CONTEXT->($arr_ref, 35); 
+# e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
+# 
+
+# - include context in the content of condprob query 
+our $CONTENT_INCLUDES_CONTEXT = 0; 
+# if 0; query is done with P( content (exclude context) | context) 
+# if 1; calc is done with P( content in context | context ) 
+
+# - documents less that this would be ignored. (not part of ppl run) 
+our $DOC_MIN_NUM_SENTENCES = 5; 
 
 ## global (if any) 
+##
 
 ## code start 
+##
 
 # maybe loop over file here? 
 
 my $filename = "./testdata/AFP_ENG_20090531.0480.story"; 
 
 # we got one file; already tokenized and sentence splitted. 
+# todo, loop over file 
 {
     my $raw_content; 
     open INFILE, "<", $filename; 
@@ -39,7 +60,10 @@ my $filename = "./testdata/AFP_ENG_20090531.0480.story";
 
     # calling of the main method. 
     # will return total prob & ppl. 
-    ppl_one_doc(@sentences) 
+    
+    # TODO: skip if num sentence is less than min 
+    # $DOC_MIN_NUM_SENTENCES 
+    ppl_one_doc(@sentences); 
 }
 
 ##
@@ -56,6 +80,12 @@ sub ppl_one_doc
     my @sent = @_; 
     my $count = scalar (@sent); 
 
+    my $sum_P_coll; 
+    my $sum_P_model; 
+    my $sum_P_model_conditioned; 
+    my $sum_count_nonOOV; 
+    my $sum_count_sent; 
+
     # ok. we will calculate conditional probability for each sentence! 
     for(my $i=0; $i < $count; $i++)
     {
@@ -67,13 +97,32 @@ sub ppl_one_doc
 	    next; 
 	}
 	#dcode 
-	print STDERR "$i: $sent[$i]: \t\t context: $context\n"; 
-
-	# TODO 
-	# calling condprob_h_given_t 
+	#print STDERR "$i: $sent[$i]: \t\t context: $context\n"; 
 	
+	my $content = $sent[$i]; 
+	if ($CONTENT_INCLUDES_CONTEXT)
+	{
+	    $content = $context . "\n" . $content; 
+	}
+	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
 
+	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
+
+	# sum 
+	$sum_P_coll += $P_coll; 
+	$sum_P_model += $P_model; 
+	$sum_P_model_conditioned += $P_model_conditioned; 
+	$sum_count_nonOOV += $count_nonOOV; 
+	$sum_count_sent += $count_sent; 
     }
+    # output for this file 
+    print "Sum of this doc:\n"; 
+    print "$sum_P_coll \t $sum_P_model \t $sum_P_model_conditioned \t $sum_count_nonOOV \t $sum_count_sent\n"; 
+    print "Total Collection logprob: $sum_P_coll (ppl: ", calc_ppl($sum_P_coll, $sum_count_nonOOV, $sum_count_sent), ")\n";
+    print "Total model logprob: $sum_P_model (ppl: ", calc_ppl($sum_P_model, $sum_count_nonOOV, $sum_count_sent), ")\n";
+    print "Finally, conditioned model logprob: $sum_P_model_conditioned (ppl: ", calc_ppl($sum_P_model_conditioned, $sum_count_nonOOV, $sum_count_sent), ")\n";
+
+    return ($sum_P_coll, $sum_P_model, $sum_P_model_conditioned, $sum_count_nonOOV, $sum_count_sent); 
 }
 
 ##
@@ -90,6 +139,72 @@ sub prev_one
 	return $aref->[$sent_index - 1]; 
     }
 }
+sub prev_two
+{
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index < 2) {
+	return ""; 
+    }
+    else {
+	my $context = "";
+	$context .= $aref->[$sent_index - 2] . "\n"; 
+	$context .= $aref->[$sent_index - 1] . "\n"; 
+	return $context; 
+    }
+}
+
+sub prev_three
+{
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index < 3) {
+	return ""; 
+    }
+    else {
+	my $context = "";
+	$context .= $aref->[$sent_index - 3] . "\n"; 
+	$context .= $aref->[$sent_index - 2] . "\n"; 
+	$context .= $aref->[$sent_index - 1] . "\n"; 
+	return $context; 
+    }
+}
+
+sub first_one 
+{
+    # return first sentence, regardless. 
+    my $aref = shift; 
+    return $aref->[0]; 
+}
+
+sub first_three
+{
+    # return first three sentences, regardless 
+    my $aref = shift; 
+    my $string; 
+    $string .= $aref->[0]; 
+    $string .= "\n"; 
+    $string .= $aref->[1]; 
+    $string .= "\n"; 
+    $string .= $aref->[2]; 
+    return $string; 
+}
+
+sub self 
+{
+    # oh, this is rather interesting case. 
+    # looks like an abuse (e.g P(t|t), but it actually is not.) 
+    # (e.g. the collection generated this sentence, what is the 
+    # probability of generating it again. 
+    # as, P( sampling_n ="this sentence" | sampling_n-1 = "that sentence") 
+    # 
+    # this, set-up *does* seems to reduce a lot of absolute PPL. 
+    # But still; self, isn't part of "context". 
+    # 
+    # Maybe, P( prev+self | prev)  would be the best combination? hmm. 
+    # would be interesting. 
+
+}
 
 sub all_else 
 {
@@ -97,11 +212,28 @@ sub all_else
     return ""; 
 }
 
+sub whole_document 
+{
+    # hmm? equal to all_else. doesn't it? 
+    # to write (ehh-heee) 
+    return ""; 
+}
+
 sub three_sent_window
 {
+    # prev 3 + next 3 
     # to write 
     return ""; 
 }
+
+sub n_most_rare
+{
+    # oh. possible but need some work, I guess. 
+    # 1) run for each sentence, P_coll 
+    # 2) get three most suprising sentences... 
+    # 3) return them as context? 
+}
+
 
 # my $filename = $ARGV[0]; 
 

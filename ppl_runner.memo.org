@@ -13,17 +13,24 @@
 - Maybe also ppl? but this can be easily get by calc_ppl(logprob, nonOOV, count_sent). 
 - well, but maybe: PPL_col (text), PPL_model(text), PPL_conditioned_model(text | context)  
 
-
 ** DONE check new method works Okay 
 - compare same sentence with old method. write down output values and check the same. 
 - also check the collection value output is the same, with SRILM value. 
 
+
 ** TODO work on PPL runner 
 *** DONE main outline 
-*** TODO continue work on ppl_one_doc 
-*** TODO expand it to work on multiple files (files in dir) 
+*** DONE continue work on ppl_one_doc 
+*** TODO expand it to work on multiple files (arguments) 
 
-** PPL runner systemically 
+** TODO some preliminary testing 
+*** DONE check first_one concurs with SRILM output itself (surely, but) 
+*** TODO prev-2 
+*** TODO prev-3 
+*** TODO prev 1 - 3 with "content-include-context ON". 
+
+** PPL runner systemically; design. 
+*** TODO how to choose? one session about experiment design. 
 
 
 * SOME checks to run 

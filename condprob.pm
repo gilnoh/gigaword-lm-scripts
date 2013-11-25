@@ -27,7 +27,7 @@ use WebService::Solr::Document;
 use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(condprob_h_given_t P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta); 
+our @EXPORT = qw(condprob_h_given_t P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
 our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $LAMBDA $SOLR_URL export_hash_to_file $TEMP_DIR); 
 
 ###
@@ -812,12 +812,9 @@ sub condprob_h_given_t
     print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, $count_h_sent), "\n"; 
 
     # collection prob, model prob (Without context), model prob with cond, wcount, scount 
-    print "$P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
+    print STDERR "$P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
     return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent); 
 }
-
-
-
 
 1;
 
