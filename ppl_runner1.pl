@@ -20,19 +20,29 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 # own configuration values
 #
 # - method to select context 
-our $SELECT_CONTEXT = \&prev_two; 
+our $SELECT_CONTEXT = \&prev_three; 
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
 # 
 
 # - include context in the content of condprob query 
-our $CONTENT_INCLUDES_CONTEXT = 0; 
+# (this is a bit weird. e.g. different counts of  sentence/words per context
+# choices. commented out for now.)  
+#our $CONTENT_INCLUDES_CONTEXT = 0; 
 # if 0; query is done with P( content (exclude context) | context) 
 # if 1; calc is done with P( content in context | context ) 
 
+# - context of the condprob query includes the content
+# (to optimize the ppl value) 
+# TODO 
+#our $CONTEXT_INCLUDES_CONTENT = 0; 
+# if 0; query is done with P( content | context (exclude content)) 
+# if 1; query is done with P( content | context + content ) 
+
 # - documents less that this would be ignored. (not part of ppl run) 
-our $DOC_MIN_NUM_SENTENCES = 5; 
+# TODO 
+#our $DOC_MIN_NUM_SENTENCES = 5; 
 
 ## global (if any) 
 ##
@@ -100,10 +110,10 @@ sub ppl_one_doc
 	#print STDERR "$i: $sent[$i]: \t\t context: $context\n"; 
 	
 	my $content = $sent[$i]; 
-	if ($CONTENT_INCLUDES_CONTEXT)
-	{
-	    $content = $context . "\n" . $content; 
-	}
+	# if ($CONTENT_INCLUDES_CONTEXT)
+	# {
+	#     $content = $context . "\n" . $content; 
+	# }
 	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
