@@ -4,6 +4,14 @@ use strict;
 use Benchmark qw(:all); 
 use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
+
+## TODO 
+## output as the evaluator requires. ... 
+
+## SOME IDEAS 
+## - maybe really use context/content blending to see the difference. 
+## - 
+
 ## configurable values 
 ## 
 
@@ -79,7 +87,7 @@ while (<FILEIN>)
 	}
     
 	$num_processed++; 
-	last if ($num_processed > 10);  # dcode 
+	#last if ($num_processed > 100);  # dcode 
     } # end if item 
 }
 
@@ -91,8 +99,12 @@ while (<FILEIN>)
 # as prob, ppl, prob, ppl, prob, ppl 
 sub call_condprob 
 {
-    my $content = shift; 
-    my $context = shift; 
+    my $raw_content = shift; 
+    my $raw_context = shift; 
+    
+    my $content = call_splitta($raw_content); 
+    my $context = call_splitta($raw_context); 
+
     my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
     print STDERR "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
