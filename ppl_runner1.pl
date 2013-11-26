@@ -20,25 +20,24 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 # own configuration values
 #
 # - method to select context 
-our $SELECT_CONTEXT = \&prev_three; 
+our $SELECT_CONTEXT = \&prev_one; 
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
 # 
 
 # - include context in the content of condprob query 
-# (this is a bit weird. e.g. different counts of  sentence/words per context
-# choices. commented out for now.)  
-#our $CONTENT_INCLUDES_CONTEXT = 0; 
+our $CONTENT_INCLUDES_CONTEXT = 0; 
 # if 0; query is done with P( content (exclude context) | context) 
 # if 1; calc is done with P( content in context | context ) 
 
 # - context of the condprob query includes the content
 # (to optimize the ppl value) 
 # TODO 
-#our $CONTEXT_INCLUDES_CONTENT = 0; 
+our $CONTEXT_INCLUDES_CONTENT = 0; 
 # if 0; query is done with P( content | context (exclude content)) 
 # if 1; query is done with P( content | context + content ) 
+
 
 # - documents less that this would be ignored. (not part of ppl run) 
 # TODO 
@@ -50,9 +49,20 @@ our $SELECT_CONTEXT = \&prev_three;
 ## code start 
 ##
 
-# maybe loop over file here? 
 
-my $filename = "./testdata/AFP_ENG_20090531.0480.story"; 
+# maybe loop over file here? 
+my $filename; 
+if ($ARGV[0])
+{
+    $filename = $ARGV[0];
+}
+else 
+{
+    die "requires one (or more) file names as arguments\n"; 
+    # my $filename = "./testdata/AFP_ENG_20090531.0480.story"; 
+}
+
+die "unable to read file $filename\n" unless (-r $filename); 
 
 # we got one file; already tokenized and sentence splitted. 
 # todo, loop over file 
@@ -110,10 +120,19 @@ sub ppl_one_doc
 	#print STDERR "$i: $sent[$i]: \t\t context: $context\n"; 
 	
 	my $content = $sent[$i]; 
-	# if ($CONTENT_INCLUDES_CONTEXT)
-	# {
-	#     $content = $context . "\n" . $content; 
-	# }
+
+	# context/content tuning for optimal ppl 
+	# (another reason that shows ppl value itself doesn't mean much?) 
+	if ($CONTENT_INCLUDES_CONTEXT)
+	{
+	    $content = $context . "\n" . $content; 
+	}
+
+	if ($CONTEXT_INCLUDES_CONTENT)
+	{
+	    $context = $context . "\n" . $content; 
+	}
+
 	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
