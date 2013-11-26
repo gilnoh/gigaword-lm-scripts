@@ -42,6 +42,7 @@
 
 
 
+* PPL run test systemically. 
 ** PPL runner systemically; design. 
 *** TODO how to choose? one session about experiment design. 
 
