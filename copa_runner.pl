@@ -6,11 +6,11 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS expo
 
 
 ## TODO 
-## output as the evaluator requires. ... 
+## output correctness, too? normalize output and make a eval code? 
 
-## SOME IDEAS 
-## - maybe really use context/content blending to see the difference. 
-## - 
+## SOME IDEAS to chcek/test 
+## - maybe really use context/content blending to see the difference. (afp2010, with blending) 
+## - check values (why negative gains in large corpus) to see what's happening with larger one. (afp2010 vs afpall)  
 
 ## configurable values 
 ## 
@@ -25,6 +25,16 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 # 
 my $filename = "./testdata/copa-dev.xml";
 
+# - include context in the content of condprob query 
+#our $CONTENT_INCLUDES_CONTEXT = 0; 
+# if 0; query is done with P( content (exclude context) | context) 
+# if 1; calc is done with P( content in context | context ) 
+
+# - context of the condprob query includes the content
+our $CONTEXT_INCLUDES_CONTENT = 0; 
+# if 0; query is done with P( content | context (exclude content)) 
+# if 1; query is done with P( content | context + content ) 
+
 
 # start of the code 
 # 
@@ -38,7 +48,7 @@ while (<FILEIN>)
 {
     # for each id
     my $line = $_; 
-    if ($line =~ /<item id=\"(.?+)\"/)
+    if ($line =~ /<item id=\"(.+?)\"/)
     {
 	my $id = $1; 
 	# if cause (what causes this) arrange P(p | a1), P(p | a2) 
@@ -64,6 +74,11 @@ while (<FILEIN>)
 	    print "\t a1: $a1\n"; 
 	    print "\t a2: $a2\n"; 
 	    print STDERR "The runner will compare P ( \"$p\" | \"$a1\" ) and P( \"$p\" | \"$a2\" )\n"; 
+
+	    $p = call_splitta($p); 
+	    $a1 = call_splitta($a1); 
+	    $a2 = call_splitta($a2); 
+
 	    my ($cp, $cppl, $mp, $mppl, $condp, $condppl) = call_condprob($p, $a1); 
 	    print "a1: $cppl, $mppl, $condppl\t ppl-gain: ", $mppl - $condppl, "\n"; 
 	    ($cp, $cppl, $mp, $mppl, $condp, $condppl) = call_condprob($p, $a2); 
@@ -76,6 +91,11 @@ while (<FILEIN>)
 	    print "\t a1: $a1\n"; 
 	    print "\t a2: $a2\n"; 
 	    print STDERR "The runner will compare P( \"$a1\" | \"$p\" ) and P( \"$a2\" | \"$p\" )\n"; 
+
+	    $p = call_splitta($p); 
+	    $a1 = call_splitta($a1); 
+	    $a2 = call_splitta($a2); 
+
 	    my ($cp, $cppl, $mp, $mppl, $condp, $condppl) = call_condprob($a1, $p); 
 	    print "a1: $cppl, $mppl, $condppl\t ppl-gain: ", $mppl - $condppl, "\n"; 
 	    ($cp, $cppl, $mp, $mppl, $condp, $condppl) = call_condprob($a2, $p); 
@@ -87,7 +107,7 @@ while (<FILEIN>)
 	}
     
 	$num_processed++; 
-	#last if ($num_processed > 100);  # dcode 
+	last if ($num_processed > 51);  # dcode 
     } # end if item 
 }
 
@@ -97,13 +117,23 @@ while (<FILEIN>)
 # usage call_condprob ($content_sentence(s), $context_sentences(s))
 # the call will return results of condprob_h_given_t()
 # as prob, ppl, prob, ppl, prob, ppl 
+
+# NOTE: you must do sentence splitting and tokenization (calling splitta) before calling this method. 
 sub call_condprob 
 {
-    my $raw_content = shift; 
-    my $raw_context = shift; 
-    
-    my $content = call_splitta($raw_content); 
-    my $context = call_splitta($raw_context); 
+    my $content = shift; 
+    my $context = shift; 
+
+    #my $raw_content = shift; 
+    #my $raw_context = shift; 
+
+    #my $content = call_splitta($raw_content); 
+    #my $context = call_splitta($raw_context); 
+
+    if ($CONTEXT_INCLUDES_CONTENT)
+    {
+	$context = $context . "\n" . $content; 
+    }
 
     my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
     print STDERR "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
