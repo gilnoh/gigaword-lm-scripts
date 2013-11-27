@@ -4,6 +4,9 @@ use strict;
 use Benchmark qw(:all); 
 use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
+## currently 
+## check afpall f and afp2010(gigaword) f... 
+## compare them. 
 
 ## TODO 
 ## output correctness, too? normalize output and make a eval code? 

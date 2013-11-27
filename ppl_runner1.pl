@@ -32,11 +32,17 @@ our $CONTENT_INCLUDES_CONTEXT = 0;
 # if 1; calc is done with P( content in context | context ) 
 
 # - context of the condprob query includes the content
-# (to optimize the ppl value) 
-# TODO 
 our $CONTEXT_INCLUDES_CONTENT = 0; 
 # if 0; query is done with P( content | context (exclude content)) 
 # if 1; query is done with P( content | context + content ) 
+
+# - half sentence test. 
+our $HALF_SENTENCE_IN_CONTEXT = 0; 
+# if 0; just normal P (content sentence | context) 
+# if 1; query is done with P( content-late-half-sentence | context-given + first-half-sentence) 
+our $DOUBLE_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on. 
+# if 0; only P( later_half | context) is calculated. 
+# if 1; both P( later_half | context) and P (first half | context) is calculated. 
 
 
 # - documents less that this would be ignored. (not part of ppl run) 
@@ -75,7 +81,9 @@ die "unable to read file $filename\n" unless (-r $filename);
     my @sentences; 
     foreach (@temp) #remove all empty lines, so "real lines only"
     {
-	push @sentences, $_ if (/\S/); 
+	next unless (/\S/); 
+	push @sentences, words_only($_); 
+	#push @sentences, $_; 
     }
 
     # calling of the main method. 
@@ -133,6 +141,13 @@ sub ppl_one_doc
 	    $context = $context . "\n" . $content; 
 	}
 
+	if ($HALF_SENTENCE_IN_CONTEXT)
+	{
+	    my ($first_half, $later_half) = divide_sentence_half($content); 	    
+	    $context = $context . "\n" . $first_half; 
+	    $content = $later_half; 
+	}
+
 	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
@@ -143,7 +158,30 @@ sub ppl_one_doc
 	$sum_P_model_conditioned += $P_model_conditioned; 
 	$sum_count_nonOOV += $count_nonOOV; 
 	$sum_count_sent += $count_sent; 
-    }
+
+	# exceptional case for half sentence test 
+	if ($HALF_SENTENCE_IN_CONTEXT && $DOUBLE_HALF)
+	{  
+	    $content = $sent[$i]; 
+	    $context = 	$SELECT_CONTEXT->(\@sent, $i); 
+
+	    my ($first_half, $later_half) = divide_sentence_half($content);  
+	    $context = $context . "\n" . $later_half; 
+	    $content = $first_half; 
+
+	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
+
+	    print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
+
+	    # sum 
+	    $sum_P_coll += $P_coll; 
+	    $sum_P_model += $P_model; 
+	    $sum_P_model_conditioned += $P_model_conditioned; 
+	    $sum_count_nonOOV += $count_nonOOV; 
+	    $sum_count_sent += $count_sent; 
+	}
+
+    } # for $i < $count 
     # output for this file 
     print "Sum of this doc:\n"; 
     print "$sum_P_coll \t $sum_P_model \t $sum_P_model_conditioned \t $sum_count_nonOOV \t $sum_count_sent\n"; 
@@ -152,6 +190,21 @@ sub ppl_one_doc
     print "Finally, conditioned model logprob: $sum_P_model_conditioned (ppl: ", calc_ppl($sum_P_model_conditioned, $sum_count_nonOOV, $sum_count_sent), ")\n";
 
     return ($sum_P_coll, $sum_P_model, $sum_P_model_conditioned, $sum_count_nonOOV, $sum_count_sent); 
+}
+
+##
+## utility 
+## divide (already tokenized) sentence into two parts, first-half and later-half. 
+sub divide_sentence_half
+{
+    my $input = shift;
+    $input =~ s/\s+$//;  # remove trailing newlines 
+    my @words = split /\s+?/, $input; 
+    my $size = scalar (@words); 
+    my $midpoint = $size / 2.0; 
+    my $left = join " ", @words[0..($midpoint-1)]; 
+    my $right = join " ", @words[$midpoint..($size -1)]; 
+    return ($left, $right); 
 }
 
 ##
@@ -217,6 +270,13 @@ sub first_three
     $string .= "\n"; 
     $string .= $aref->[2]; 
     return $string; 
+}
+sub none
+{
+    # only meaningful if you are using 
+    # $HALF_SENTENCE_IN_CONTEXT
+
+    return " "; 
 }
 
 sub self 
@@ -298,6 +358,19 @@ sub n_most_rare
 # }
 	
 
+##
+## common utility 
+sub words_only 
+{
+    # removes trailing/heading new lines, 
+    # and removes any "PUNC as tokens" 
+    # (quotes, periods, commas, collons and semicolons. 
+    # removed and no longer tokens. ) 
+
+    my $line = shift; 
+    $line =~ s/ [:;,."'`] //g; 
+    return $line; 
+}
 
 
 

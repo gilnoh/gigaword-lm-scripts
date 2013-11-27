@@ -1,5 +1,11 @@
 (devel Memo for PPL runner scripts. permanent memos should go to memo.org ) 
 
+* Memo 
+** issue of commas, periods, and quotes. 
+- Ah. interesting. commas, periods and quotes impact a lot. 
+- Maybe I should simply get rid of them; both in the training and running. 
+- (Maybe at least in running?) 
+
 ** DONE clean condprob code
  
 ** DONE finish multiple sentence PPL checking (lost code) 
@@ -19,21 +25,24 @@
 
 
 
-** TODO work on PPL runner 
-*** DONE main outline 
-*** DONE continue work on ppl_one_doc 
-*** TODO expand it to work on multiple files (arguments) 
-
-
 ** TODO some preliminary testing with existing test (football) 
 *** DONE check first_one concurs with SRILM output itself (surely, but) 
 *** DONE prev-2, prev-3  
+*** TODO prev-one without comma, periods and quotes. 
 *** TODO window-1, window-2, window-3, 
 *** TODO prev 1, with "blending" ON". 
 - blending really makes differences... Since P(t|t) is the best. that the model can work on P(t|x). 
 - Both P(text | context+text), and P(context+text | context) reported, as expected, far lower perplexity. 
 - conditioned on context+text was lower... 
 *** TODO all_else 
+*** TODO add half-sentence-to-context.  
+
+
+** TODO work on PPL runner 
+*** DONE main outline 
+*** DONE continue work on ppl_one_doc 
+*** TODO expand it to work on multiple files (arguments) 
+
 
 
 ** TODO some more preliminary testing with something else. (nyt) 
