@@ -257,9 +257,11 @@ sub prev_one
     my $aref = shift; 
     my $sent_index = shift; 
     if ($sent_index == 0) {
-	return ""; 
+    	#return ""; 
+	return $aref->[0]; # or next one? 
     }
-    else {
+    else 
+    {
 	return $aref->[$sent_index - 1]; 
     }
 }

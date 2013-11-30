@@ -1,11 +1,36 @@
 (devel Memo for PPL runner scripts. permanent memos should go to memo.org ) 
 
-* Memo 
-** issue of commas, periods, and quotes. 
-- Ah. interesting. commas, periods and quotes impact a lot. 
-- Maybe I should simply get rid of them; both in the training and running. 
-- (Maybe at least in running?) 
+* Stabilize, Eval & Enhancement 
+** TODO add more context setters 
+*** DONE NULL (useful for half-sentence). 
+*** TODO window-1, window-2, window-3 
+*** TODO all_else 
+*** TODO all_prev 
 
+
+** TODO enhancement? 
+*** TODO </s> equalizer 
+*** TODO gz_set_model_maker: remove (or do not make) less than 5 line .story files.  
+
+** TODO some more preliminary testing with something else. (nyt) 
+- use all_afp 
+- get some random news from nyt. one day? (200+ news?) 
+
+** DONE some preliminary testing with existing test (football) 
+*** DONE check first_one concurs with SRILM output itself (surely, but) 
+*** DONE prev-2, prev-3  
+*** DONE prev 1, with "blending" ON". 
+- blending really makes differences... Since P(t|t) is the best. that the model can work on P(t|x). 
+- Both P(text | context+text), and P(context+text | context) reported, as expected, far lower perplexity. 
+- conditioned on context+text was lower... 
+*** DONE add half-sentence-to-context.  
+- half-sentence is really conditioning a lot. 
+*** DONE prev-one without comma, periods and quotes. 
+
+
+
+
+* Basic Devel 
 ** DONE clean condprob code
  
 ** DONE finish multiple sentence PPL checking (lost code) 
@@ -23,31 +48,11 @@
 - compare same sentence with old method. write down output values and check the same. 
 - also check the collection value output is the same, with SRILM value. 
 
-
-
-** TODO some preliminary testing with existing test (football) 
-*** DONE check first_one concurs with SRILM output itself (surely, but) 
-*** DONE prev-2, prev-3  
-*** TODO prev-one without comma, periods and quotes. 
-*** TODO window-1, window-2, window-3, 
-*** TODO prev 1, with "blending" ON". 
-- blending really makes differences... Since P(t|t) is the best. that the model can work on P(t|x). 
-- Both P(text | context+text), and P(context+text | context) reported, as expected, far lower perplexity. 
-- conditioned on context+text was lower... 
-*** TODO all_else 
-*** TODO add half-sentence-to-context.  
-
-
-** TODO work on PPL runner 
+** DONE work on PPL runner basic capability 
 *** DONE main outline 
 *** DONE continue work on ppl_one_doc 
-*** TODO expand it to work on multiple files (arguments) 
+*** DONE expand it to work on multiple files (arguments) 
 
-
-
-** TODO some more preliminary testing with something else. (nyt) 
-- use all_afp 
-- get some random news from nyt. 
 
 
 
@@ -56,14 +61,6 @@
 *** TODO how to choose? one session about experiment design. 
 
 
-
-
-* ppl_sum: the equation: of getting multiple per-word-ppl of sentences to get per-word-ppl of the doc. 
-- equation 
-10^SUM where SUM is:  
-(part_a_len  / total_len) * log10 ppl_a + ... + (part_n_len / total_len) * log10 ppl_n 
-- note that it is base10, due to the fact we are using SRILM based numbers. 
-- note really needed... just sum logprob, and calc_ppl(logprob, countNonOOV, countSent)
 
 
 * Different way of giving context 
@@ -79,3 +76,15 @@
 
 
 
+
+* Misc. Memo 
+** issue of commas, periods, and quotes. 
+- Ah. interesting. commas, periods and quotes impact a lot. 
+- Maybe I should simply get rid of them; both in the training and running. 
+- (Maybe at least in running?) 
+*** More: the main reason is final . -> </s>. 
+- This is the "single-biggest-sure" thing (biggest probability mass)
+  in the whole sentence. usually. 
+- Document based sum suffers (unfairly, IMO) from this part. (?) 
+- The problem is that, for "document" based models, this can be
+  fluctuate...(?)
