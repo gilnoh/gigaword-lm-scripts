@@ -14,6 +14,7 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS expo
 # from condprob.pm  
 #
 our $DEBUG = 0; # no debug output 
+our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
 set_num_thread(4); 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
@@ -24,30 +25,23 @@ our $SELECT_CONTEXT = \&prev_one;
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
-# 
 
-# - include context in the content of condprob query 
-our $CONTENT_INCLUDES_CONTEXT = 0; 
-# if 0; query is done with P( content (exclude context) | context) 
-# if 1; calc is done with P( content in context | context ) 
-
-# - context of the condprob query includes the content
-our $CONTEXT_INCLUDES_CONTENT = 0; 
-# if 0; query is done with P( content | context (exclude content)) 
-# if 1; query is done with P( content | context + content ) 
-
-# - half sentence test. 
+# - half sentence flag. 
 our $HALF_SENTENCE_IN_CONTEXT = 0; 
 # if 0; just normal P (content sentence | context) 
 # if 1; query is done with P( content-late-half-sentence | context-given + first-half-sentence) 
-our $DOUBLE_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on. 
+our $BOTH_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on. 
 # if 0; only P( later_half | context) is calculated. 
 # if 1; both P( later_half | context) and P (first half | context) is calculated. 
 
+# words only (clears sentences from comma, collon, quotes, etc) 
+our $WORDS_ONLY = 0; 
 
-# - documents less that this would be ignored. (not part of ppl run) 
-# TODO 
-#our $DOC_MIN_NUM_SENTENCES = 5; 
+# clean heading & trailing (clears sentences start and ending) 
+our $CLEAN_HEAD_AND_TRAIL = 0; 
+
+# ignore texts with less than N sentences. 
+our $DOC_MIN_NUM_SENTENCES = 5; 
 
 ## global (if any) 
 ##
@@ -55,47 +49,96 @@ our $DOUBLE_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on.
 ## code start 
 ##
 
-
-# maybe loop over file here? 
-my $filename; 
-if ($ARGV[0])
-{
-    $filename = $ARGV[0];
-}
-else 
+unless ($ARGV[0])
 {
     die "requires one (or more) file names as arguments\n"; 
-    # my $filename = "./testdata/AFP_ENG_20090531.0480.story"; 
 }
 
-die "unable to read file $filename\n" unless (-r $filename); 
+# time in 
+my $t0 = Benchmark->new; 
 
-# we got one file; already tokenized and sentence splitted. 
-# todo, loop over file 
+my @files = @ARGV; 
+
+# variables to store all 
+my $total_P_coll = 0; 
+my $total_P_model = 0;  
+my $total_P_model_conditioned = 0; 
+my $total_count_nonOOV = 0; 
+my $total_count_sent = 0; 
+
+my $number_of_processed_doc = 0; 
+
+foreach my $filename (@files)
 {
+    die "unable to read file $filename\n" unless (-r $filename); 
+    # we got one file; already tokenized and sentence splitted. 
+    print $filename, "\n"; 
     my $raw_content; 
     open INFILE, "<", $filename; 
     $raw_content .= $_ while (<INFILE>); 
     close INFILE; 
     my @temp = split /\n/, $raw_content; 
     my @sentences; 
-    foreach (@temp) #remove all empty lines, so "real lines only"
+    foreach (@temp) # prepare text 
     {
+	#remove all empty lines, so "real lines only"
 	next unless (/\S/); 
-	push @sentences, words_only($_); 
-	#push @sentences, $_; 
-    }
+
+	if ($WORDS_ONLY) # option, remove punctuals. (" , . etc). note that the underlying model should have also trained in that way! 
+	{
+	    push @sentences, words_only($_); 
+	}
+	elsif ($CLEAN_HEAD_AND_TRAIL) # option: clean heading and trailing quotes, and other punctuals. Make clearner input. 
+	{
+	    push @sentences, clear_head_and_trail($_); 
+	}
+	else # just as is. 
+	{
+	    push @sentences, $_; 
+	}
+    }    
 
     # calling of the main method. 
     # will return total prob & ppl. 
     
-    # TODO: skip if num sentence is less than min 
-    # $DOC_MIN_NUM_SENTENCES 
-    ppl_one_doc(@sentences); 
+    # skip if num sentence is less than minimum (why? too few sentence makes
+    # it harder to extract context parts. (e.g. prev-3, next-3, etc) 
+    if ( (scalar @sentences) < $DOC_MIN_NUM_SENTENCES )
+    {
+	print STDERR "$filename is shorter than $DOC_MIN_NUM_SENTENCES sentences. passing\n"; 
+	next; 
+    }
+
+    # main PPL calculation method (condprob.pm) 
+    my ($sum_P_coll, $sum_P_model, $sum_P_model_conditioned, $sum_count_nonOOV, $sum_count_sent) = ppl_one_doc(@sentences); 
+
+    # sumup 
+    $total_P_coll += $sum_P_coll; 
+    $total_P_model += $sum_P_model; 
+    $total_P_model_conditioned += $sum_P_model_conditioned; 
+    $total_count_nonOOV += $sum_count_nonOOV; 
+    $total_count_sent += $sum_count_sent; 
+    $number_of_processed_doc++; 
 }
 
+print "====\n";
+print "====\n"; 
+print "Number of documents processed: $number_of_processed_doc\n"; 
+print "$total_P_coll \t $total_P_model \t $total_P_model_conditioned \t $total_count_nonOOV \t $total_count_sent\n"; 
+print "All Collection logprob: $total_P_coll (ppl: ", calc_ppl($total_P_coll, $total_count_nonOOV, $total_count_sent), ")\n";
+print "All model logprob: $total_P_model (ppl: ", calc_ppl($total_P_model, $total_count_nonOOV, $total_count_sent), ")\n";
+print "All conditioned model logprob: $total_P_model_conditioned (ppl: ", calc_ppl($total_P_model_conditioned, $total_count_nonOOV, $total_count_sent), ")\n";
+
+# time out
+my $t1 = Benchmark->new; 
+my $td = timediff($t1, $t0); 
+print "the code took:", timestr($td), "\n"; 
+exit(); 
+
+# end of top level 
+
 ##
-## main work method 
+## main method 
 ##
 
 # get one story file as an array, where each element holds
@@ -129,17 +172,16 @@ sub ppl_one_doc
 	
 	my $content = $sent[$i]; 
 
-	# context/content tuning for optimal ppl 
-	# (another reason that shows ppl value itself doesn't mean much?) 
-	if ($CONTENT_INCLUDES_CONTEXT)
-	{
-	    $content = $context . "\n" . $content; 
-	}
+	# test/temporary 
+	# if ($CONTENT_INCLUDES_CONTEXT)
+	# {
+	#     $content = $context . "\n" . $content; 
+	# }
 
-	if ($CONTEXT_INCLUDES_CONTENT)
-	{
-	    $context = $context . "\n" . $content; 
-	}
+	# if ($CONTEXT_INCLUDES_CONTENT)
+	# {
+	#     $context = $context . "\n" . $content; 
+	# }
 
 	if ($HALF_SENTENCE_IN_CONTEXT)
 	{
@@ -160,7 +202,7 @@ sub ppl_one_doc
 	$sum_count_sent += $count_sent; 
 
 	# exceptional case for half sentence test 
-	if ($HALF_SENTENCE_IN_CONTEXT && $DOUBLE_HALF)
+	if ($HALF_SENTENCE_IN_CONTEXT && $BOTH_HALF)
 	{  
 	    $content = $sent[$i]; 
 	    $context = 	$SELECT_CONTEXT->(\@sent, $i); 
@@ -368,9 +410,33 @@ sub words_only
     # removed and no longer tokens. ) 
 
     my $line = shift; 
-    $line =~ s/ [:;,."'`] //g; 
+    $line =~ s/ [:;,."'`] / /g; 
     return $line; 
 }
 
+sub clear_head_and_trail
+{
+   # removes trailing/heading new lines, 
+   # and also heading & trailing PUNC tokens. 
+   # note that this does not touch (unlike words_only) 
+   # any of the in-sentence PUNC classes. 
+
+    my $line = shift; 
+    $line =~ s/^\s?[:;,."'`]//g; # clearing head
+    $line =~ s/[:;,."'`]\s?$//g; # clearing trail 
+    return $line; 
+}
+
+
+
+# - include context in the content of condprob query 
+#our $CONTENT_INCLUDES_CONTEXT = 0; 
+# if 0; query is done with P( content (exclude context) | context) 
+# if 1; calc is done with P( content in context | context ) 
+
+# - context of the condprob query includes the content
+#our $CONTEXT_INCLUDES_CONTENT = 0; 
+# if 0; query is done with P( content | context (exclude content)) 
+# if 1; query is done with P( content | context + content ) 
 
 

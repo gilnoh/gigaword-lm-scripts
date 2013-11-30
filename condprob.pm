@@ -436,7 +436,7 @@ sub P_t_index
 
     # sanity check
     my $hit_size = scalar (@{$hits_aref});
-    warn "$text resulted no hits in plucene index" unless ($hit_size);
+    warn "$text resulted no hits in SOLR index" unless ($hit_size);
 
     #my $total_doc_size; #deprecated. remove when all code ready.
 
