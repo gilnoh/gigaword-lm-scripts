@@ -11,4 +11,7 @@ stderr
 *per_doc.txt
 solr-4.3.0/
 *.log
+*.txt
+?
+TAGS
 
