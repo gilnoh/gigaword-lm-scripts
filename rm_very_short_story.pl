@@ -14,9 +14,11 @@ use strict;
 # ignore texts with less than N sentences. 
 our $DOC_MIN_NUM_SENTENCES = 5; 
 
-# we go into 2-depth 
-my $USE_DEPTH2 = 0; 
+# global 
+# 
 
+# we go into 2-depth (don't change, this is not a config) 
+my $USE_DEPTH2 = 1; 
 
 #
 # main code 

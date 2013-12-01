@@ -35,8 +35,19 @@ take some time, according to the corpus size.
 
 1.b. (optional, but usually you will need this) Very short files (one
 or two liner news stories) can act as noises for "document-based"
-models. We will avoid this by deleting files that is too short.  
+models. We will avoid this by deleting files that are way too short.   
 
+Commmand to run: 
+> perl rm_very_short_stories.pl ./models/document
+
+The script will walk over the documents and let you know how many
+files it has removed from the document collection. 
+
+Note: How short is too short? Default is defined as less than 4
+sentences as too short. (Note that each story start with title, thus 4
+means, the body of the news article has two or less sentences). you
+can change this variable in the script config global variable,
+$DOC_MIN_NUM_SENTENCES at the top of the script code. 
 
 ===
 2. Generate "collection" LM on all of the "story" (actual news
