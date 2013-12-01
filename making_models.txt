@@ -23,7 +23,7 @@
   /gigaword-lm-script/solr-4.3.0/gigaword_indexing/ 
  )
 === 
-1. Unpack (the selected) GigaWord target gz files, and run splitta to
+1.a. Unpack (the selected) GigaWord target gz files, and run splitta to
 do tokenization & sentence splitting. This will form your corpus. 
 
 Commands to run: 
@@ -32,6 +32,11 @@ Commands to run:
 Note: output folder is defined in the script. For now, let's assume
 this is "./models/document/". (actual may differ). This process will
 take some time, according to the corpus size. 
+
+1.b. (optional, but usually you will need this) Very short files (one
+or two liner news stories) can act as noises for "document-based"
+models. We will avoid this by deleting files that is too short.  
+
 
 ===
 2. Generate "collection" LM on all of the "story" (actual news
