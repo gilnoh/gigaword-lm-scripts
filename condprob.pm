@@ -63,8 +63,10 @@ our $APPROXIMATE_WITH_TOP_N_HITS = 1000;
 our $DEBUG=2;
 
 # ends equalizer (for stability of doc-based models) 
-# (Not really impactful. no need) 
-our $EQUALIZE_ENDS = 0; 
+# equalizes difference between "collection model" and "document model" 
+# by equalizing (minimizing) effect of non-content endings. 
+# (only the last . </s> ) 
+our $EQUALIZE_ENDS = 2; 
 
 # Temporary output dir 
 # mainly for splitta, text splitter. 
@@ -228,9 +230,14 @@ sub P_doc
 
     my @doc_seq = read_debug3_p(call_ngram($_[0]));
     #print "\n", (scalar @doc_seq), "\t", (scalar @collection_seq), "\n";
-    if ($EQUALIZE_ENDS)
-    { # last item is always the end sentence </s>. 
+    if ($EQUALIZE_ENDS == 1)
+    { # </s> last item is always the end sentence </s>. 
 	$doc_seq[-1] = $collection_seq[-1]; 
+    }
+    elsif ($EQUALIZE_ENDS == 2)
+    { # . -> </s> 
+	$doc_seq[-1] = $collection_seq[-1]; 
+	$doc_seq[-2] = $collection_seq[-2]; 
     }
     my $logprob = lambda_sum2($LAMBDA, \@doc_seq, \@collection_seq);
     return $logprob;

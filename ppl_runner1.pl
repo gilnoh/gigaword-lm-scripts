@@ -41,7 +41,8 @@ our $WORDS_ONLY = 0;
 our $CLEAN_HEAD_AND_TRAIL = 0; 
 
 # ignore texts with less than N sentences. 
-our $DOC_MIN_NUM_SENTENCES = 5; 
+# set 0, if you will run any&every documents. 
+our $DOC_MIN_NUM_SENTENCES = 0; 
 
 ## global (if any) 
 ##
