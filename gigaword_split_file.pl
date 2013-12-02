@@ -7,7 +7,8 @@ use strict;
 use warnings; 
 
 # clear trailing part of text.
-our $CLEAN_TRAIL = 1; 
+# usually *not* needed. 
+our $CLEAN_TRAIL = 0; 
 
 # (day as subdir. you *must* keep this option as 1) 
 # (no longer optional) 
@@ -63,6 +64,8 @@ while(<FILEIN>)
     # ALTERNATIVE: ... run splitta only for sentence split, 
     # and run another tokenization runner. (NOT for the moment). 
 
+    # if you want to reduce the (perplexity-reducing) effect 
+    # of the end of sentence (. -> </s>), turn this on. 
     if ($CLEAN_TRAIL)
     {
 	s/ \. $//; 
