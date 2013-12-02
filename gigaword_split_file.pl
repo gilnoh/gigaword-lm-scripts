@@ -6,6 +6,11 @@
 use strict; 
 use warnings; 
 
+# clear trailing part of text.
+our $CLEAN_TRAIL = 1; 
+
+# (day as subdir. you *must* keep this option as 1) 
+# (no longer optional) 
 my $DAY_SUBDIR = 1; 
 
 # read 
@@ -47,15 +52,22 @@ while(<FILEIN>)
 	    open FILEOUT, ">", ($outputdir . "/" . $filename . "." . $ext) ; 
 	}
     }
+
     # fixing tokenization error of Splitta (the end of sentence) 
     # case 1) Period (\w.$) at the end  -> (\w .$) 
     s/\.$/ \. /; 
     # case 2) Period space quote (\w. " $) at the end. -> (\w . " $) 
     s/\. " $/ \. " /;
-
+    
     # the above (seems to) work well for AFP, at least. 
     # ALTERNATIVE: ... run splitta only for sentence split, 
     # and run another tokenization runner. (NOT for the moment). 
+
+    if ($CLEAN_TRAIL)
+    {
+	s/ \. $//; 
+	s/ \. " $/ "/;  
+    }
 
     print FILEOUT lc($_); 
 }
