@@ -8,17 +8,19 @@ use warnings;
 use Exporter;
 
 our @ISA = qw(Exporter); 
-our @EXPORT = qw(read_debug3_p call_ngram); 
+our @EXPORT = qw(set_ngram_input_file read_debug3_p call_ngram); 
 
-my $NGRAM_EXECUTABLE = "ngram"; 
-my $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
-my $NGRAM_INPUT_FILE = "./models/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
+our $NGRAM_EXECUTABLE = "ngram"; 
+our $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
+our $NGRAM_INPUT_FILE = "./models/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
 
 
 sub set_ngram_input_file($)
 {
     # if multiple sentences are called simiultanously, this must 
-    # be set accordingly..? 
+    # be set accordingly. (multiple instances ...) 
+    # note that this file is all shared by collection model call and 
+    # document model calls (threds, etc) 
     $NGRAM_INPUT_FILE = $_[0]; 
 }
 

@@ -18,7 +18,7 @@ use threads;
 use warnings;
 use strict;
 use Exporter;
-use srilm_call qw(read_debug3_p call_ngram);
+use srilm_call; # qw(read_debug3_p call_ngram);
 use octave_call;
 use Carp;
 
@@ -80,7 +80,7 @@ our $TEMP_DIR = "./temp";
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 my @all_model =(); # global variable that is filled in P_t_index. This array keeps the full list of .model files for this run. (Filled once, used for long). 
 my $all_model_top_path; # Associated value to @all_models. (@all_models does not keep full path, just to save memory. this variable keeps the path prefix.) 
-
+my $__global_instance_id; # instance id that sets file-name which will be shared between collection model & doc model SRILM call. don't manually set this; internally set and used. 
 ### 
 ### Utility methods 
 ###
@@ -735,7 +735,9 @@ sub P_h_t_index
 # gets text, context, and returns the conditional probability of P(text | context). 
 # This method is the *latest* one. 
 
-# argument: hypothesis, text, lambda, collection model path, document model top path
+# argument: hypothesis, text, lambda, collection model path, document model top path, [optional] instance_id
+# (instance_id is needed to be run with multiple instances. -- used to create SRILM input file) 
+
 # output (returns in one array):
 # P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence
 
@@ -743,9 +745,18 @@ sub condprob_h_given_t
 {
     # argument check
     my @args = @_;
+    my $instance_id = $args[5]; 
+
     my $hypothesis = shift @args;
     my $text = shift @args;
     die "Something wrong, either hypothesis or text is missing\n" unless ($hypothesis and $text);
+
+    if ($instance_id)
+    {
+	print STDERR "oh, here\n"; 
+	#$__global_instance_id = $instance_id; # maybe not really needed.
+	set_ngram_input_file("./models/ngram_input.txt." . $instance_id); 
+    }
 
     # calculate P(t) for each document model
     print STDERR $text, "\n";

@@ -23,9 +23,8 @@ if ($ARGV[0] and $ARGV[1])
 
 # time in 
 my $t0 = Benchmark->new; 
-# arguments: (context, text, lamda, collection model file, document models top path)
-#P_h_t_index($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
-condprob_h_given_t($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document");
+# arguments: (context, text, lamda, collection model file, document models top path, instance_id)
+condprob_h_given_t($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "sketch");
 
 # time out
 my $t1 = Benchmark->new; 

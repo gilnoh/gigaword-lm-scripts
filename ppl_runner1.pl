@@ -15,7 +15,7 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS expo
 #
 our $DEBUG = 0; # no debug output 
 our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
-set_num_thread(4); 
+set_num_thread(2); 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
 # own configuration values
@@ -46,18 +46,20 @@ our $DOC_MIN_NUM_SENTENCES = 0;
 
 ## global (if any) 
 ##
+my $instance_id = "ppl1"; 
+
 
 ## code start 
 ##
 
-unless ($ARGV[0])
+unless ($ARGV[0] && $ARGV[1])
 {
-    die "requires one (or more) file names as arguments\n"; 
+    die "requires at least two or more arguments\n   - instance_id (unique id of this run. any string, but unique)\n   - one (or more) text file names (the file as same as to be passed for SRILM -ppl).\n example: > perl ppl_runner.pl \"myrun1\" ./testdata/*.story\n"; 
 }
 
 # time in 
 my $t0 = Benchmark->new; 
-
+$instance_id = shift @ARGV; 
 my @files = @ARGV; 
 
 # variables to store all 
@@ -191,7 +193,7 @@ sub ppl_one_doc
 	    $content = $later_half; 
 	}
 
-	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
+	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
@@ -212,7 +214,7 @@ sub ppl_one_doc
 	    $context = $context . "\n" . $later_half; 
 	    $content = $first_half; 
 
-	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document");
+	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
 
 	    print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
