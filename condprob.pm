@@ -80,7 +80,7 @@ our $TEMP_DIR = "./temp";
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 my @all_model =(); # global variable that is filled in P_t_index. This array keeps the full list of .model files for this run. (Filled once, used for long). 
 my $all_model_top_path; # Associated value to @all_models. (@all_models does not keep full path, just to save memory. this variable keeps the path prefix.) 
-my $__global_instance_id; # instance id that sets file-name which will be shared between collection model & doc model SRILM call. don't manually set this; internally set and used. 
+
 ### 
 ### Utility methods 
 ###
@@ -90,6 +90,8 @@ my $__global_instance_id; # instance id that sets file-name which will be shared
 # input: one string 
 # output: one string, tokenzied and sentence splitted. 
 #         (one sentence per line) 
+
+# TODO: can't run by multiple instances. (fixed file name) 
 sub call_splitta 
 {
     print STDERR "tokenization ..."; 
@@ -753,7 +755,6 @@ sub condprob_h_given_t
 
     if ($instance_id)
     {
-	print STDERR "oh, here\n"; 
 	#$__global_instance_id = $instance_id; # maybe not really needed.
 	set_ngram_input_file("./models/ngram_input.txt." . $instance_id); 
     }
