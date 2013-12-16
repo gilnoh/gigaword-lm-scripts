@@ -453,8 +453,12 @@ sub P_t_index
 
     # sanity check
     my $hit_size = scalar (@{$hits_aref});
-    warn "$text resulted no hits in SOLR index" unless ($hit_size);
-
+    unless ($hit_size)
+    {
+	warn "$text resulted no hits in SOLR index\n";
+	warn "Probably non-text. Passing this one\n";
+	return undef;
+    } 
     #my $total_doc_size; #deprecated. remove when all code ready.
 
     # prepare list of models
@@ -630,6 +634,11 @@ sub P_h_t_index
     # calculate P(t) for each document model
     print STDERR $text, "\n";
     my $text_per_doc_href = P_t_index($text, @args); # remaining @args will be checked there
+    # check null result 
+    unless ($text_per_doc_href)
+    {
+	return undef; # unable to process. probably non-words. (e.g. "..."). 
+    }
     # calculate P(t) overall
     my $P_t;
     my $nonOOV_len_t = count_non_zero_element (@collection_seq) - count_sentence($text);
@@ -648,6 +657,11 @@ sub P_h_t_index
     # calculate P(h) for each model
     print STDERR $hypothesis, "\n";
     my $hypo_per_doc_href = P_t_index($hypothesis, @args);
+    # check null result 
+    unless ($hypo_per_doc_href)
+    {
+	return undef; # unable to process. probably non-words. (e.g. "..."). 
+    }
 
     # calculate P(h) overall
     my $P_h;
@@ -762,9 +776,20 @@ sub condprob_h_given_t
     # calculate P(t) for each document model
     print STDERR $text, "\n";
     my $text_per_doc_href = P_t_index($text, @args); # remaining @args will be checked there
+    unless ($text_per_doc_href)
+    {
+	return undef; # unable to process. probably non-words. (e.g. "..."). 
+    }
+
     # calculate P(t) overall
     my $P_t;
     my $nonOOV_len_t = count_non_zero_element (@collection_seq) - count_sentence($text);
+
+    # too short, or all OOV exception case 
+    unless ($nonOOV_len_t)
+    {
+	return undef; #unable to process. probably all OOV case.
+    }
 
     print STDERR "P(t) is : ";
     {
@@ -780,10 +805,19 @@ sub condprob_h_given_t
     # calculate P(h) for each model
     print STDERR $hypothesis, "\n";
     my $hypo_per_doc_href = P_t_index($hypothesis, @args);
+    unless ($hypo_per_doc_href)
+    {
+	return undef; # unable to process. probably non-words. (e.g. "..."). 
+    }
 
     # calculate P(h) overall
     my $P_h;
     my $nonOOV_len_h = count_non_zero_element(@collection_seq) - count_sentence($hypothesis);
+    unless ($nonOOV_len_h)
+    {
+	return undef; # unable to process, probably all OOV case. 
+    }
+
     my $P_h_coll = lambda_sum2(1, \@collection_seq, \@collection_seq); 
 
     print STDERR "P(h) is : ";

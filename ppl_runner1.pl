@@ -15,19 +15,19 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS expo
 #
 our $DEBUG = 0; # no debug output 
 our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
-set_num_thread(2); 
-our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
+set_num_thread(4); 
+our $APPROXIMATE_WITH_TOP_N_HITS=8000; ; 
 
 # own configuration values
 #
 # - method to select context 
-our $SELECT_CONTEXT = \&prev_one; 
+our $SELECT_CONTEXT = \&none; #\&prev_one; 
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
 
 # - half sentence flag. 
-our $HALF_SENTENCE_IN_CONTEXT = 0; 
+our $HALF_SENTENCE_IN_CONTEXT = 1; 
 # if 0; just normal P (content sentence | context) 
 # if 1; query is done with P( content-late-half-sentence | context-given + first-half-sentence) 
 our $BOTH_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on. 
@@ -85,7 +85,8 @@ foreach my $filename (@files)
     foreach (@temp) # prepare text 
     {
 	#remove all empty lines, so "real lines only"
-	next unless (/\S/); 
+	next unless (/\S/); # next if whitespce only
+	next unless (/\w/); # next if there's no alphanumeric char. 
 
 	if ($WORDS_ONLY) # option, remove punctuals. (" , . etc). note that the underlying model should have also trained in that way! 
 	{
@@ -197,13 +198,22 @@ sub ppl_one_doc
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
-	# sum 
-	$sum_P_coll += $P_coll; 
-	$sum_P_model += $P_model; 
-	$sum_P_model_conditioned += $P_model_conditioned; 
-	$sum_count_nonOOV += $count_nonOOV; 
-	$sum_count_sent += $count_sent; 
-
+	# undef check. (non word setnence like "..." can make undef)  
+	if (defined $P_model)
+	{
+	    # sum 
+	    $sum_P_coll += $P_coll; 
+	    $sum_P_model += $P_model; 
+	    $sum_P_model_conditioned += $P_model_conditioned; 
+	    $sum_count_nonOOV += $count_nonOOV; 
+	    $sum_count_sent += $count_sent; 
+	}
+	else
+	{
+	    warn "non-words only, or all OOV sentence, passing the sentence\n"; 
+	    print "non-words only, or all OOV sentence, passing the sentence\n" 
+	}
+	
 	# exceptional case for half sentence test 
 	if ($HALF_SENTENCE_IN_CONTEXT && $BOTH_HALF)
 	{  
@@ -218,12 +228,23 @@ sub ppl_one_doc
 
 	    print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
-	    # sum 
-	    $sum_P_coll += $P_coll; 
-	    $sum_P_model += $P_model; 
-	    $sum_P_model_conditioned += $P_model_conditioned; 
-	    $sum_count_nonOOV += $count_nonOOV; 
-	    $sum_count_sent += $count_sent; 
+	    # undef check again 
+	    if (defined $P_model)
+	    {
+		# sum 
+		$sum_P_coll += $P_coll; 
+		$sum_P_model += $P_model; 
+		$sum_P_model_conditioned += $P_model_conditioned; 
+		$sum_count_nonOOV += $count_nonOOV; 
+		$sum_count_sent += $count_sent; 
+	    }
+	    else
+	    {
+
+		warn "non-words only, or all OOV sentence, passing the sentence\n"; 
+		print "non-words only, or all OOV sentence, passing the sentence\n" 
+	    }
+
 	}
 
     } # for $i < $count 
@@ -324,6 +345,33 @@ sub none
     # $HALF_SENTENCE_IN_CONTEXT
 
     return " "; 
+}
+
+sub one_sent_window
+{
+  # prev and next one sentence.
+    my $aref = shift;
+    my $sent_index = shift;
+    my $prev_part;
+    my $next_part;
+
+    my $point = $sent_index;
+
+    # prev part
+    $point--;
+    if ($point >= 0)
+    {
+      $prev_part .= $aref->[$point] ."\n";
+    }
+
+    #next part
+    $point=$sent_index;
+    $point++; 
+    if ($point < scalar(@$aref))
+    {
+      $next_part .= $aref->[$point] ."\n";
+    }
+    return $prev_part . $next_part;
 }
 
 sub self 
