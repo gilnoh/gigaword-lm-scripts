@@ -27,11 +27,11 @@ use WebService::Solr::Document;
 use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
-our @EXPORT = qw(condprob_h_given_t P_h_t_index P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $LAMBDA $SOLR_URL export_hash_to_file $TEMP_DIR); 
+our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $LAMBDA $SOLR_URL export_hash_to_file $TEMP_DIR); 
 
 ###
-### Configurable values. Mostly Okay with default! 
+### Configurable values. Mostly Okay with the default!
 ###
 
 # Model directories
@@ -52,7 +52,13 @@ our $LAMBDA = 0.5;
 our $NUM_THREAD = 4;
 
 # Number Top-N hits documents that will be used to calculate approximation document-wise weighted sum of P(text) and P(text|context). If 0, all documents will be used (no approximation). If this number is given (N), only those top N hit document models will be used as approximation of P_t.
-our $APPROXIMATE_WITH_TOP_N_HITS = 1000; 
+our $APPROXIMATE_WITH_TOP_N_HITS = 1000;
+
+# How you will treat the "non-hit" members? Two options we have
+# fill by "drop" (0 P_{Di}), or fill by L0 (lambda as 0)
+# if the following values is set as 1, it will use L0 fill.
+# otherwise it will use Drop fill.
+our $NOHIT_L0_FILL = 0;;
 
 # Debug Level. 
 # 0: no addtional file output. 
@@ -66,11 +72,11 @@ our $DEBUG=2;
 # equalizes difference between "collection model" and "document model" 
 # by equalizing (minimizing) effect of non-content endings. 
 # (only the last . </s> ) 
-our $EQUALIZE_ENDS = 2; 
+our $EQUALIZE_ENDS = 0; # not really needed. 
 
 # Temporary output dir 
 # mainly for splitta, text splitter. 
-our $TEMP_DIR = "./temp"; 
+our $TEMP_DIR = "./temp";
 
 ###
 ### end of configurable values 
@@ -496,7 +502,7 @@ sub P_t_index
     print STDERR "Perplexity is ", calc_ppl($coll_logprob, count_non_zero_element(@collection_seq) - count_sentence($text), count_sentence($text)), "\n";
 
     # for each model, call P_doc()
-    print STDERR "Calculating per-document model logprobs for ", scalar(@document_model), " files \n";
+    print STDERR "Calculating per-document model logprobs from ", scalar(@document_model), " files \n";
 
     # generate the threads, and run them with 1/number_thread array parts.
     my @thread;
@@ -541,16 +547,21 @@ sub P_t_index
     # first, calculate the minimum no-hit prob.
     my %final_result;
     my $min_prob;
+
+    if ($NOHIT_L0_FILL)
     {
-        my @t;
-        push @t, 0 foreach (@r);
-        $min_prob = lambda_sum2($LAMBDA, \@t, \@r);
+       $min_prob = $coll_logprob;
+    }
+    else
+    {
+       my @t;
+       push @t, 0 foreach (@r);
+       $min_prob = lambda_sum2($LAMBDA, \@t, \@r);
     }
 
     # get all docmodel list
-
-    print STDERR "\nCalculating per-doc prob for hits done. Filling in min-prob for no-hits\n";
-    print STDERR "(min prob fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n";
+    print STDERR "\nCalculating per-doc prob for hits done. Filling in default_prob for no-hits document models\n";
+    print STDERR "(fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n";
     if ($max_prob < $cut_prob)
     {
         print STDERR "(maxprob < cutprob: Okay, but might mean cut was a bit pre-mature)\n";
@@ -616,134 +627,134 @@ sub P_t_index
     return \%final_result;
 }
 
-# The main work method 
-# (SOLR-based approximated) P(text | context). 
-# gets text, context, and returns the conditional probability of P(text | context).  
-sub P_h_t_index
-{
-    # argument: hypothesis, text, lambda, collection model path, document model top path
-    # output (return):
-    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ).
+# # The main work method (NOTE: deprecated) 
+# # (SOLR-based approximated) P(text | context). 
+# # gets text, context, and returns the conditional probability of P(text | context).  
+# sub P_h_t_index
+# {
+#     # argument: hypothesis, text, lambda, collection model path, document model top path
+#     # output (return):
+#     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ).
 
-    # argument check
-    my @args = @_;
-    my $hypothesis = shift @args;
-    my $text = shift @args;
-    die "Something wrong, either hypothesis or text is missing\n" unless ($hypothesis and $text);
+#     # argument check
+#     my @args = @_;
+#     my $hypothesis = shift @args;
+#     my $text = shift @args;
+#     die "Something wrong, either hypothesis or text is missing\n" unless ($hypothesis and $text);
 
-    # calculate P(t) for each document model
-    print STDERR $text, "\n";
-    my $text_per_doc_href = P_t_index($text, @args); # remaining @args will be checked there
-    # check null result 
-    unless ($text_per_doc_href)
-    {
-	return undef; # unable to process. probably non-words. (e.g. "..."). 
-    }
-    # calculate P(t) overall
-    my $P_t;
-    my $nonOOV_len_t = count_non_zero_element (@collection_seq) - count_sentence($text);
+#     # calculate P(t) for each document model
+#     print STDERR $text, "\n";
+#     my $text_per_doc_href = P_t_index($text, @args); # remaining @args will be checked there
+#     # check null result 
+#     unless ($text_per_doc_href)
+#     {
+# 	return undef; # unable to process. probably non-words. (e.g. "..."). 
+#     }
+#     # calculate P(t) overall
+#     my $P_t;
+#     my $nonOOV_len_t = count_non_zero_element (@collection_seq) - count_sentence($text);
 
-    print STDERR "P(t) is : ";
-    {
-        my @t = values %{$text_per_doc_href};
-        $P_t = mean(\@t); # (on uniform P(d) )
-    }
-    my $P_pw_t = $P_t / $nonOOV_len_t;
-    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t,";
-    print STDERR "Perplexity is ", calc_ppl($P_t, $nonOOV_len_t, count_sentence($text)), "\n";
-    # dcode
-    export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt");
+#     print STDERR "P(t) is : ";
+#     {
+#         my @t = values %{$text_per_doc_href};
+#         $P_t = mean(\@t); # (on uniform P(d) )
+#     }
+#     my $P_pw_t = $P_t / $nonOOV_len_t;
+#     print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t,";
+#     print STDERR "Perplexity is ", calc_ppl($P_t, $nonOOV_len_t, count_sentence($text)), "\n";
+#     # dcode
+#     export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt");
 
-    # calculate P(h) for each model
-    print STDERR $hypothesis, "\n";
-    my $hypo_per_doc_href = P_t_index($hypothesis, @args);
-    # check null result 
-    unless ($hypo_per_doc_href)
-    {
-	return undef; # unable to process. probably non-words. (e.g. "..."). 
-    }
+#     # calculate P(h) for each model
+#     print STDERR $hypothesis, "\n";
+#     my $hypo_per_doc_href = P_t_index($hypothesis, @args);
+#     # check null result 
+#     unless ($hypo_per_doc_href)
+#     {
+# 	return undef; # unable to process. probably non-words. (e.g. "..."). 
+#     }
 
-    # calculate P(h) overall
-    my $P_h;
-    my $nonOOV_len_h = count_non_zero_element(@collection_seq) - count_sentence($hypothesis);
+#     # calculate P(h) overall
+#     my $P_h;
+#     my $nonOOV_len_h = count_non_zero_element(@collection_seq) - count_sentence($hypothesis);
 
-    print STDERR "P(h) is : ";
-    {
-        my @h = values %{$hypo_per_doc_href};
-        $P_h = mean(\@h); # (on uniform P(d) )
-    }
-    my $P_pw_h = $P_h / $nonOOV_len_h;
-    print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n";
-    print STDERR "Perplexity is ", calc_ppl($P_h, $nonOOV_len_h, count_sentence($hypothesis)), "\n";
-    # dcode
-    export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt");
+#     print STDERR "P(h) is : ";
+#     {
+#         my @h = values %{$hypo_per_doc_href};
+#         $P_h = mean(\@h); # (on uniform P(d) )
+#     }
+#     my $P_pw_h = $P_h / $nonOOV_len_h;
+#     print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n";
+#     print STDERR "Perplexity is ", calc_ppl($P_h, $nonOOV_len_h, count_sentence($hypothesis)), "\n";
+#     # dcode
+#     export_hash_to_file($hypo_per_doc_href, "Ph_per_doc.txt");
 
-    # calculate P(h|t,d) for each model
-    # note this %weighted is *non-normalized weight* (for evidence)
-    # and not the final prob.
+#     # calculate P(h|t,d) for each model
+#     # note this %weighted is *non-normalized weight* (for evidence)
+#     # and not the final prob.
 
-    if ($DEBUG)
-    {
-        print STDERR "calculating weighted contribution (evidence) for each doc\n";
-    }
+#     if ($DEBUG)
+#     {
+#         print STDERR "calculating weighted contribution (evidence) for each doc\n";
+#     }
 
-    my %weighted;
-    my @text;
-    my @hypo;
-    {
-        foreach (keys %{$text_per_doc_href})
-        {
-            if ($DEBUG) # do only when debug flag is up
-            {
-                $weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_};
-            }
-            push @text, $text_per_doc_href->{$_};
-            push @hypo, $hypo_per_doc_href->{$_};
-        }
-    }
-    if ($DEBUG) # do only when debug flag is up.
-    {
-        # dcode
-        export_hash_to_file(\%weighted, "PtPh_per_doc.txt");
-    }
+#     my %weighted;
+#     my @text;
+#     my @hypo;
+#     {
+#         foreach (keys %{$text_per_doc_href})
+#         {
+#             if ($DEBUG) # do only when debug flag is up
+#             {
+#                 $weighted{$_} = $text_per_doc_href->{$_} + $hypo_per_doc_href->{$_};
+#             }
+#             push @text, $text_per_doc_href->{$_};
+#             push @hypo, $hypo_per_doc_href->{$_};
+#         }
+#     }
+#     if ($DEBUG) # do only when debug flag is up.
+#     {
+#         # dcode
+#         export_hash_to_file(\%weighted, "PtPh_per_doc.txt");
+#     }
 
-    # calculate P(h|t) overall (that is, P(h|t,d))
-    # WARNING: we made sure in the previous step, @text and @hypo sorted on the same
-    # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
-    # This must be guaranteeded!
-    print STDERR "Calculating the weighted sum\n";
-    my $P_h_given_t = weighted_sum(\@text, \@hypo);
-    #print @text, @hypo;     #dcode
-    my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
-    print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n";
-    print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, count_sentence($hypothesis)), "\n"; 
-    # calculate P(h|t) / P(h), as supporting measure.
-    my $gain = ($P_h_given_t - $P_h);
+#     # calculate P(h|t) overall (that is, P(h|t,d))
+#     # WARNING: we made sure in the previous step, @text and @hypo sorted on the same
+#     # list of files. That means that $text[$n] and $hypo[$n] came from the same doc.
+#     # This must be guaranteeded!
+#     print STDERR "Calculating the weighted sum\n";
+#     my $P_h_given_t = weighted_sum(\@text, \@hypo);
+#     #print @text, @hypo;     #dcode
+#     my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
+#     print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n";
+#     print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, count_sentence($hypothesis)), "\n"; 
+#     # calculate P(h|t) / P(h), as supporting measure.
+#     my $gain = ($P_h_given_t - $P_h);
 
-    print STDERR "Calculating the weighted sum for P(t|t)\n";
-    my $P_t_given_t = weighted_sum(\@text, \@text);
-    my $P_pw_t_given_t = $P_t_given_t / $nonOOV_len_t;
+#     print STDERR "Calculating the weighted sum for P(t|t)\n";
+#     my $P_t_given_t = weighted_sum(\@text, \@text);
+#     my $P_pw_t_given_t = $P_t_given_t / $nonOOV_len_t;
 
-    my $per_word_minus = (10 ** $P_pw_h_given_t) - (10 ** $P_pw_h);
-    my $bb_value = 10 ** ($P_pw_h_given_t - $P_pw_t_given_t);
-#    print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n";
-    print STDERR "===\n";
-    print STDERR "1] P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n";
-    print STDERR "2] log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n";
-    print STDERR "3] P_pw(h|t) (per word P(h|t)) is: ", $P_pw_h_given_t, "\n";
-    print STDERR "4] P_pw(h|t) - P_pw(h) (MINUS) is : ", $per_word_minus, "\n";
-    print STDERR "(all calculated from ", scalar(@text), " doc_models, by approx with $APPROXIMATE_WITH_TOP_N_HITS top hits)\n";
-    print STDERR "===\n";
+#     my $per_word_minus = (10 ** $P_pw_h_given_t) - (10 ** $P_pw_h);
+#     my $bb_value = 10 ** ($P_pw_h_given_t - $P_pw_t_given_t);
+# #    print STDERR "P(t|t) is: $P_t_given_t, \t P_pw(t|t) is: $P_pw_t_given_t\n";
+#     print STDERR "===\n";
+#     print STDERR "1] P_pw(h|t) / P_pw(t|t) (BB) is: ", $bb_value, "\n";
+#     print STDERR "2] log (P(h|t) / P(h)) (PMI) is: ", $gain, "\n";
+#     print STDERR "3] P_pw(h|t) (per word P(h|t)) is: ", $P_pw_h_given_t, "\n";
+#     print STDERR "4] P_pw(h|t) - P_pw(h) (MINUS) is : ", $per_word_minus, "\n";
+#     print STDERR "(all calculated from ", scalar(@text), " doc_models, by approx with $APPROXIMATE_WITH_TOP_N_HITS top hits)\n";
+#     print STDERR "===\n";
 
-    # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ).
+#     # ( P(h|t) / P(h) as non-log, P(h|t) as log, P(h) as log, P(t) as log, evidences of un-normalized contributions as the hash reference ).
 
-    #return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted});
+#     #return ($gain, $P_h_given_t, $P_h, $P_t, {%weighted});
 
-    # returning
-    # BB, PMI, P_pw_h_given_t, P_pw(h|t) - P_pw(h), len_t, len_h, evidences_hash_ref
-    return ($bb_value, $gain, $P_pw_h_given_t, $per_word_minus, $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted});
-    #return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted});
-}
+#     # returning
+#     # BB, PMI, P_pw_h_given_t, P_pw(h|t) - P_pw(h), len_t, len_h, evidences_hash_ref
+#     return ($bb_value, $gain, $P_pw_h_given_t, $per_word_minus, $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted});
+#     #return ($bb_value, $gain, $P_pw_h_given_t, ((10**$P_h_given_t) - (10**$P_h)), $nonOOV_len_t, $nonOOV_len_h, $P_h_given_t, $P_t, $P_h, {%weighted});
+# }
 
 
 # "streamlined", the main work method. 
@@ -876,6 +887,45 @@ sub condprob_h_given_t
     print STDERR "$P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
     return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent); 
 }
+
+
+# this meethod 
+sub P_t_joint
+{
+   my $text = $_[0];
+   print STDERR $text, "\n";
+   my $text_per_doc_href = P_t_index(@_);
+   unless ($text_per_doc_href)
+   {
+      return undef;
+   }
+
+    my $P_t;
+    my $nonOOV_len_t = count_non_zero_element (@collection_seq) - count_sentence($text);
+
+    # too short, or all OOV exception case 
+    unless ($nonOOV_len_t)
+    {
+	return undef; #unable to process. probably all OOV case.
+    }
+
+    print STDERR "P(t) is : ";
+    {
+        my @t = values %{$text_per_doc_href};
+        $P_t = mean(\@t); # (on uniform P(d) )
+    }
+    my $P_pw_t = $P_t / $nonOOV_len_t;
+    my $count_t_sent = count_sentence($text); 
+    print STDERR "$P_t, length $nonOOV_len_t, normalized P_pw(t) is: $P_pw_t,";
+    print STDERR "Perplexity is ", calc_ppl($P_t, $nonOOV_len_t, $count_t_sent), "\n";
+    # dcode
+    export_hash_to_file($text_per_doc_href, "Pt_per_doc.txt");
+    my $P_t_coll = lambda_sum2(1, \@collection_seq, \@collection_seq);
+
+    return ($P_t_coll, $P_t, $nonOOV_len_t, $count_t_sent);
+}
+
+
 
 1;
 

@@ -6,7 +6,7 @@
 use warnings; 
 use strict; 
 use Benchmark qw(:all); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $NOHIT_L0_FILL export_hash_to_file); 
 
 ## configurable values 
 ## 
@@ -14,20 +14,20 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS expo
 # from condprob.pm  
 #
 our $DEBUG = 0; # no debug output 
-our $SOLR_URL = "http://127.0.0.1:9911/solr"; 
-set_num_thread(4); 
-our $APPROXIMATE_WITH_TOP_N_HITS=8000; ; 
+our $SOLR_URL = "http://127.0.0.1:9911/solr";
+set_num_thread(4);
+our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 
 # own configuration values
 #
-# - method to select context 
-our $SELECT_CONTEXT = \&none; #\&prev_one; 
+# - method to select context
+our $SELECT_CONTEXT = \&three_sent_window_is;
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
 
 # - half sentence flag. 
-our $HALF_SENTENCE_IN_CONTEXT = 1; 
+our $HALF_SENTENCE_IN_CONTEXT = 0;
 # if 0; just normal P (content sentence | context) 
 # if 1; query is done with P( content-late-half-sentence | context-given + first-half-sentence) 
 our $BOTH_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on. 
@@ -35,21 +35,21 @@ our $BOTH_HALF = 0; # only meaningful when HALF_SENTENCE_IN_CONTEXT is on.
 # if 1; both P( later_half | context) and P (first half | context) is calculated. 
 
 # words only (clears sentences from comma, collon, quotes, etc) 
-our $WORDS_ONLY = 0; 
+our $WORDS_ONLY = 0;
 
 # clean heading & trailing (clears sentences start and ending) 
-our $CLEAN_HEAD_AND_TRAIL = 0; 
+our $CLEAN_HEAD_AND_TRAIL = 0;
 
 # ignore texts with less than N sentences. 
 # set 0, if you will run any&every documents. 
-our $DOC_MIN_NUM_SENTENCES = 0; 
+our $DOC_MIN_NUM_SENTENCES = 0;
 
-## global (if any) 
+## global (if any)
 ##
-my $instance_id = "ppl1"; 
+my $instance_id = "ppl1";
 
 
-## code start 
+## code start
 ##
 
 unless ($ARGV[0] && $ARGV[1])
@@ -347,9 +347,9 @@ sub none
     return " "; 
 }
 
-sub one_sent_window
+sub one_sent_window_is
 {
-  # prev and next one sentence.
+  # prev and next one sentence. + self.
     my $aref = shift;
     my $sent_index = shift;
     my $prev_part;
@@ -371,8 +371,105 @@ sub one_sent_window
     {
       $next_part .= $aref->[$point] ."\n";
     }
-    return $prev_part . $next_part;
+
+
+    #self part
+    my $self = $aref->[$sent_index]; 
+    return $prev_part . $next_part . $self;
 }
+
+sub two_sent_window_is
+{
+  # prev and next one sentence. + self.
+    my $aref = shift;
+    my $sent_index = shift;
+    my $prev_part = "";
+    my $next_part = "";
+
+    my $point = $sent_index;
+
+    # prev part
+    $point--;
+    if ($point >= 0)
+    {
+      $prev_part .= $aref->[$point] ."\n";
+    }
+    $point--;
+    if ($point >= 0)
+    {
+      $prev_part .= $aref->[$point] ."\n";
+    }
+
+
+    #next part
+    $point=$sent_index;
+    $point++; 
+    if ($point < scalar(@$aref))
+    {
+      $next_part .= $aref->[$point] ."\n";
+    }
+    $point++; 
+    if ($point < scalar(@$aref))
+    {
+      $next_part .= $aref->[$point] ."\n";
+    }
+
+    #self part
+    my $self = $aref->[$sent_index]; 
+    return $prev_part . $next_part . $self;
+  }
+
+sub three_sent_window_is
+{
+  # prev and next one sentence. + self.
+    my $aref = shift;
+    my $sent_index = shift;
+    my $prev_part = "";
+    my $next_part = "";
+
+    my $point = $sent_index;
+
+    # prev part
+    $point--;
+    if ($point >= 0)
+    {
+      $prev_part .= $aref->[$point] ."\n";
+    }
+    $point--;
+    if ($point >= 0)
+    {
+      $prev_part .= $aref->[$point] ."\n";
+    }
+    $point--;
+    if ($point >= 0)
+    {
+      $prev_part .= $aref->[$point] ."\n";
+    }
+
+
+    #next part
+    $point=$sent_index;
+    $point++; 
+    if ($point < scalar(@$aref))
+    {
+      $next_part .= $aref->[$point] ."\n";
+    }
+    $point++; 
+    if ($point < scalar(@$aref))
+    {
+      $next_part .= $aref->[$point] ."\n";
+    }
+    $point++; 
+    if ($point < scalar(@$aref))
+    {
+      $next_part .= $aref->[$point] ."\n";
+    }
+
+    #self part
+    my $self = $aref->[$sent_index]; 
+    return $prev_part . $next_part . $self;
+}
+
 
 sub self 
 {
