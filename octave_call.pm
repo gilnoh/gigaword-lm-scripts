@@ -23,8 +23,8 @@ my $MATFILE = "matrix4_weightedsum.csv";
 sub weighted_sum
 {
 #    return weighted_sum_octave(@_); 
-    return weighted_sum_native(@_); 
-#    return weighted_sum_native2(@_); 
+#    return weighted_sum_native(@_); 
+    return weighted_sum_native2(@_); 
 }
 
 # all calculation will call the corresponding octave code...  

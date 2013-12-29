@@ -19,7 +19,7 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 # own configuration values
 #
 # - method to select context
-our $SIZE_SENT_WINDOW = 1; # window of +-n
+our $SIZE_SENT_WINDOW = 2; # window of +-n
 
 # - pass test document  with less than N sentences.
 our $DOC_MIN_NUM_SENTENCES = 5;
