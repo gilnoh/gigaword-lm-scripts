@@ -14,15 +14,15 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $NOH
 our $DEBUG = 0;
 our $SOLR_URL = "http://127.0.0.1:9911/solr";
 set_num_thread(4);
-our $APPROXIMATE_WITH_TOP_N_HITS=10000;
+our $APPROXIMATE_WITH_TOP_N_HITS=5000;
 
 # own configuration values
 #
 # - method to select context
-our $SIZE_SENT_WINDOW = 2; # window of +-n
+our $SIZE_SENT_WINDOW = 3; # window of +-n
 
 # - pass test document  with less than N sentences.
-our $DOC_MIN_NUM_SENTENCES = 5;
+our $DOC_MIN_NUM_SENTENCES = 7;
 
 # end of configurable values
 
@@ -83,7 +83,8 @@ foreach my $filename (@files)
     # it harder to extract context parts. (e.g. prev-3, next-3, etc)
     if ( (scalar @sentences) < $DOC_MIN_NUM_SENTENCES )
     {
-	print STDERR "$filename is shorter than $DOC_MIN_NUM_SENTENCES sentences. passing\n"; 
+      print STDERR "$filename is shorter than $DOC_MIN_NUM_SENTENCES sentences. passing\n";
+      print "$filename is shorter than $DOC_MIN_NUM_SENTENCES sentences. passing\n"; 
 	next; 
     }
 
