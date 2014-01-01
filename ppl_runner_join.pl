@@ -19,7 +19,7 @@ our $APPROXIMATE_WITH_TOP_N_HITS=5000;
 # own configuration values
 #
 # - method to select context
-our $SIZE_SENT_WINDOW = 3; # window of +-n
+our $SIZE_SENT_WINDOW = "all"; # window of +-n
 
 # - pass test document  with less than N sentences.
 our $DOC_MIN_NUM_SENTENCES = 7;
@@ -125,35 +125,51 @@ sub ppl_one_doc_joint
 
     # ok. we will calculate conditional probability
     # with the number $SIZE_SENT_WINDOW
-    for(my $i=$SIZE_SENT_WINDOW; $i < ($count - $SIZE_SENT_WINDOW); $i++)
+    if ($SIZE_SENT_WINDOW eq "all")
       {
-        my $text= ""; 
-        for (my $j=($i - $SIZE_SENT_WINDOW); $j < ($i + $SIZE_SENT_WINDOW +1); $j++)
-        {
-           $text .= $sent[$j] . "\n";
-        }
 
-        # now text prepared. call.
+        my $text = join ("\n", @sent);
         my ($P_coll, $P_model_joint, $count_nonOOV, $count_sent  ) = P_t_joint($text, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
 
-	print "$P_coll \t $P_model_joint \t $count_nonOOV \t $count_sent\n";
+        print "$P_coll \t $P_model_joint \t $count_nonOOV \t $count_sent\n";
 
-	# undef check. (non word setnence like "..." can make undef)
-	if (defined $P_model_joint)
-	{
-	    # sum 
-	    $sum_P_coll += $P_coll;
-	    $sum_P_model_joint += $P_model_joint;
-	    $sum_count_nonOOV += $count_nonOOV;
-	    $sum_count_sent += $count_sent;
-	}
-	else
-	{
-	    warn "non-words only, or all OOV sentence, passing the sentence\n"; 
-	    print "non-words only, or all OOV sentence, passing the sentence\n" 
-	}
+        $sum_P_coll += $P_coll;
+        $sum_P_model_joint += $P_model_joint;
+        $sum_count_nonOOV += $count_nonOOV;
+        $sum_count_sent += $count_sent;
+      }
+    else
+      {
+        for(my $i=$SIZE_SENT_WINDOW; $i < ($count - $SIZE_SENT_WINDOW); $i++)
+          {
+            my $text= ""; 
+            for (my $j=($i - $SIZE_SENT_WINDOW); $j < ($i + $SIZE_SENT_WINDOW +1); $j++)
+              {
+                $text .= $sent[$j] . "\n";
+              }
+            
+            # now text prepared. call.
+            my ($P_coll, $P_model_joint, $count_nonOOV, $count_sent  ) = P_t_joint($text, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
+            
+            print "$P_coll \t $P_model_joint \t $count_nonOOV \t $count_sent\n";
 
-    } # for $i < $count 
+            # undef check. (non word setnence like "..." can make undef)
+            if (defined $P_model_joint)
+              {
+                # sum 
+                $sum_P_coll += $P_coll;
+                $sum_P_model_joint += $P_model_joint;
+                $sum_count_nonOOV += $count_nonOOV;
+                $sum_count_sent += $count_sent;
+              }
+            else
+              {
+                warn "non-words only, or all OOV sentence, passing the sentence\n"; 
+                print "non-words only, or all OOV sentence, passing the sentence\n" 
+              }
+
+          } # for $i < $count
+      } # end else
     # output for this file 
     print "Sum of this doc:\n"; 
     print "$sum_P_coll \t $sum_P_model_joint \t $sum_count_nonOOV \t $sum_count_sent\n"; 

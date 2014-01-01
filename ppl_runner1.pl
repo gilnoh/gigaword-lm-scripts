@@ -15,13 +15,13 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $NOH
 #
 our $DEBUG = 0; # no debug output 
 our $SOLR_URL = "http://127.0.0.1:9911/solr";
-set_num_thread(4);
-our $APPROXIMATE_WITH_TOP_N_HITS=4000;
+set_num_thread(3);
+our $APPROXIMATE_WITH_TOP_N_HITS=5000;
 
 # own configuration values
 #
 # - method to select context
-our $SELECT_CONTEXT = \&three_sent_window_is;
+our $SELECT_CONTEXT = \&prev_all;
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
@@ -275,7 +275,38 @@ sub divide_sentence_half
 
 ##
 ## context extraction methods 
-## argument: array_reference, sentence num (0 - n) 
+## argument: array_reference, sentence num (0 - n)
+sub doc_all_is
+{
+    my $aref = shift;
+    my $sent_index = shift;
+    # always return the whole document.
+    my $result = ""; 
+    for (my $i=0; $i < scalar (@$aref); $i++)
+    {
+        $result .= ( $aref->[$i] . "\n"); 
+    }
+    return $result; 
+}
+
+sub prev_all
+{
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index == 0) {
+    	return ""; 
+	#return $aref->[0]; # or next one? 
+    }
+    else 
+      {
+        my $result = "";
+        for (my $i=0; $i < $sent_index; $i++)
+          {
+            $result .= ( $aref->[$i] . "\n");
+          }
+	return $result; 
+      }
+}
 sub prev_one
 { 
     my $aref = shift; 
