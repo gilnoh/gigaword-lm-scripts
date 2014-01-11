@@ -15,13 +15,13 @@ use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $NOH
 #
 our $DEBUG = 0; # no debug output 
 our $SOLR_URL = "http://127.0.0.1:9911/solr";
-set_num_thread(3);
+set_num_thread(4);
 our $APPROXIMATE_WITH_TOP_N_HITS=5000;
 
 # own configuration values
 #
 # - method to select context
-our $SELECT_CONTEXT = \&prev_all;
+our $SELECT_CONTEXT = \&first_three;
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 

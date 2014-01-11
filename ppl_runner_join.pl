@@ -18,11 +18,13 @@ our $APPROXIMATE_WITH_TOP_N_HITS=5000;
 
 # own configuration values
 #
+# - interpolation lambda 
+my $lambda = 0.3; 
 # - method to select context
-our $SIZE_SENT_WINDOW = "all"; # window of +-n
+my $SIZE_SENT_WINDOW = 0; # "all"; # window of +-n
 
 # - pass test document  with less than N sentences.
-our $DOC_MIN_NUM_SENTENCES = 7;
+my $DOC_MIN_NUM_SENTENCES = 7;
 
 # end of configurable values
 
@@ -129,7 +131,7 @@ sub ppl_one_doc_joint
       {
 
         my $text = join ("\n", @sent);
-        my ($P_coll, $P_model_joint, $count_nonOOV, $count_sent  ) = P_t_joint($text, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
+        my ($P_coll, $P_model_joint, $count_nonOOV, $count_sent  ) = P_t_joint($text, $lambda, "./models/collection/collection.model", "./models/document", $instance_id);
 
         print "$P_coll \t $P_model_joint \t $count_nonOOV \t $count_sent\n";
 
@@ -149,7 +151,7 @@ sub ppl_one_doc_joint
               }
             
             # now text prepared. call.
-            my ($P_coll, $P_model_joint, $count_nonOOV, $count_sent  ) = P_t_joint($text, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
+            my ($P_coll, $P_model_joint, $count_nonOOV, $count_sent  ) = P_t_joint($text, $lambda, "./models/collection/collection.model", "./models/document", $instance_id);
             
             print "$P_coll \t $P_model_joint \t $count_nonOOV \t $count_sent\n";
 
