@@ -1,12 +1,21 @@
-# this simple script gets an id number and runs  
+# this simple script gets id number and runs  
 # P_h_t() over that problem. 
+
+# TODO update as getting "3-arguments". (would be faster) 
+# "filename", "from_id", "to_id". 
+
+# TODO fill PMI 
+# TODO (make minus as ppl-minus?) 
+# TODO? (BB value?  =  PPL( h | t ) / PPL(t / t) ) 
 
 use warnings; 
 use strict; 
 use POSIX qw(_exit); 
 use Benchmark qw(:all); 
-use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
+#use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL); 
 
+my $lambda = 0.5; 
 my $TRAINFILE = "./testdata/English_dev.xml"; 
 my $TESTFILE = "./testdata/English_test.xml"; 
 my $TEMP_DIR = "./temp"; 
@@ -28,7 +37,7 @@ else
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
-set_num_thread(1);  
+set_num_thread(4);  
 our $SOLR_URL = "http://localhost:9911/solr"; 
 our $APPROXIMATE_WITH_TOP_N_HITS=4000; 
 
@@ -53,10 +62,20 @@ my $hypo = call_splitta($h_aref->[$id]);
 
 #my ($bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h, $weighted_href) = P_h_t_multithread_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document", "./models_index");
 
-my ($bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h, $weighted_href) = P_h_t_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document");
+#my ($bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h, $weighted_href) = P_h_t_index($hypo, $text, 0.5, "./models/collection/collection.model", "./models/document");
+
+my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document");
 
 #$| = 1; 
-print "$ARGV[0]|GOLD:$d_aref->[$id]|, $bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h,\n";  
+#print "$ARGV[0]|GOLD:$d_aref->[$id]|, $bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h,\n";  
+
+my $pmi = "pmi(TBD)"; 
+my $bb = "bb_val(TBD)"; 
+my $minus = "minus(TBD)"; 
+my $ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents); 
+#print "$ARGV[0]|GOLD:$d_aref->[$id]|, $bb, $pmi, $P_pw_h_given_t, $P_h_given_t_minus_h, $tlen, $hlen, $P_h_given_t, $P_t, $P_h,\n";  
+
+print "$ARGV[0]|GOLD:$d_aref->[$id]|, $bb, $pmi, $ppl, $minus, $h_words, $h_sents, $model_p_h_given_t, $model_p_h\n";  
 
 # time stamp
 my $t1 = Benchmark->new; 
