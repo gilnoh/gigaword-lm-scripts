@@ -28,7 +28,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $LAMBDA $SOLR_URL export_hash_to_file $TEMP_DIR); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -46,7 +46,8 @@ our $DOCUMENT_INDEX_DIR = "./models_index";
 our $SOLR_URL = "http://localhost:9911/solr"; 
 
 # Per-document model interpolate parameter Lambda. (for each n-gram: lambda * doc_prob + (1-lambda) * collection_prob). 0 < lambda < 1 
-our $LAMBDA = 0.5;
+# (No need to export. Always a parameter of relevant methods) 
+my $LAMBDA = 0.5;
 
 # number of concurrent processes to be used for per-document model ngram count. 
 our $NUM_THREAD = 4;
@@ -58,7 +59,7 @@ our $APPROXIMATE_WITH_TOP_N_HITS = 1000;
 # fill by "drop" (0 P_{Di}), or fill by L0 (lambda as 0)
 # if the following values is set as 1, it will use L0 fill.
 # otherwise it will use Drop fill.
-our $NOHIT_L0_FILL = 0;;
+# our $NOHIT_L0_FILL = 0;;
 
 # Debug Level. 
 # 0: no addtional file output. 
@@ -72,7 +73,7 @@ our $DEBUG=2;
 # equalizes difference between "collection model" and "document model" 
 # by equalizing (minimizing) effect of non-content endings. 
 # (only the last . </s> ) 
-our $EQUALIZE_ENDS = 0; # not really needed. 
+# our $EQUALIZE_ENDS = 0; # not really needed. 
 
 # Temporary output dir 
 # mainly for splitta, text splitter. 
@@ -238,15 +239,16 @@ sub P_doc
 
     my @doc_seq = read_debug3_p(call_ngram($_[0]));
     #print "\n", (scalar @doc_seq), "\t", (scalar @collection_seq), "\n";
-    if ($EQUALIZE_ENDS == 1)
-    { # </s> last item is always the end sentence </s>. 
-	$doc_seq[-1] = $collection_seq[-1]; 
-    }
-    elsif ($EQUALIZE_ENDS == 2)
-    { # . -> </s> 
-	$doc_seq[-1] = $collection_seq[-1]; 
-	$doc_seq[-2] = $collection_seq[-2]; 
-    }
+    # if ($EQUALIZE_ENDS == 1)
+    # { # </s> last item is always the end sentence </s>. 
+    #     $doc_seq[-1] = $collection_seq[-1]; 
+    # }
+    # elsif ($EQUALIZE_ENDS == 2)
+    # { # . -> </s> 
+    #     $doc_seq[-1] = $collection_seq[-1]; 
+    #     $doc_seq[-2] = $collection_seq[-2]; 
+    # }
+
     my $logprob = lambda_sum2($LAMBDA, \@doc_seq, \@collection_seq);
     return $logprob;
 }
@@ -548,11 +550,11 @@ sub P_t_index
     my %final_result;
     my $min_prob;
 
-    if ($NOHIT_L0_FILL)
-    {
-       $min_prob = $coll_logprob;
-    }
-    else
+    # if ($NOHIT_L0_FILL)
+    # {
+    #    $min_prob = $coll_logprob;
+    # }
+    # else
     {
        my @t;
        push @t, 0 foreach (@r);
@@ -561,10 +563,10 @@ sub P_t_index
 
     # get all docmodel list
     print STDERR "\nCalculating per-doc prob for hits done. Filling in default_prob for no-hits document models\n";
-    print STDERR "(fillvalue is: $min_prob)\t (maxprob was: $max_prob)\t (cutpoint has: $cut_prob)\n";
+    print STDERR "(fillvalue is: $min_prob)\t (1stprob was: $max_prob)\t (cutpoint has: $cut_prob)\n";
     if ($max_prob < $cut_prob)
     {
-        print STDERR "(maxprob < cutprob: Okay, but might mean cut was a bit pre-mature)\n";
+        print STDERR "(1stprob < cutprob: Okay, but might mean cut was a bit pre-mature)\n";
     }
 
     if ( ((scalar @all_model) == 0) or ($all_model_top_path ne $DOCUMENT_MODELS_DIR)) # cached value not exist, or different
