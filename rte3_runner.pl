@@ -20,7 +20,7 @@ my $lambda = 0.3;
 #my $TRAINFILE = "./testdata/English_dev.xml";
 #my $TESTFILE = "./testdata/English_test.xml";
 my $TEMP_DIR = "./temp";
-die "Usage: needs three arguments.\n\">perl runner.pl rte_filename start_num end_num\"\n perl runner.pl ./testdata/English_dev.xml 0 800" unless ($ARGV[2]);
+die "Usage: needs three arguments.\n\">perl runner.pl rte_filename start_num end_num\"\n perl runner.pl ./testdata/English_dev.xml 1 800\n" unless ($ARGV[2]);
 
 my $RTEFILE = $ARGV[0];
 die "unable to open file: $RTEFILE" unless (-r $RTEFILE);
@@ -57,7 +57,7 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 
   my $text = call_splitta($t_aref->[$id]);
   my $hypo = call_splitta($h_aref->[$id]);
-  print STDERR "Processing id $id;\n";
+  print STDERR "Processing id $pair_id;\n";
   my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document");
 
   #$| = 1;
