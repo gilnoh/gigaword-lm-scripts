@@ -3,6 +3,10 @@
 # probabilities, etc)
 
 # TODO? (BB value?  =  PPL( h | t ) / PPL(t / t) )
+# TODO Current Minus is meaningless (e.g. percentage of gain should be there, 
+#      not just minus PPL...) 
+#      Thus, replace it with ( uncond_PPL - cond_PPL ) / uncond_PPL. 
+
 
 # Consider
 # - do we need to normalize PMI? No.
@@ -16,7 +20,7 @@ use Benchmark qw(:all);
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
 use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL); 
 
-my $lambda = 0.3;
+my $lambda = 0.2;
 #my $TRAINFILE = "./testdata/English_dev.xml";
 #my $TESTFILE = "./testdata/English_test.xml";
 my $TEMP_DIR = "./temp";
@@ -34,7 +38,7 @@ die "end id must be bigger than start" if ($END_ID < $START_ID);
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
-set_num_thread(2);
+set_num_thread(4);
 our $SOLR_URL = "http://localhost:9911/solr";
 our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 
@@ -58,6 +62,13 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   my $text = call_splitta($t_aref->[$id]);
   my $hypo = call_splitta($h_aref->[$id]);
   print STDERR "Processing id $pair_id;\n";
+
+  # if splitta fails: (RTE dev 141, hypo) 
+  warn "SPLITTA failed! ==> fallback to lc(string).\n" unless($text and $hypo); 
+  $text = lc($t_aref->[$id]) unless($text); 
+  $hypo = lc($h_aref->[$id]) unless($hypo); 
+  print STDERR "text: $text\n"; 
+  print STDERR "hypo: $hypo\n"; 
   my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document");
 
   #$| = 1;

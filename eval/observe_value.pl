@@ -5,6 +5,7 @@
 
 use warnings; 
 use strict; 
+
 ##
 ## line format is. 
 #
@@ -30,19 +31,17 @@ use strict;
 # TODO report based on "decision function" 
 #      - write "decision functions" 
 
-die unless ($ARGV[0]); 
+die "usage: > perl observe_value.pl csv_filename column_number\n" unless ($ARGV[1]); 
 
 my @csvdata; # arr of arr
 
 read_format($ARGV[0]); 
 
-my $arg_val = $ARGV[1] if ($ARGV[1]); 
+my $observe_target = $ARGV[1] if ($ARGV[1]); 
+my $arg_val = $ARGV[2] if ($ARGV[2]); 
 
-# 1 bb
-# 2 pmi (gain) 
-# 3 PPL (-abs) 
-# 4 MINUS (gain) 
-observe(3);  # observe that index. reports 
+observe($observe_target);
+exit(); 
 
 # observe($index) -- observes $csvdata[each]->[$index]
 # reports mean, media, ENTAILMENT mean/median, NONENTAILMENT mean/median
@@ -93,6 +92,8 @@ sub observe
     print "Accuracy with boundary at mean: $result_mean\n";
     my $result_ent_mean = accuracy_at_boundary($index, $ent_mean); 
     print "Accuracy with boundary at ent_mean: $result_ent_mean\n";
+    my $result_nonent_mean = accuracy_at_boundary($index, $nonent_mean); 
+    print "Accuracy with boundary at nonent_mean: $result_nonent_mean\n";
     my $result_median = accuracy_at_boundary($index, $median);  
     print "Accuracy with boundary at median: $result_median\n"; 
 
@@ -122,28 +123,68 @@ sub accuracy_at_boundary
 
     my $count_corr=0;
     my $count_incorr=0; 
+    my $count_gold_ent = 0; 
+    my $count_gold_nonent = 0; 
+    my $count_ent_predict = 0; 
+    my $count_nonent_predict = 0; 
+    my $count_ent_correct = 0; 
+    my $count_ent_wrong = 0; 
+    my $count_nonent_correct = 0; 
+    my $count_nonent_wrong = 0; 
+
     for(my $i=0; $i < scalar(@list); $i++)
     {
         my $val = $list[$i]; 
         my $estimation; 
+
         if ($val > $boundary)
         {
             $estimation = "ENTAILMENT"; 
+            $count_ent_predict++; 
         }
         else
         {
             $estimation = "NONENTAILMENT"; 
+            $count_nonent_predict++; 
         }
+
+        $count_gold_ent++ if ($gold[$i] eq "ENTAILMENT"); 
+        $count_gold_nonent++ if ($gold[$i] eq "NONENTAILMENT"); 
+
         if ($gold[$i] eq $estimation)
         {
             $count_corr++; 
+            if ($estimation eq "ENTAILMENT")
+            {
+                $count_ent_correct++;
+            }
+            else
+            {
+                $count_nonent_correct++; 
+            }
         }
         else
         {
             $count_incorr++;
+            if ($estimation eq "ENTAILMENT")
+            {
+                $count_ent_wrong++; 
+            }
+            else
+            {
+                $count_nonent_wrong++; 
+            }
         }
-    }
-    print "($count_corr, $count_incorr, ", scalar(@list), ")\n"; 
+    }    
+    # prec/recall
+    print "EntPrec: ", ($count_ent_correct / $count_ent_predict), "\t"; 
+    print "EntRecall: ", ($count_ent_correct / $count_gold_ent), "\n"; 
+    print "NonEntPrec: ", ($count_nonent_correct / $count_nonent_predict), "\t"; 
+    print "NonEntRec: ", ($count_nonent_correct / $count_gold_nonent), "\n"; 
+
+    # corr / all predic
+    print "($count_corr, $count_incorr, ", scalar(@list), ")\t"; 
+    
     my $result = $count_corr / ($count_corr + $count_incorr); 
     return $result; 
 }
