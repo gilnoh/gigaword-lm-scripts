@@ -27,7 +27,25 @@ if ($ARGV[0] and $ARGV[1])
 # time in 
 my $t0 = Benchmark->new; 
 # arguments: (context, text, lamda, collection model file, document models top path, instance_id)
-condprob_h_given_t($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "sketch");
+# return values: (P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence, P_collection(t), P_model(t), count_nonOOV_words_t, count_sentence_t) 
+
+my ($P_h_coll, $P_h, $P_h_given_t, $count_word_h, $count_sent_h, $P_t_coll, $P_t, $count_word_t, $count_sent_t ) = condprob_h_given_t($hypothesis, $text, 0.5, "./models/collection/collection.model", "./models/document", "sketch");
+
+my $t_ppl = calc_ppl($P_t, $count_word_t, $count_sent_t); 
+my $h_ppl = calc_ppl($P_h, $count_word_h, $count_sent_h); 
+my $h_given_t_ppl = calc_ppl($P_h_given_t, $count_word_h, $count_sent_h); 
+
+print "returned values\n"; 
+print "P(h) (coll, model): $P_h_coll, $P_h\n"; 
+print "P(t) (coll, model): $P_t_coll, $P_t\n"; 
+print "P(h|t) (model): $P_h_given_t\n"; 
+print "PPL(t): $t_ppl\n"; 
+print "PPL(h): $h_ppl\n"; 
+print "PPL(h|t): $h_given_t_ppl\n"; 
+print "PMI(h,t): ", ($P_h_given_t - $P_h), "\n"; 
+print "PMI(h,t) / h_len: ", ($P_h_given_t - $P_h) / ($count_word_h + $count_sent_h), "\n"; 
+print "PMI(h,t) / t_len + h_len: ", ($P_h_given_t - $P_h) / ($count_word_h + $count_sent_h + $count_word_t + $count_sent_t), "\n"; 
+print "PPL gain (%): ", ($h_ppl -  $h_given_t_ppl) / $h_ppl, "\n"; 
 
 # time out
 my $t1 = Benchmark->new; 

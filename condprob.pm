@@ -4,7 +4,7 @@
 # this module is a restructured version of proto_condprob.pm 
 # (hopefully final for the paper) 
 
-# TODO in the long term
+# CONSIDER in the long term
 # a. more modularity? 
 # Conditional Probability part and "SOLR", "GigaWord" (or document 
 # model stroing) specific parts are actually mixed up somewhat. 
@@ -768,7 +768,8 @@ sub P_t_index
 # (instance_id is needed to be run with multiple instances. -- used to create SRILM input file) 
 
 # output (returns in one array):
-# P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence
+# P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence,
+# P_collection(t), P_model(t), count_nonOOV_words (t), count_sentence (t)
 
 sub condprob_h_given_t
 {
@@ -793,6 +794,8 @@ sub condprob_h_given_t
     {
 	return undef; # unable to process. probably non-words. (e.g. "..."). 
     }
+
+    my $P_t_coll = lambda_sum2(1, \@collection_seq, \@collection_seq);
 
     # calculate P(t) overall
     my $P_t;
@@ -839,6 +842,7 @@ sub condprob_h_given_t
         $P_h = mean(\@h); # (on uniform P(d) )
     }
     my $P_pw_h = $P_h / $nonOOV_len_h;
+
     print STDERR "$P_h, length $nonOOV_len_h, normalized P_pw(h) is: $P_pw_h\n";
     print STDERR "Perplexity is ", calc_ppl($P_h, $nonOOV_len_h, count_sentence($hypothesis)), "\n";
     # dcode
@@ -882,12 +886,22 @@ sub condprob_h_given_t
     #print @text, @hypo;     #dcode
     my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
     my $count_h_sent = count_sentence($hypothesis); 
+    my $count_t_sent = count_sentence($text); 
     print STDERR "P(h|t) is (logprob):  $P_h_given_t \t P_pw(h|t) is $P_pw_h_given_t\n";
     print STDERR "Perplexity is ", calc_ppl($P_h_given_t, $nonOOV_len_h, $count_h_sent), "\n"; 
 
     # collection prob, model prob (Without context), model prob with cond, wcount, scount 
     print STDERR "$P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
-    return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent); 
+
+# return in this order: 
+# P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence,
+# (TODO), P_collection(t), P_model(t), count_nonOOV_words (t), count_sentence (t
+
+
+    return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent, 
+            $P_t_coll, $P_t, $nonOOV_len_t, $count_t_sent); 
+
+
 }
 
 
