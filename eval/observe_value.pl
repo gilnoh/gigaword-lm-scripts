@@ -6,31 +6,6 @@
 use warnings; 
 use strict; 
 
-##
-## line format is. 
-#
-#1|GOLD:ENTAILMENT|, bb_val(TBD), 2.99161633476937, 68.6793281132553, 147.806145602165, 5, 1, -11.0209562269589, -14.0125725617283
-#
-# CSV 
-# column1: id & gold, 
-# column2: bb value (gain) (PPL(P(h|t)) / PPL(P(t|t))) 
-# column3: PMI (gain) (P(h|t) / P(h)) 
-# column4: PPL of H (abs) 
-# column5: MINUS (gain) (PPL_unconditioned - PPL conditioned) 
-# column6: number of tokens 
-# column7: number of sentences 
-# column8: P(h|t) (abs)
-# column9: P(h) (abs)
-
-# TODO read and report "median" cut point, and accuracy 
-#      - for PMI
-#      - for PPL (abs) 
-#      - for MINUS 
-#      - (for BB when it comes) 
-
-# TODO report based on "decision function" 
-#      - write "decision functions" 
-
 die "usage: > perl observe_value.pl csv_filename column_number\n" unless ($ARGV[1]); 
 
 my @csvdata; # arr of arr
@@ -231,19 +206,21 @@ sub read_format
         # value[1] = bb_val
         # value[2] = PMI
         # value[3] = PPL (h | t) 
-        # value[4] = gain PPL 
-        # value[5,6] = word, sent 
-        # value[7,8] = P(h|t), P(h) 
+        # ... 
 
         my @r; 
         $value[0] =~ /GOLD:(.+)\|/; 
         $r[0] = $1; # gold result 
-        $r[1] = $value[1]; #bb 
-        $r[2] = $value[2]; #pmi 
-        $r[3] = - $value[3]; #PPL (h | t) 
-        $r[4] = $value[4]; #PPL gain
 
-        print STDERR "$r[0],$r[1],$r[2],$r[3],$r[4]\n"; 
+        print STDERR "$r[0],"; 
+        for(my $i=1; $i < scalar(@value); $i++)
+        {
+            $r[$i] = $value[$i]; 
+            print STDERR "$r[$i],"; 
+        }
+
+        #print STDERR "$r[0],$r[1],$r[2],$r[3],$r[4]\n"; 
+        print STDERR "\n"; 
         push @csvdata, [@r]; 
     }
     close FILEIN; 

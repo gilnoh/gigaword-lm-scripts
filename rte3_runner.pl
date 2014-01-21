@@ -2,16 +2,12 @@
 # XML file and report relevant values (like PMI-gain, PPL-gain,
 # probabilities, etc)
 
-# TODO? (BB value?  =  PPL( h | t ) / PPL(t / t) )
-# TODO Current Minus is meaningless (e.g. percentage of gain should be there, 
-#      not just minus PPL...) 
-#      Thus, replace it with ( uncond_PPL - cond_PPL ) / uncond_PPL. 
+# TODO P(t) ppl 
 
+# TODO? (BB value?  =  PPL( h | t ) / PPL(t / t) )
 
 # Consider
-# - do we need to normalize PMI? No.
-# - Minus value is normalized, right? (right. per-word)
-#   (Is this always a linear-relation to PMI?): hmm. Not sure. check.
+#   relationship between PMI to ppl_gain (same? or not?) 
 
 use warnings;
 use strict;
@@ -63,24 +59,25 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   my $hypo = call_splitta($h_aref->[$id]);
   print STDERR "Processing id $pair_id;\n";
 
-  # if splitta fails: (RTE dev 141, hypo) 
+  # if splitta fails: (RTE3 dev 141, hypo) 
   warn "SPLITTA failed! ==> fallback to lc(string).\n" unless($text and $hypo); 
   $text = lc($t_aref->[$id]) unless($text); 
   $hypo = lc($h_aref->[$id]) unless($hypo); 
   print STDERR "text: $text\n"; 
   print STDERR "hypo: $hypo\n"; 
-  my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document");
+  my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents, $collection_p_t, $model_p_t, $t_words, $t_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document");
 
   #$| = 1;
-
-  my $pmi = "pmi(TBD)";
-  my $bb = "bb_val(TBD)";
-  my $ppl_minus = "minus(TBD)";
+  my $bb = "bb_val(TBD)";   # (BB value?  =  PPL( h | t ) / PPL(t / t) )
   my $target_ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents);
   my $uncond_ppl = calc_ppl($model_p_h, $h_words, $h_sents);
-  $ppl_minus = $uncond_ppl - $target_ppl;
-  $pmi = $model_p_h_given_t - $model_p_h;
-  print "$pair_id|GOLD:$d_aref->[$id]|, $bb, $pmi, $target_ppl, $ppl_minus, $h_words, $h_sents, $model_p_h_given_t, $model_p_h\n";
+  my $ppl_minus = $uncond_ppl - $target_ppl;
+  my $ppl_gain = ($uncond_ppl - $target_ppl) / $uncond_ppl; 
+  my $pmi = $model_p_h_given_t - $model_p_h;
+  my $pmi_per_hword = $pmi / ($h_words + $h_sents); 
+  my $text_side_ppl = calc_ppl($model_p_t, $t_words, $t_sents); 
+
+  print "$pair_id|GOLD:$d_aref->[$id]|, $bb, $pmi, $pmi_per_hword, $target_ppl, $ppl_minus, $ppl_gain, $text_side_ppl\n";
 
 }
 # time stamp
