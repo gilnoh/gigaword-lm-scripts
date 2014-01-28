@@ -1,3 +1,7 @@
+# Current works 
+# DONE - P_coll simple cache. 
+# TODO - P_coll "compose-cache". 
+
 # The main module of this project. 
 # a perl module that uses srilm_call.pm & octave_call.pm
 # to calculate "conditional probability on LM over documents"
@@ -9,6 +13,7 @@
 # Conditional Probability part and "SOLR", "GigaWord" (or document 
 # model stroing) specific parts are actually mixed up somewhat. 
 # Maybe in future versions we should clearly separate them. 
+# b. real "index-for-LM". 
 
 package condprob;
 
@@ -21,6 +26,7 @@ use Exporter;
 use srilm_call; # qw(read_debug3_p call_ngram);
 use octave_call;
 use Carp;
+use DB_File; # for caching P_coll
 
 use WebService::Solr;
 use WebService::Solr::Document;
@@ -79,6 +85,10 @@ our $DEBUG=2;
 # mainly for splitta, text splitter. 
 our $TEMP_DIR = "./temp";
 
+# Collection model cache: "big" LM takes long time to query  
+# This will cache collection model 
+our $USE_CACHE_ON_COLL_MODEL = 1;  
+
 ###
 ### end of configurable values 
 ###
@@ -87,6 +97,14 @@ our $TEMP_DIR = "./temp";
 my @collection_seq =(); # global variable that is filled by P_coll, and used by P_doc (thus in P_t)
 my @all_model =(); # global variable that is filled in P_t_index. This array keeps the full list of .model files for this run. (Filled once, used for long). 
 my $all_model_top_path; # Associated value to @all_models. (@all_models does not keep full path, just to save memory. this variable keeps the path prefix.) 
+
+# berkely db for LM-collectino model cacheing 
+my %COLL_MODEL_CACHE; 
+
+if ($USE_CACHE_ON_COLL_MODEL)
+{
+    tie %COLL_MODEL_CACHE, "DB_File", "cache_coll_model.db"; 
+}
 
 ### 
 ### Utility methods 
@@ -222,10 +240,35 @@ sub P_coll
     die "unable to find collection model file $COLLECTION_MODEL\n" unless (-r $COLLECTION_MODEL);
     my $sent = $_[0];
 
+    # if in cache. 
+    if ($USE_CACHE_ON_COLL_MODEL)
+    {
+        if (defined $COLL_MODEL_CACHE{$sent})
+        {
+            # d out
+            print STDERR "(result found in cache)\n"; 
+            my $val = $COLL_MODEL_CACHE{$sent};  
+            my @arr = split ("\n", $val); 
+            @collection_seq = @arr; 
+
+            # need to do this, since P_doc relies on this 
+            # (ugly code, I know, but)
+            make_ngram_input_file($sent); 
+
+            return @collection_seq; 
+        }
+    }
+
     # from srilm_call.pm
     my @out = call_ngram($COLLECTION_MODEL, "", $sent);
     @collection_seq = read_debug3_p(@out);
 
+    if ($USE_CACHE_ON_COLL_MODEL)
+    {
+        # store it in the cache. 
+        my $val = join("\n", @collection_seq); 
+        $COLL_MODEL_CACHE{$sent} = $val; 
+    }
     return @collection_seq;
 }
 

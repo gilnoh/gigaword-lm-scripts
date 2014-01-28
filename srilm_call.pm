@@ -8,7 +8,7 @@ use warnings;
 use Exporter;
 
 our @ISA = qw(Exporter); 
-our @EXPORT = qw(set_ngram_input_file read_debug3_p call_ngram); 
+our @EXPORT = qw(set_ngram_input_file make_ngram_input_file read_debug3_p call_ngram); 
 
 our $NGRAM_EXECUTABLE = "ngram"; 
 our $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
@@ -47,9 +47,10 @@ sub call_ngram($;$$) {
     # generate input file, if $sentence_string is given 
     if (defined $sentence_string)
     {
-	open FILE, ">", $NGRAM_INPUT_FILE; 
-	print FILE $sentence_string; 
-	close FILE;
+        make_ngram_input_file($sentence_string); 
+	# open FILE, ">", $NGRAM_INPUT_FILE; 
+	# print FILE $sentence_string; 
+	# close FILE;
     }
 
     die "Something wrong. This is a new call without sentence, or file write failed\n" unless (-r $NGRAM_INPUT_FILE); 
@@ -65,6 +66,15 @@ sub call_ngram($;$$) {
     # sanity check 
     die "\n ngram call fails, or problematic - no stdout from SRILM ngram. Check that commandline program ngram is in path \n" unless (@result); 
     return @result; 
+}
+
+sub make_ngram_input_file
+{
+    my $sentence_string = $_[0]; 
+    open FILE, ">", $NGRAM_INPUT_FILE; 
+    print FILE $sentence_string; 
+    close FILE;
+
 }
 
 sub read_debug3_p {

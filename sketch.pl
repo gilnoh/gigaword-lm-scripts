@@ -12,11 +12,11 @@ our $SOLR_URL = "http://127.0.0.1:9911/solr";
 set_num_thread(4);
 our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 
-my $text = lc "we all feel the same";
-my $hypothesis = lc "we all feel the same \n we feel very close to him";
+#my $text = lc "we all feel the same";
+#my $hypothesis = lc "we all feel the same \n we feel very close to him";
 
-#my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
-#my $hypothesis = lc "30 dies in a bus collision in Uganda"; 
+my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
+my $hypothesis = lc "30 dies in a bus collision in Uganda"; 
 
 if ($ARGV[0] and $ARGV[1])
 {
