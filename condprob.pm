@@ -1,6 +1,8 @@
 # Current works 
 # DONE - P_coll simple cache. 
 # TODO - P_coll "compose-cache". 
+# TODO - (in future) check no / simple / smart cache all returns same. 
+# TODO - (bug) make sure P_t_joint uses $instance_id
 
 # The main module of this project. 
 # a perl module that uses srilm_call.pm & octave_call.pm
