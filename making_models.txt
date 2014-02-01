@@ -4,10 +4,15 @@
 - Python 2.x needed by the sentence splitter. (Splitta, in /splitta) 
 - Java 1.6 or later (required for SOLR search engine) 
 - Perl 5.8 or later needed. 
-- Also, requires the following CPAN modules. 
-  + forks (for concurrent running of ngram on document models) 
+  (We have tested it with perl-5.16, and 5.18.)
+- Also, you need to install the following CPAN modules. 
   + WebService::Solr (for connecting SOLR search from perl) 
-  + Benchmark (for checking run time) 
+  + forks (for concurrent running of ngram on document models) 
+  (additionally, it uses the following default-modules.) 
+  + DB_File (normally shipped with default perl) for caching 
+  + Benchmark (normally shipped with default perl) for checking time  
+  (WebService requires EXPAT, and DB_File requires BerkelyDB. Any 
+  proper unix-like -- like OSX, Linux -- are shipped with them.) 
 
 0.b Installation 
 - clone git 
@@ -38,7 +43,7 @@ or two liner news stories) can act as noises for "document-based"
 models. We will avoid this by deleting files that are way too short.   
 
 Commmand to run: 
-> perl rm_very_short_stories.pl ./models/document
+> perl rm_very_short_story.pl ./models/document
 
 The script will walk over the documents and let you know how many
 files it has removed from the document collection. 
@@ -54,7 +59,7 @@ $DOC_MIN_NUM_SENTENCES at the top of the script code.
 article) files.  
 
 Commands to run: 
-1) > perl cat_all_story.pl ./models/document > ./models/collection/collection.txt
+1) > perl cat_all_stories.pl ./models/document > ./models/collection/collection.txt
 2) > ngram-count -text ./models/collection/collection.txt -lm ./models/collection/collection.model -write-binary-lm 
 
 Note: 1) generates single big collection text of news articles,for
