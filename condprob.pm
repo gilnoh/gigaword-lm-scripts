@@ -20,7 +20,7 @@
 package condprob;
 
 use forks; # process based thread for Perl, which is actually faster. 
-use threads; 
+#use threads; 
 #use threads::shared;
 use warnings;
 use strict;

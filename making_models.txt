@@ -11,8 +11,6 @@
   (additionally, it uses the following default-modules.) 
   + DB_File (normally shipped with default perl) for caching 
   + Benchmark (normally shipped with default perl) for checking time  
-  (WebService requires EXPAT, and DB_File requires BerkelyDB. Any 
-  proper unix-like -- like OSX, Linux -- are shipped with them.) 
 
 0.b Installation 
 - clone git 
@@ -131,4 +129,43 @@ visiting SOLR web interface.
 This short code gives you minimal running example of calling codes to
 calculate P(text1 | text2). 
 
+The default example of "bus accident" will give you PPL gain about 46
+percents (0.46 ...), and PMI about  on AFP2010 corpus.
 
+If the numbers are seriously different (e.g. minus values), it means
+that it isn't working properly. See A and check for your Perl
+multi-thread/process support. 
+
+===
+
+A. About Perl version 
+
+- It is best to use perl version prepared with no-thread support. 
+- The condprob.pm module uses multi-process via forks.pm. 
+  In theory, a perl version with native-thread support should work
+  with no problem, with or without forks. (either with "use forks", or
+  "use threads". but actual thread codes in perl (especially 5.18 and
+  linux) has some bugs in it and fails to work properly. 
+- If such a failure occur, the code can't process given number of
+  document models (the progress dots are missing or too short), and
+  produces very strange values.  
+- So what to do in such a case? --- we recommend you to build and use
+  a perl interpreter without native thread support --- process based
+  forks.pm is actually faster, and you don't lose anything with "no
+  thread" perl. 
+- Use PerlBrew to install a perl version without any options (default
+  is without usethreads option). PerlBrew is very convenient and it
+  builds/installs everything automatically on your user account (no
+  root required for perl or CPAN modules). 
+
+B. Module dependency: External binary dependencies of
+WebService::Solr, and DB_File   
+
+- WebService::Solr requires EXPAT XML parser library. Any unix-like
+  systems would have it as default. But if your system hasn't, you
+  have to install it. 
+- DB_File requires BerkeleyDB, also normally installed in
+  unix-systems; you also need "include" headers for the DB
+  (e.g. "db5.1-dev" package in Debian, etc) 
+- Again, on a unix-like, they are default and very easy to provide. On 
+  Windows? ... I never tried and can't tell. 
