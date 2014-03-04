@@ -2,12 +2,34 @@
 # XML file and report relevant values (like PMI-gain, PPL-gain,
 # probabilities, etc)
 
-# TODO P(t) ppl 
-
-# TODO? (BB value?  =  PPL( h | t ) / PPL(t / t) )
-
 # Consider
 #   relationship between PMI to ppl_gain (same? or not?) 
+
+# List of possible (sketch-oriented) features 
+
+# - From sketch (probably P() & PPL() are duplicated)  
+# P_coll(h) 
+# P_model(h)
+# P_coll(t)
+# P_model(t)
+# P_model(h|t)
+# PPL(t)
+# PPL(h)
+# PPL(h|t)
+# PPL(h|t) - PPL(h)  
+# PPL(h|t) / PPL(h) 
+# PMI(h,t) 
+# PMI(h,t) / (h_len) 
+# PMI(h,t) / (t_len + h_len) 
+# - From previous 
+# bb (missing) (not gonna cover) 
+# pmi (covered) 
+# pmi / h_len  (covered) 
+# PPL(h|t)     (covered) 
+# PPL(h) - PPL(h|t) 
+# ( PPL(h) - PPL(h|t) )  / PPL(h)  -- A 
+#     prolly better just use PPL(h|t) / PPL(h) (== 1 - A) 
+# PPL(t) 
 
 use warnings;
 use strict;
