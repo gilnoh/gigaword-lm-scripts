@@ -1,8 +1,8 @@
 # Current works 
 # DONE - P_coll simple cache. 
-# TODO - P_coll "compose-cache". 
-# TODO - (in future) check no / simple / smart cache all returns same. 
-# TODO - (bug) make sure P_t_joint uses $instance_id
+# MAYBE - P_coll "compose-cache". 
+# MAYBE - (in future) check no / simple / smart cache all returns same. 
+# MAYBE - (bug) make sure P_t_joint uses $instance_id
 
 # The main module of this project. 
 # a perl module that uses srilm_call.pm & octave_call.pm
@@ -36,7 +36,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -986,8 +986,87 @@ sub P_t_joint
     return ($P_t_coll, $P_t, $nonOOV_len_t, $count_t_sent);
 }
 
+# word-level pmi
+# PMI (word1, word2) 
+# returns PMI value from SOLR indexed corpus 
+# log (   (count(w1,w2) / N)  /  count(w1)/N * count(w2)/N  )
+my $total_doc_count = 0; 
+sub wordPMI
+{
+    # set total_doc_count, if not set yet. (N of equation) 
+    if ($total_doc_count == 0)
+    {
+        my $solr = WebService::Solr->new($SOLR_URL);
+        my $query = WebService::Solr::Query->new ( {-default => \'*'} ); #'})
+        my $response = $solr->search ( $query );
+        
+        my $count_string = $response->content->{response}->{numFound}; 
+        $total_doc_count = ($count_string + 0); 
+        print STDERR "wordPMI - total doc count set: $total_doc_count\n"; 
+    }
 
+    my $word1 = $_[0]; 
+    my $word2 = $_[1]; 
+    die ("condprob::wordPMI: needs two words.") unless ($word2); 
 
+    my $result; 
+
+    # log ((count(w1,w2) / N)  /  count(w1)/N * count(w2)/N  )
+    my $joint = get_document_count($word1, $word2) / $total_doc_count; 
+    my $p1 = get_document_count($word1) / $total_doc_count; 
+    my $p2 = get_document_count($word2) / $total_doc_count; 
+    # exceptional case. 
+    if ( ($p1 == 0) or ($p2 ==0) )
+    {
+        # no such word; (one or more OOV) we treat PMI of such case as 0. 
+        return 0; 
+    }
+    my $val = $joint / ($p1 * $p2); 
+
+    # # count(w1,w2) * N  /  count(w1) count(w2)
+    # my $joint_count = get_document_count($word1, $word2);
+    # my $count1 = get_document_count($word1); 
+    # my $count2 = get_document_count($word2); 
+    
+    # my $val = ($joint_count * $total_doc_count) / ($count1 * $count2);
+    return log10($val); 
+}
+
+# utility for word-PMI
+# throws query, get document count. 
+# queries are thrown as "AND"
+# works only up to two terms 
+sub get_document_count
+{
+    my @term_list = @_;
+
+    die "can't do more than two terms" if ((scalar @term_list) > 2);
+    die "can't work with no terms" if ((scalar @term_list) == 0); 
+    # prepare solr, and the query
+    my $solr = WebService::Solr->new($SOLR_URL);
+    my $query; 
+    #my $query = WebService::Solr::Query->new ( {-default => [@term_list]} ); 
+    #$query = WebService::Solr::Query->new ( {-default => \'gold AND silver'} ); 
+    if ((scalar @term_list) == 1)
+    {
+        $query = WebService::Solr::Query->new ( {-default => $term_list[0] } );
+    }
+    else
+    {
+        $query = WebService::Solr::Query->new ( {-default => $term_list[0], article=>$term_list[1] } );
+    }
+
+    # hmm. let's don't limit this. 
+    #my $query_options =  {rows => "$APPROXIMATE_WITH_TOP_N_HITS"}; # maximum number of returns
+
+    # sending query, if the port is not accessible, it will raise carp die
+    my $response = $solr->search ( $query );
+
+    my $count_string = $response->content->{response}->{numFound}; 
+    my $doc_count = ($count_string + 0); 
+
+    return $doc_count; 
+}
 1;
 
 __END__
