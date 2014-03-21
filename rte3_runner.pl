@@ -42,13 +42,14 @@ my $lambda = 0.2;
 #my $TRAINFILE = "./testdata/English_dev.xml";
 #my $TESTFILE = "./testdata/English_test.xml";
 my $TEMP_DIR = "./temp";
-die "Usage: needs three arguments.\n\">perl runner.pl rte_filename start_num end_num\"\n perl runner.pl ./testdata/English_dev.xml 1 800\n" unless ($ARGV[2]);
+die "Usage: needs four arguments.\n\">perl runner.pl rte_filename start_num end_num run_id(any unique string)\"\n perl runner.pl ./testdata/English_dev.xml 1 800\n" unless ($ARGV[3]);
 
 my $RTEFILE = $ARGV[0];
 die "unable to open file: $RTEFILE" unless (-r $RTEFILE);
 
 my $START_ID = $ARGV[1] + 0;
 my $END_ID = $ARGV[2] + 0;
+my $RUN_ID = $ARGV[3]; 
 
 die "start id out of bounds" if ($START_ID < 1 or $START_ID > 800);
 die "end id out of bounds" if ($END_ID < 1 or $END_ID > 800);
@@ -65,6 +66,8 @@ my $t0 = Benchmark->new;
 
 # read data 
 my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
+
+# debug output 
 #for(my $i=0; $i < scalar(@$t_aref); $i++)
 #{
 #    print "id: ", ($i+1), "\t", $d_aref->[$i] ,"\n"; 
@@ -72,10 +75,13 @@ my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
 #    print "H: ", $h_aref->[$i]; 
 #}
 
+## print header (CVS format, first line as column names) 
+print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), \n"; 
+
 # now select one
 for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 {
-  my $id = $pair_id - 1; # starting from 0.
+  my $id = $pair_id - 1; # id actually is starting from 0.
 
   my $text = call_splitta($t_aref->[$id]);
   my $hypo = call_splitta($h_aref->[$id]);
@@ -87,19 +93,32 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   $hypo = lc($h_aref->[$id]) unless($hypo); 
   print STDERR "text: $text\n"; 
   print STDERR "hypo: $hypo\n"; 
-  my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents, $collection_p_t, $model_p_t, $t_words, $t_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document");
+  my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents, $collection_p_t, $model_p_t, $t_words, $t_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document", $RUN_ID);
 
-  #$| = 1;
-  my $bb = "bb_val(TBD)";   # (BB value?  =  PPL( h | t ) / PPL(t / t) )
-  my $target_ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents);
-  my $uncond_ppl = calc_ppl($model_p_h, $h_words, $h_sents);
-  my $ppl_minus = $uncond_ppl - $target_ppl;
-  my $ppl_gain = ($uncond_ppl - $target_ppl) / $uncond_ppl; 
-  my $pmi = $model_p_h_given_t - $model_p_h;
-  my $pmi_per_hword = $pmi / ($h_words + $h_sents); 
-  my $text_side_ppl = calc_ppl($model_p_t, $t_words, $t_sents); 
+  # #my $bb = "bb_val(TBD)";   # (BB value?  =  PPL( h | t ) / PPL(t / t) )
+  # my $target_ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents);
+  # my $uncond_ppl = calc_ppl($model_p_h, $h_words, $h_sents);
+  # my $ppl_minus = $uncond_ppl - $target_ppl;
+  # my $ppl_gain = ($uncond_ppl - $target_ppl) / $uncond_ppl; 
+  # my $pmi = $model_p_h_given_t - $model_p_h;
+  # my $pmi_per_hword = $pmi / ($h_words + $h_sents); 
+  # my $text_side_ppl = calc_ppl($model_p_t, $t_words, $t_sents); 
+  # print "$pair_id|GOLD:$d_aref->[$id]|, $bb, $pmi, $pmi_per_hword, $target_ppl, $ppl_minus, $ppl_gain, $text_side_ppl\n";
 
-  print "$pair_id|GOLD:$d_aref->[$id]|, $bb, $pmi, $pmi_per_hword, $target_ppl, $ppl_minus, $ppl_gain, $text_side_ppl\n";
+  ## prepare values to print. 
+  # P_coll(h) 
+  my $out_p_coll_h = $collection_p_h;
+  # P_model(h)
+  my $out_p_model_h = $model_p_h; 
+  # P_coll(t)
+  my $out_p_coll_t = $collection_p_t; 
+  # P_model(t) 
+  my $out_p_model_t = $model_p_t; 
+
+  # all prepared. print 
+  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, "; 
+  print "\n"; 
+
 
 }
 # time stamp
@@ -110,6 +129,8 @@ print STDERR "the code took:", timestr($td), "\n";
 ###
 ###
 ###
+
+
 
 # call splitta for tokenization ... 
 # sub call_splitta 
