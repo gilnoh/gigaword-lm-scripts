@@ -1067,6 +1067,43 @@ sub get_document_count
 
     return $doc_count; 
 }
+
+##
+## TODO
+## gets two sentences (N and M words) 
+## calculates all_word to all_word PMI
+## and then normalizes it with N * M
+sub mean_allword_pmi
+{
+    # get all words T
+    # get all words H 
+    
+    # loop it, store it
+
+
+    # sum it all, 
+    # divide it with size N*M
+
+}
+
+## TODO 
+## gets two sentences s1 & s2. 
+## for each word in s2, gets best PMI with a word from s1. 
+## product best pmis, and normalize with s2-length 
+sub product_max_pmi
+{
+    # get all words T
+    # get all words H 
+    
+    # for each H word, loop all T word 
+    # store best value for each H word 
+
+    # product, and normalize 
+}
+
+
+
+## Last 1; 
 1;
 
 __END__
