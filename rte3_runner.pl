@@ -7,20 +7,20 @@
 
 # List of possible (sketch-oriented) features 
 
-# - From sketch (probably P() & PPL() are duplicated)  
-# P_coll(h) 
-# P_model(h)
-# P_coll(t)
-# P_model(t)
-# P_model(h|t)
+## - From sketch (probably P() & PPL() are duplicated)  
+## P_coll(h) 
+## P_model(h)
+## P_coll(t)
+## P_model(t)
+## P_model(h|t)
+# PMI(h,t) 
+# PMI(h,t) / (h_len) 
+# PMI(h,t) / (t_len + h_len) 
 # PPL(t)
 # PPL(h)
 # PPL(h|t)
 # PPL(h|t) - PPL(h)  
 # PPL(h|t) / PPL(h) 
-# PMI(h,t) 
-# PMI(h,t) / (h_len) 
-# PMI(h,t) / (t_len + h_len) 
 # - From previous 
 # bb (missing) (not gonna cover) 
 # pmi (covered) 
@@ -42,7 +42,7 @@ my $lambda = 0.2;
 #my $TRAINFILE = "./testdata/English_dev.xml";
 #my $TESTFILE = "./testdata/English_test.xml";
 my $TEMP_DIR = "./temp";
-die "Usage: needs four arguments.\n\">perl runner.pl rte_filename start_num end_num run_id(any unique string)\"\n perl runner.pl ./testdata/English_dev.xml 1 800\n" unless ($ARGV[3]);
+die "Usage: needs four arguments.\n\">perl runner.pl rte_filename start_num end_num run_id(any unique string)\"\n perl runner.pl ./testdata/English_dev.xml 1 800 myrun1\n" unless ($ARGV[3]);
 
 my $RTEFILE = $ARGV[0];
 die "unable to open file: $RTEFILE" unless (-r $RTEFILE);
@@ -76,7 +76,8 @@ my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
 #}
 
 ## print header (CVS format, first line as column names) 
-print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), \n"; 
+print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t),";
+print "\n"; 
 
 # now select one
 for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
@@ -114,9 +115,14 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   my $out_p_coll_t = $collection_p_t; 
   # P_model(t) 
   my $out_p_model_t = $model_p_t; 
+  # P_model(h|t) 
+  my $out_p_model_h_given_t = $model_p_h_given_t; 
+  
+  # PMI(h;t)
+  my $out_pmi_h_t = $model_p_h_given_t - $model_p_h;
 
   # all prepared. print 
-  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, "; 
+  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, $out_p_model_h_given_t, $out_pmi_h_t, "; 
   print "\n"; 
 
 
