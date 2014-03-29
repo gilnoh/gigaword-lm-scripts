@@ -36,7 +36,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -990,7 +990,7 @@ sub P_t_joint
 # PMI (word1, word2) 
 # returns PMI value from SOLR indexed corpus 
 # log (   (count(w1,w2) / N)  /  count(w1)/N * count(w2)/N  )
-my $total_doc_count = 0; 
+our $total_doc_count = 0; 
 sub wordPMI
 {
     # set total_doc_count, if not set yet. (N of equation) 
@@ -1016,7 +1016,7 @@ sub wordPMI
     my $p1 = get_document_count($word1) / $total_doc_count; 
     my $p2 = get_document_count($word2) / $total_doc_count; 
     # exceptional case. 
-    if ( ($p1 == 0) or ($p2 ==0) )
+    if ( ($p1 == 0) or ($p2 ==0) or ($joint == 0))
     {
         # no such word; (one or more OOV) we treat PMI of such case as 0. 
         return 0; 
@@ -1066,6 +1066,28 @@ sub get_document_count
     my $doc_count = ($count_string + 0); 
 
     return $doc_count; 
+}
+
+# word level conditional probability 
+# P(word1 | word2) where 
+#  word_condprob(word1, word2) 
+
+sub word_condprob
+{
+    my $word1 = $_[0]; 
+    my $word2 = $_[1]; 
+
+    my $count_both = get_document_count($word1, $word2); 
+    my $count_word2 = get_document_count($word2); 
+
+    # sanity check 
+    die ("integrity failure") if ($count_both > $count_word2); 
+    
+    if (($count_word2 == 0) or ($count_both == 0))
+    {
+        return 0; 
+    }
+    return ($count_both / $count_word2); 
 }
 
 ##
