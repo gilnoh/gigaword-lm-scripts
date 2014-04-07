@@ -13,7 +13,7 @@
 ## P_coll(t)
 ## P_model(t)
 ## P_model(h|t)
-# PMI(h,t) 
+## PMI(h,t) 
 # PMI(h,t) / (h_len) 
 # PMI(h,t) / (t_len + h_len) 
 # PPL(t)
@@ -21,7 +21,8 @@
 # PPL(h|t)
 # PPL(h|t) - PPL(h)  
 # PPL(h|t) / PPL(h) 
-# - From previous 
+
+## - From previous 
 # bb (missing) (not gonna cover) 
 # pmi (covered) 
 # pmi / h_len  (covered) 
