@@ -1,7 +1,5 @@
 # Current works 
 # DONE - P_coll simple cache. 
-# MAYBE - P_coll "compose-cache". 
-# MAYBE - (in future) check no / simple / smart cache all returns same. 
 # MAYBE - (bug) make sure P_t_joint uses $instance_id
 
 # The main module of this project. 
@@ -1110,9 +1108,9 @@ sub mean_allword_pmi
 
 ## TODO 
 ## gets two sentences s1 & s2. 
-## for each word in s2, gets best PMI with a word from s1. 
-## product best pmis, and normalize with s2-length 
-sub product_max_pmi
+## for each word in s2, gets best P(w2|w1) with a word from s1. 
+## product best P(w2|w1) 
+sub product_max_word_condprob
 {
     # get all words T
     # get all words H 
