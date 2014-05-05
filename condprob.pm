@@ -27,6 +27,7 @@ use srilm_call; # qw(read_debug3_p call_ngram);
 use octave_call;
 use Carp;
 use DB_File; # for caching P_coll
+use List::Util qw(sum); 
 
 use WebService::Solr;
 use WebService::Solr::Document;
@@ -34,7 +35,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -1095,15 +1096,40 @@ sub word_condprob
 ## and then normalizes it with N * M
 sub mean_allword_pmi
 {
+    my $sent1 = $_[0];  
+    my $sent2 = $_[1]; 
+
     # get all words T
     # get all words H 
+    my @sent1_words = split /\s/, $sent1; 
+    my @sent2_words = split /\s/, $sent2; 
     
-    # loop it, store it
+    # loop it, store each value 
+    my @all_pmis; 
+    foreach my $word1 (@sent1_words)
+    {
+        foreach my $word2 (@sent2_words)
+        {
+            # calc pmi and push 
+            my $pmi = wordPMI($word1, $word2); 
+            if ($pmi != 0)
+            {
+                # PMI as 0 (integer 0) means exceptional case, such as 
+                # stop words, OOV, etc.  
+                # we exclude 0 from the mean. 
+                push @all_pmis, $pmi; 
+                # dcode
+                # print STDERR "$word1 -- $word2 : $pmi\n";             
+            }
+        }
+        print STDERR "."; #progress dot 
+    }
+    print STDERR "\n"; 
+    # sum and mean 
+    my $sum = sum(@all_pmis); 
+    my $average = $sum / scalar(@all_pmis); 
 
-
-    # sum it all, 
-    # divide it with size N*M
-
+    return $average; 
 }
 
 ## TODO 

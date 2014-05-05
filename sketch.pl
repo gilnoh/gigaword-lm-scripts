@@ -3,7 +3,7 @@
 use warnings; 
 use strict; 
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index $SOLR_URL); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi); 
 use octave_call; 
 use Benchmark qw(:all); 
 
@@ -12,7 +12,7 @@ our $SOLR_URL = "http://127.0.0.1:9911/solr";
 set_num_thread(4);
 our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 
-# word PMI test
+# word PMI usage 
 # print "gold: ", get_document_count("horse"), "\n"; 
 # print "silver: ", get_document_count("computer"), "\n"; 
 # print "gold & silver: ", get_document_count("horse", "computer"),"\n"; 
@@ -31,6 +31,11 @@ if ($ARGV[0] and $ARGV[1])
     $text = call_splitta($ARGV[0]); 
     $hypothesis = call_splitta($ARGV[1]); 
 }
+
+# temp
+my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
+print "Mean PMI: $mean_pmi\n"; 
+die; 
 
 # time in 
 my $t0 = Benchmark->new; 
