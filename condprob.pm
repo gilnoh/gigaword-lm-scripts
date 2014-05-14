@@ -89,6 +89,7 @@ our $TEMP_DIR = "./temp";
 # Collection model cache: "big" LM takes long time to query  
 # This will cache collection model 
 our $USE_CACHE_ON_COLL_MODEL = 1;  
+our $USE_CACHE_ON_SPLITTA = 1; 
 
 ###
 ### end of configurable values 
@@ -107,6 +108,15 @@ if ($USE_CACHE_ON_COLL_MODEL)
     tie %COLL_MODEL_CACHE, "DB_File", "cache_coll_model.db"; 
 }
 
+# berkely db for splitta tokenizer result cacheing 
+my %SPLITTA_RESULT_CACHE; 
+
+if ($USE_CACHE_ON_SPLITTA)
+{
+    tie %SPLITTA_RESULT_CACHE, "DB_File", "cache_splitta_result.db"; 
+}
+
+
 ### 
 ### Utility methods 
 ###
@@ -122,6 +132,18 @@ sub call_splitta
 {
     print STDERR "tokenization ..."; 
     my $s = shift; 
+
+    if ($USE_CACHE_ON_SPLITTA)
+    {
+        # first check cache 
+        if (defined $SPLITTA_RESULT_CACHE{$s})
+        {
+            print STDERR "(cache hit)\n"; 
+            return $SPLITTA_RESULT_CACHE{$s}; 
+        }
+        # there is no cache for this. 
+    }
+
 
     # write a temp file
     my $file = $TEMP_DIR . "/splitta_input.txt"; 
@@ -150,7 +172,12 @@ sub call_splitta
     }
     close INFILE; 
 
-    return lc($splitted); 
+    my $result = lc($splitted); 
+    if ($USE_CACHE_ON_SPLITTA)
+    {
+        $SPLITTA_RESULT_CACHE{$s} = $result; 
+    }
+    return $result; 
 }
 
 # set number of threads/processes to be used for per-document run. 
