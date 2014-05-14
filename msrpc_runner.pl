@@ -53,6 +53,11 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
     warn "SPLITTA failed! ==> fallback to lc(string).\n" unless($text and $hypo); 
     $text = lc($t_aref->[$id]) unless($text); 
     $hypo = lc($h_aref->[$id]) unless($hypo); 
+
+    # patch for bad input "[" or "]". (e.g. 90th instance of test) 
+    $text =~ s/\[|\]//g; 
+    $hypo =~ s/\[|\]//g; 
+
     print STDERR "text: $text\n"; 
     print STDERR "hypo: $hypo\n"; 
     my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents, $collection_p_t, $model_p_t, $t_words, $t_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document", $RUN_ID);

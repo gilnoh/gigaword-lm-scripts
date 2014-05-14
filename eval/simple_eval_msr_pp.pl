@@ -36,25 +36,25 @@ while (my $line = <FILE>)
     if ($gold == 1)
     {# gold is true paraphrase
         $count_gold_para++; 
-        if ($val > $cut_point)
-        {
+        if ($val >= $cut_point)
+        {# decision was also paraphrase. (correct)
             $true_para ++; 
         }
         else
-        {
-            $false_para ++; 
+        {# decision was non-paraphrase (wrongly)
+            $false_nonpara ++; 
         }
     }
     elsif ($gold == 0)
     {# gold is non paraphrase 
         $count_gold_nonpara++; 
         if ($val < $cut_point)
-        {
+        {# decision was also nonparaphrase (correct)
             $true_nonpara ++; 
         }
         else
-        {
-            $false_nonpara ++; 
+        {# decision was paraphrase (wrongly)
+            $false_para ++; 
         }
     }    
     else
@@ -76,5 +76,11 @@ print "false non-paraphrase: $false_nonpara\n";
 my $correct = $true_para + $true_nonpara; 
 my $incorrect = $false_para + $false_nonpara; 
 my $acc = $correct / ($correct + $incorrect); 
+my $prec = $true_para / ($true_para + $false_para); 
+my $recall = $true_para / ($true_para + $false_nonpara); 
 warn "something wrong, count inaccurate\n" unless (($correct + $incorrect) == $cases); 
 print "accuracy: ", $correct, " / ", ($correct + $incorrect), " = $acc\n"; 
+print "prec: ", $prec, "\n"; 
+print "recall: ", $recall, "\n"; 
+
+
