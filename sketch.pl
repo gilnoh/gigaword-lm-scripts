@@ -3,7 +3,7 @@
 use warnings; 
 use strict; 
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index $SOLR_URL); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi product_best_word_condprob); 
 use octave_call; 
 use Benchmark qw(:all); 
 
@@ -20,11 +20,11 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 #print "pmi(gold, silver): ", wordPMI("gold", "silver"), "\n"; 
 #exit(); 
 
-#my $text = lc "we all feel the same";
-#my $hypothesis = lc "we all feel the same \n we feel very close to him";
+my $text = lc "we all feel the same";
+my $hypothesis = lc "we all feel the same \n we feel very close to him";
 
-my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
-my $hypothesis = lc "30 dies in a bus collision in Uganda"; 
+#my $text = lc "A bus collision with a truck in Uganda has resulted in at least 30 fatalities and has left a further 21 injured"; 
+#my $hypothesis = lc "30 dies in a bus collision in Uganda"; 
 
 if ($ARGV[0] and $ARGV[1])
 {
@@ -33,8 +33,10 @@ if ($ARGV[0] and $ARGV[1])
 }
 
 # temp
-my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
-print "Mean PMI: $mean_pmi\n"; 
+#my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
+#print "Mean PMI: $mean_pmi\n"; 
+my $word_logprob = product_best_word_condprob($text, $hypothesis); 
+print "Best word-condprob: $word_logprob\n"; 
 die; 
 
 # time in 

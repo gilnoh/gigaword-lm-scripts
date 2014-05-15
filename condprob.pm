@@ -1,7 +1,3 @@
-# Current works 
-# DONE - P_coll simple cache. 
-# MAYBE - (bug) make sure P_t_joint uses $instance_id
-
 # The main module of this project. 
 # a perl module that uses srilm_call.pm & octave_call.pm
 # to calculate "conditional probability on LM over documents"
@@ -35,7 +31,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -1105,19 +1101,19 @@ sub word_condprob
 
     my $count_both = get_document_count($word1, $word2); 
     my $count_word2 = get_document_count($word2); 
-
-    # sanity check 
-    die ("integrity failure") if ($count_both > $count_word2); 
-    
-    if (($count_word2 == 0) or ($count_both == 0))
+    my $count_word1 = get_document_count($word1); 
+ 
+    if (($count_word2 == 0) or ($count_both == 0) or ($count_word1 == 0))
     {
         return 0; 
     }
+
+    # sanity check 
+    die ("integrity failure: $count_both, $count_word2, word1: $word1, word2: $word2") if ($count_both > $count_word2); 
     return ($count_both / $count_word2); 
 }
 
 ##
-## TODO
 ## gets two sentences (N and M words) 
 ## calculates all_word to all_word PMI
 ## and then normalizes it with N * M
@@ -1159,19 +1155,61 @@ sub mean_allword_pmi
     return $average; 
 }
 
-## TODO 
 ## gets two sentences s1 & s2. 
 ## for each word in s2, gets best P(w2|w1) with a word from s1. 
 ## product best P(w2|w1) 
-sub product_max_word_condprob
+sub product_best_word_condprob
 {
+    my $sentT = $_[0];  
+    my $sentH = $_[1]; 
+
     # get all words T
     # get all words H 
+    my @sentT_words = split /\s/, $sentT; 
+    my @sentH_words = split /\s/, $sentH; 
+
     
     # for each H word, loop all T word 
     # store best value for each H word 
+    my @best_val_each_H_word; 
+    foreach my $word_H (@sentH_words)
+    {
+        my $best_prob = 0;  # non logprob. simply, 0~1 prob. 
+        foreach my $word_T (@sentT_words)
+        {
+            # P(word1 | word2) where 
+            my $prob = word_condprob($word_H,  $word_T); 
+            if ($prob > $best_prob)
+            {
+                $best_prob = $prob; #update when better. 
+                #dcode 
+                print STDERR "update best prob for $word_H; with $word_T, $prob\n"; 
+            }
+        }
+        push @best_val_each_H_word, $best_prob; 
+    }
 
-    # product, and normalize 
+    # sanity check 
+    die "sanity failure\n" if ((scalar (@best_val_each_H_word)) != (scalar (@sentH_words))); 
+
+    # product, and normalize (by sent length) 
+    my $final_logprob = 0; 
+    foreach my $val (@best_val_each_H_word)
+    {
+        #dcode 
+        print STDERR "$val,"; 
+        # we silently ignore 0 prob. (OOV, or stopword) 
+        next if ($val == 0); 
+
+        # log, and sum. 
+        my $logprob = log10($val); 
+        #dcode
+        #print STDERR "$logprob,"; 
+        $final_logprob += log10($val); 
+    }
+    # dcode 
+    print STDERR "\n"; 
+    return $final_logprob; 
 }
 
 
