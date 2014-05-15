@@ -1131,6 +1131,9 @@ sub mean_allword_pmi
     my @all_pmis; 
     foreach my $word1 (@sent1_words)
     {
+        # skip if this is not a valid word (stopword, OOV) 
+        next unless(get_document_count($word1)); 
+
         foreach my $word2 (@sent2_words)
         {
             # calc pmi and push 
@@ -1175,6 +1178,13 @@ sub product_best_word_condprob
     foreach my $word_H (@sentH_words)
     {
         my $best_prob = 0;  # non logprob. simply, 0~1 prob. 
+        # skip if $word_H is OOV or stopword 
+        unless(get_document_count($word_H))
+        {
+            push @best_val_each_H_word, 0; 
+            next; 
+        }
+
         foreach my $word_T (@sentT_words)
         {
             # P(word1 | word2) where 
