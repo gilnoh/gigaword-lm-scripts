@@ -1029,7 +1029,7 @@ sub wordPMI
 
     my $word1 = $_[0]; 
     my $word2 = $_[1]; 
-    die ("condprob::wordPMI: needs two words.") unless ($word2); 
+    die ("condprob::wordPMI: needs two words; word1 was \'$word1\', word2 was \'$word2\'") unless ($word2); 
 
     my $result; 
 
@@ -1124,8 +1124,8 @@ sub mean_allword_pmi
 
     # get all words T
     # get all words H 
-    my @sent1_words = split /\s/, $sent1; 
-    my @sent2_words = split /\s/, $sent2; 
+    my @sent1_words = split /\s+/, $sent1; 
+    my @sent2_words = split /\s+/, $sent2; 
     
     # loop it, store each value 
     my @all_pmis; 
@@ -1168,8 +1168,8 @@ sub product_best_word_condprob
 
     # get all words T
     # get all words H 
-    my @sentT_words = split /\s/, $sentT; 
-    my @sentH_words = split /\s/, $sentH; 
+    my @sentT_words = split /\s+/, $sentT; 
+    my @sentH_words = split /\s+/, $sentH; 
 
     
     # for each H word, loop all T word 

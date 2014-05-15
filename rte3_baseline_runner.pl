@@ -16,6 +16,7 @@ our $SOLR_URL = "http://localhost:9911/solr";
 our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 #my $lambda = 0.2;
 my $TEMP_DIR = "./temp";
+$| =1; # flush always
 
 die "Usage: needs three arguments.\n\">perl runner.pl rte_filename start_num end_num\"\n perl runner.pl ./testdata/English_dev.xml 1 800 myrun1\n" unless ($ARGV[2]);
 
