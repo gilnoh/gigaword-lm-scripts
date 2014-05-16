@@ -9,9 +9,11 @@ my $measure_col = 7;
 
 # start
 
-die "usage: perl simple_eval [result csv] [cut_point]\n" unless ($ARGV[1]); 
+die "usage: perl simple_eval [result csv] [cut_point] [OPTIONAL: measure-column]\n" unless ($ARGV[1]); 
 my $file_name = $ARGV[0]; 
 my $cut_point = $ARGV[1]; 
+
+$measure_col = $ARGV[2] if ($ARGV[2]); 
 
 open FILE, "<", $file_name; 
 

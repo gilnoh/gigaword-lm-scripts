@@ -1204,6 +1204,7 @@ sub product_best_word_condprob
 
     # product, and normalize (by sent length) 
     my $final_logprob = 0; 
+    my $count_effective_words =0; 
     foreach my $val (@best_val_each_H_word)
     {
         #dcode 
@@ -1211,15 +1212,18 @@ sub product_best_word_condprob
         # we silently ignore 0 prob. (OOV, or stopword) 
         next if ($val == 0); 
 
-        # log, and sum. 
+        $count_effective_words ++; 
+        # log, and sum. (thus product) 
         my $logprob = log10($val); 
         #dcode
         #print STDERR "$logprob,"; 
-        $final_logprob += log10($val); 
+        $final_logprob += $logprob; 
     }
-    # dcode 
+    # normalize and return. 
+    #dcode 
     print STDERR "\n"; 
-    return $final_logprob; 
+    print STDERR "final log prob: $final_logprob / $count_effective_words\n"; 
+    return $final_logprob / $count_effective_words; 
 }
 
 

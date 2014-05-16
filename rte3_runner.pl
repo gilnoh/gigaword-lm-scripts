@@ -37,7 +37,7 @@ use strict;
 #use POSIX qw(_exit);
 use Benchmark qw(:all);
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL calc_ppl); 
 
 my $lambda = 0.2;
 #my $TRAINFILE = "./testdata/English_dev.xml";
@@ -77,7 +77,7 @@ my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
 #}
 
 ## print header (CVS format, first line as column names) 
-print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t),";
+print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t), PPL(t), PPL(h), PPL(h|t), PPLgain,";
 print "\n"; 
 
 # now select one
@@ -122,8 +122,15 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   # PMI(h;t)
   my $out_pmi_h_t = $model_p_h_given_t - $model_p_h;
 
+  # PPLs 
+  my $t_ppl = calc_ppl($model_p_t, $t_words, $t_words); 
+  my $h_ppl = calc_ppl($model_p_h, $h_words, $h_sents); 
+  my $h_given_t_ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents); 
+  my $ppl_gain = ($h_ppl - $h_given_t_ppl) / $h_ppl; # -1 ~ 1 value
+
+
   # all prepared. print 
-  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, $out_p_model_h_given_t, $out_pmi_h_t, "; 
+  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, $out_p_model_h_given_t, $out_pmi_h_t, $t_ppl, $h_ppl, $h_given_t_ppl, $ppl_gain,"; 
   print "\n"; 
 
 
