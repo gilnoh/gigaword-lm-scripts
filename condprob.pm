@@ -1171,7 +1171,11 @@ sub product_best_word_condprob
     my @sentT_words = split /\s+/, $sentT; 
     my @sentH_words = split /\s+/, $sentH; 
 
-    
+    my %exist_in_t;
+    $exist_in_t{$_} = 1 foreach (@sentT_words);
+#    my %exist_in_h; 
+#    $exist_in_h{$_} = 1 foreach (@sentH_words); 
+
     # for each H word, loop all T word 
     # store best value for each H word 
     my @best_val_each_H_word; 
@@ -1182,6 +1186,14 @@ sub product_best_word_condprob
         unless(get_document_count($word_H))
         {
             push @best_val_each_H_word, 0; 
+            next; 
+        }
+
+        if($exist_in_t{$word_H})
+        {
+            # the exact word exist in T. 
+            # no need to proceed. assing 1 
+            push @best_val_each_H_word, 1; 
             next; 
         }
 

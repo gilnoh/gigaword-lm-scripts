@@ -5,7 +5,7 @@ use warnings;
 use strict;
 #use POSIX qw(_exit);
 use Benchmark qw(:all);
-use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob); 
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
@@ -15,7 +15,7 @@ our $SOLR_URL = "http://localhost:9911/solr";
 
 # local parameter
 #my $lambda = 0.2;
-$! = 1; #flush always 
+$| = 1; #flush always 
 
 # usage check 
 die "Usage: needs three arguments.\n\">perl runner.pl msr_filename start_num end_num \"\n perl runner.pl ./testdata/msr_paraphrase_test.txt 1 1725\n" unless ($ARGV[2]);
@@ -37,7 +37,7 @@ die "end id must be bigger than start" if ($END_ID < $START_ID);
 
 
 ## print CSV header 
-print "id, gold, wordPMI,"; 
+print "id, gold, wordPMI, wordCondProb, "; 
 print "\n"; 
 ## 
 
@@ -62,9 +62,12 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
     print STDERR "hypo: $hypo\n"; 
 
     my $meanPMI = mean_allword_pmi($text, $hypo); 
+    my $word_logprob1 = product_best_word_condprob($text, $hypo); 
+    my $word_logprob2 = product_best_word_condprob($hypo, $text); # both direction
+    my $word_logprob = ($word_logprob1 + $word_logprob2) / 2; 
 
     # all prepared. print 
-    print "$pair_id, $gold_aref->[$id], $meanPMI,"; 
+    print "$pair_id, $gold_aref->[$id], $meanPMI, $word_logprob"; 
     print "\n"; 
 
 }
