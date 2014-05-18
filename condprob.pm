@@ -1037,7 +1037,7 @@ sub wordPMI
  
     my $word1 = $_[0]; 
     my $word2 = $_[1]; 
-    die ("condprob::wordPMI: needs two words; word1 was \'$word1\', word2 was \'$word2\'") unless ($word2); 
+    die ("condprob::wordPMI: needs two words; word1 was \'$word1\', word2 was \'$word2\'") unless (defined($word2)); 
 
     my $result; 
 
