@@ -3,7 +3,7 @@
 use warnings; 
 use strict; 
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index $SOLR_URL); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi product_best_word_condprob); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi product_best_word_condprob idf_word); 
 use octave_call; 
 use Benchmark qw(:all); 
 
@@ -40,6 +40,12 @@ if ($ARGV[0] and $ARGV[1])
 #my $word_logprob = product_best_word_condprob($text, $hypothesis); 
 #print "Best word-condprob: $word_logprob\n"; 
 #die; 
+
+# print "idf of gold: ", idf_word("gold"), "\n"; 
+# print "idf of have: ", idf_word("have"), "\n"; 
+# print "idf of own: ", idf_word("own"), "\n"; 
+# print "idf of microsoft: ", idf_word("microsoft"), "\n"; 
+# die;
 
 # time in 
 my $t0 = Benchmark->new; 

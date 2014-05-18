@@ -31,7 +31,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -1008,25 +1008,33 @@ sub P_t_joint
     return ($P_t_coll, $P_t, $nonOOV_len_t, $count_t_sent);
 }
 
+our $total_doc_count = 0; 
+
+sub set_total_doc_count
+{
+    my $solr = WebService::Solr->new($SOLR_URL);
+    my $query = WebService::Solr::Query->new ( {-default => \'*'} ); #'})
+    my $response = $solr->search ( $query );
+    
+    my $count_string = $response->content->{response}->{numFound}; 
+    $total_doc_count = ($count_string + 0); 
+    print STDERR "total doc count (of SOLR collection): $total_doc_count\n"; 
+}
+
+
 # word-level pmi
 # PMI (word1, word2) 
 # returns PMI value from SOLR indexed corpus 
 # log (   (count(w1,w2) / N)  /  count(w1)/N * count(w2)/N  )
-our $total_doc_count = 0; 
+
 sub wordPMI
 {
     # set total_doc_count, if not set yet. (N of equation) 
     if ($total_doc_count == 0)
     {
-        my $solr = WebService::Solr->new($SOLR_URL);
-        my $query = WebService::Solr::Query->new ( {-default => \'*'} ); #'})
-        my $response = $solr->search ( $query );
-        
-        my $count_string = $response->content->{response}->{numFound}; 
-        $total_doc_count = ($count_string + 0); 
-        print STDERR "wordPMI - total doc count set: $total_doc_count\n"; 
+        set_total_doc_count(); 
     }
-
+ 
     my $word1 = $_[0]; 
     my $word2 = $_[1]; 
     die ("condprob::wordPMI: needs two words; word1 was \'$word1\', word2 was \'$word2\'") unless ($word2); 
@@ -1238,6 +1246,22 @@ sub product_best_word_condprob
     return $final_logprob / $count_effective_words; 
 }
 
+##
+##
+sub idf_word($)
+{
+    if ($total_doc_count == 0)
+    {
+        set_total_doc_count(); 
+    }
+
+    my $word = $_[0]; 
+    die "no term" unless($word); 
+    
+    my $c = get_document_count($word); 
+    return log10( $total_doc_count / $c); 
+
+}
 
 
 ## Last 1; 
