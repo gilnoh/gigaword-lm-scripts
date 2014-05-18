@@ -34,11 +34,11 @@ if ($ARGV[0] and $ARGV[1])
 
 # baselines ... 
 # mean PMI 
-#my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
-#print "Mean PMI: $mean_pmi\n"; 
+my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
+print "Mean PMI: $mean_pmi\n"; 
 # product condprob-per-word
-#my $word_logprob = product_best_word_condprob($text, $hypothesis); 
-#print "Best word-condprob: $word_logprob\n"; 
+my $word_logprob = product_best_word_condprob($text, $hypothesis); 
+print "Best word-condprob: $word_logprob\n"; 
 #die; 
 
 # print "idf of gold: ", idf_word("gold"), "\n"; 

@@ -1263,6 +1263,14 @@ sub idf_word($)
 
 }
 
+##
+## weighted mean best word pmi 
+sub weighted_mean_best_wordPMI
+{
+    # TODO 
+
+}
+
 
 ## Last 1; 
 1;
