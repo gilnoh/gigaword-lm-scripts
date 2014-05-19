@@ -5,13 +5,14 @@ use warnings;
 use strict;
 #use POSIX qw(_exit);
 use Benchmark qw(:all);
-use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob $USE_CACHE_ON_SPLITTA); 
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
 #set_num_thread(4);
 our $SOLR_URL = "http://localhost:9911/solr";
 #our $APPROXIMATE_WITH_TOP_N_HITS=4000;
+our $USE_CACHE_ON_SPLITTA = 0; 
 
 # local parameter
 #my $lambda = 0.2;

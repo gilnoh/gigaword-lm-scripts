@@ -31,7 +31,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word $USE_CACHE_ON_SPLITTA $USE_CACHE_ON_COLL_MODEL); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -99,6 +99,8 @@ my $all_model_top_path; # Associated value to @all_models. (@all_models does not
 # berkely db for LM-collectino model cacheing 
 my %COLL_MODEL_CACHE; 
 
+# TODO: unsafe for multiple-writing access!
+# move tie to actual access location with lock. 
 if ($USE_CACHE_ON_COLL_MODEL)
 {
     tie %COLL_MODEL_CACHE, "DB_File", "cache_coll_model.db"; 
@@ -106,11 +108,12 @@ if ($USE_CACHE_ON_COLL_MODEL)
 
 # berkely db for splitta tokenizer result cacheing 
 my %SPLITTA_RESULT_CACHE; 
+our $SPLITTA_CACHE_FILE = "cache_splitta_result.db"; 
 
-if ($USE_CACHE_ON_SPLITTA)
-{
-    tie %SPLITTA_RESULT_CACHE, "DB_File", "cache_splitta_result.db"; 
-}
+# if ($USE_CACHE_ON_SPLITTA)
+# {
+#     tie %SPLITTA_RESULT_CACHE, "DB_File", "cache_splitta_result.db"; 
+# }
 
 
 ### 
@@ -131,13 +134,20 @@ sub call_splitta
 
     if ($USE_CACHE_ON_SPLITTA)
     {
+
+        #my %SPLITTA_RESULT_CACHE; 
+        tie %SPLITTA_RESULT_CACHE, "DB_File", $SPLITTA_CACHE_FILE;
+
         # first check cache 
         if (defined $SPLITTA_RESULT_CACHE{$s})
         {
             print STDERR "(cache hit)\n"; 
-            return $SPLITTA_RESULT_CACHE{$s}; 
+            my $result = $SPLITTA_RESULT_CACHE{$s}; 
+            untie %SPLITTA_RESULT_CACHE; 
+            return $result; 
         }
         # there is no cache for this. 
+        untie %SPLITTA_RESULT_CACHE; 
     }
 
 
@@ -171,7 +181,9 @@ sub call_splitta
     my $result = lc($splitted); 
     if ($USE_CACHE_ON_SPLITTA)
     {
+        tie %SPLITTA_RESULT_CACHE, "DB_File", $SPLITTA_CACHE_FILE; 
         $SPLITTA_RESULT_CACHE{$s} = $result; 
+        untie %SPLITTA_RESULT_CACHE; 
     }
     return $result; 
 }
