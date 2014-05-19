@@ -5,7 +5,7 @@ use warnings;
 use strict;
 #use POSIX qw(_exit);
 use Benchmark qw(:all);
-use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob $USE_CACHE_ON_SPLITTA); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob mean_best_wordPMI $USE_CACHE_ON_SPLITTA); 
 
 # PARAMETERS to set (for proto_condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
@@ -38,7 +38,7 @@ die "end id must be bigger than start" if ($END_ID < $START_ID);
 
 
 ## print CSV header 
-print "id, gold, wordPMI, wordCondProb, "; 
+print "id, gold, meanPMI, prod bestCondProb, mean bestPMI, wgt-mean bestPMI,"; 
 print "\n"; 
 ## 
 
@@ -66,9 +66,15 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
     my $word_logprob1 = product_best_word_condprob($text, $hypo); 
     my $word_logprob2 = product_best_word_condprob($hypo, $text); # both direction
     my $word_logprob = ($word_logprob1 + $word_logprob2) / 2; 
+    my ($mean_best_PMI_1, $weighted_mean_best_PMI_1) = mean_best_wordPMI($text, $hypo); 
+    my ($mean_best_PMI_2, $weighted_mean_best_PMI_2) = mean_best_wordPMI($hypo, $text); 
+    my $mean_best_PMI = ($mean_best_PMI_1 + $mean_best_PMI_2) / 2; 
+    my $weighted_mean_best_PMI = ($weighted_mean_best_PMI_1 + $weighted_mean_best_PMI_2) / 2; 
+
+
 
     # all prepared. print 
-    print "$pair_id, $gold_aref->[$id], $meanPMI, $word_logprob"; 
+    print "$pair_id, $gold_aref->[$id], $meanPMI, $word_logprob, $mean_best_PMI, $weighted_mean_best_PMI, "; 
     print "\n"; 
 
 }

@@ -7,7 +7,7 @@
 use warnings;
 use strict;
 use Benchmark qw(:all);
-use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL mean_allword_pmi product_best_word_condprob mean_best_wordPMI); 
 
 # PARAMETERS to set (for condprob.pm) 
 our $DEBUG=0; # well, turn it on for quality check. 
@@ -18,7 +18,7 @@ our $APPROXIMATE_WITH_TOP_N_HITS=4000;
 my $TEMP_DIR = "./temp";
 $| =1; # flush always
 
-die "Usage: needs three arguments.\n\">perl runner.pl rte_filename start_num end_num\"\n perl runner.pl ./testdata/English_dev.xml 1 800 myrun1\n" unless ($ARGV[2]);
+die "Usage: needs three arguments.\n\">perl runner.pl rte_filename start_num end_num\"\n perl runner.pl ./testdata/English_dev.xml 1 800 \n" unless ($ARGV[2]);
 
 my $RTEFILE = $ARGV[0];
 die "unable to open file: $RTEFILE" unless (-r $RTEFILE);
@@ -41,7 +41,7 @@ my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
 ## print header (CVS format, first line as column names) 
 #print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t),";
 #print "\n"; 
-print "id, gold, meanPMI, condProd,"; 
+print "id, gold, meanPMI, prod bestCondProd, mean bestPMI, wgt-mean bestPMI,"; 
 print "\n"; 
 
 # now select one
@@ -62,16 +62,15 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 
   my $meanPMI = mean_allword_pmi($text, $hypo); 
   my $word_logprob = product_best_word_condprob($text, $hypo); 
-
+  my ($mean_best_PMI, $weighted_mean_best_PMI) = mean_best_wordPMI($text, $hypo); 
   # all prepared. print 
-  print "$pair_id, $d_aref->[$id], $meanPMI, $word_logprob,";
+  print "$pair_id, $d_aref->[$id], $meanPMI, $word_logprob, $mean_best_PMI, $weighted_mean_best_PMI,";
   print "\n"; 
 }
 # time stamp
 my $t1 = Benchmark->new;
 my $td = timediff($t1, $t0);
 print STDERR "the code took:", timestr($td), "\n";
-
 
 
 # reading EOP RTE file. 
