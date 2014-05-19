@@ -31,7 +31,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word $USE_CACHE_ON_SPLITTA $USE_CACHE_ON_COLL_MODEL); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word mean_best_wordPMI $USE_CACHE_ON_SPLITTA $USE_CACHE_ON_COLL_MODEL); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -1277,10 +1277,71 @@ sub idf_word($)
 
 ##
 ## weighted mean best word pmi 
-sub weighted_mean_best_wordPMI
+## This sub only does one direction. For bi-direction, call it twice 
+## with reversed (e.g. (s1,s2), then (s2,s1) and took average) 
+sub mean_best_wordPMI
 {
-    # TODO 
+    my $sentT = $_[0];  
+    my $sentH = $_[1]; 
 
+    # get all words T
+    # get all words H 
+    my @sentT_words = split /\s+/, $sentT; 
+    my @sentH_words = split /\s+/, $sentH; 
+
+    # for each H word, loop all T word 
+    # store best value for each H word 
+    my @best_val_each_H_word; 
+    my @weight_each_H_word; 
+    foreach my $word_H (@sentH_words)
+    {
+        my $best_pmi = 0;  # (independent) 
+        # skip if $word_H is OOV or stopword 
+        unless(get_document_count($word_H))
+        {
+            push @best_val_each_H_word, 0; 
+            push @weight_each_H_word, 0; 
+            next; 
+        }
+
+        foreach my $word_T (@sentT_words)
+        {
+            # PMI(word1;word2)
+            my $pmi = wordPMI($word_H, $word_T); 
+            if ($pmi > $best_pmi)
+            {
+                $best_pmi = $pmi; #update when better. 
+                #dcode 
+                print STDERR "update best PMI for $word_H; with $word_T, $pmi\n"; 
+            }
+        }
+        push @best_val_each_H_word, $best_pmi; 
+        my $weight = idf_word($word_H); 
+        print STDERR "\tIDF weight of $word_H -- $weight\n"; 
+        push @weight_each_H_word, $weight; 
+        
+    }
+
+    # weighted average 
+    die "something wrong!" unless (scalar(@weight_each_H_word) == scalar(@best_val_each_H_word)); #sanity check. 
+
+    my $val_sum = 0; 
+    my $weight_sum = 0; 
+    for(my $i=0; $i < scalar(@weight_each_H_word); $i++)
+    {
+        $val_sum += ($best_val_each_H_word[$i]) * ($weight_each_H_word[$i]); 
+        $weight_sum += $weight_each_H_word[$i]; 
+        print STDERR "$best_val_each_H_word[$i]($weight_each_H_word[$i]) "; 
+    }
+    print STDERR "\n"; 
+
+    my $weighted_mean = $val_sum / $weight_sum; 
+    my $mean = ($val_sum / (scalar @weight_each_H_word)); 
+    if (wantarray())
+    {
+        return ($mean, $weighted_mean); 
+    }
+    return $mean; 
 }
 
 

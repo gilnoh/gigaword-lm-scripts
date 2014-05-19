@@ -12,7 +12,7 @@ our $DEBUG=0; # well, turn it on for quality check.
 #set_num_thread(4);
 our $SOLR_URL = "http://localhost:9911/solr";
 #our $APPROXIMATE_WITH_TOP_N_HITS=4000;
-our $USE_CACHE_ON_SPLITTA = 0; 
+our $USE_CACHE_ON_SPLITTA = 1; 
 
 # local parameter
 #my $lambda = 0.2;

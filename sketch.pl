@@ -3,7 +3,7 @@
 use warnings; 
 use strict; 
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file plucene_query solr_query P_t_index P_h_t_index $SOLR_URL); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi product_best_word_condprob idf_word); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file P_t_index $SOLR_URL get_document_count wordPMI mean_allword_pmi product_best_word_condprob idf_word mean_best_wordPMI); 
 use octave_call; 
 use Benchmark qw(:all); 
 
@@ -34,11 +34,14 @@ if ($ARGV[0] and $ARGV[1])
 
 # baselines ... 
 # mean PMI 
-my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
-print "Mean PMI: $mean_pmi\n"; 
+#my $mean_pmi = mean_allword_pmi($text, $hypothesis); 
+#print "Mean PMI: $mean_pmi\n"; 
 # product condprob-per-word
-my $word_logprob = product_best_word_condprob($text, $hypothesis); 
-print "Best word-condprob: $word_logprob\n"; 
+#my $word_logprob = product_best_word_condprob($text, $hypothesis); 
+#print "Best word-condprob: $word_logprob\n"; 
+# weighted_mean_best_wordPMI 
+my ($mean, $weighted_mean) = mean_best_wordPMI($text, $hypothesis); 
+print "mean best wordPMI: mean: $mean, IDF-weighted mean: $weighted_mean\n"; 
 #die; 
 
 # print "idf of gold: ", idf_word("gold"), "\n"; 
