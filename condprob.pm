@@ -1344,6 +1344,71 @@ sub mean_best_wordPMI
     return $mean; 
 }
 
+# this sub calculates KL-divergence. 
+# the sub is designed to be called within condprob_h_given_t()
+#  
+# INPUT: Two "log-probability (log10)" distributions; ($distribution_1, $distribution_2)
+#        Two distributions as two array-references. 
+#        (the two arrays (@{$_[0]} and @{$_[1]}) hold the same 
+#         number of events, and each cell holds the probability for that event. ) 
+#
+# OUTPUT: D_{KL}(d-1 || d-2) 
+#         (KL divergence of distribution-2 from distribution-1) 
+# 
+# KL divergence: 
+#   "Kullback–Leibler divergence of Q from P, denoted DKL(P||Q), 
+#    is a measure of the information lost when Q is used to approximate P." 
+#    ( a measure of information loss, when Q is used to approximate P. )
+#    ( how far Q is from P? ) 
+# 
+# Caclulated as the followings: 
+# Let's call 
+#   $distribution1->[i] as P(i) and $distribution2->[i] as Q(i). 
+# then 
+#    D_{kl} = sum_{i} ( ln (P(i) / Q(i))  P(i) )
+# 
+# Note that two conditions for KL_d should be always 
+# satisfied. 
+#  -a) Q(i) is never 0, or if Q(i)=0 then P(i) is also need to be 0. 
+#      (which is generally true for all CLM models) 
+#  -b) It must satisfy: sum_i(P(i)) = 1 and sum_i(Q(i)) = 1.  
+#      
+# Note that b) must be satisfied. 
+# $distribution_1 and $distribution_2 thus must be a proper P(d_i | text). 
+# (not that of P_doc_{i}(text)). 
+
+sub KL_divergence
+{
+    my @dist1 = @{$_[0]}; 
+    my @dist2 = @{$_[1]}; 
+
+    # integrity check 
+    die "Sorry; KL_divergence can't be defined unless the event spaces are equal" unless (scalar (@dist1) == scalar(@dist2)); 
+
+    my $sum = 0; 
+    for (my $i=0; $i < scalar (@dist1); $i++)
+    {
+        my $P_i_log = $dist1[$i]; # $distribution1->[i] 
+        my $Q_i_log = $dist2[$i]; # $distribution2->[i] 
+
+        # we convert it back to "normal probability (non log)" 
+        # since the prob is P(d_i) and not that small... 
+        # (also, sum on log-prob is expansive). 
+        
+        my $P_i = 10 ** ($P_i_log); 
+        my $Q_i = 10 ** ($Q_i_log); 
+
+        # log() here is ln; natural log 
+        my $w = log($P_i) - log($Q_i); 
+        my $val = $w * $P_i; 
+        
+        $sum += $val;         
+    }
+    return $sum; 
+}
+
+
+
 
 ## Last 1; 
 1;
