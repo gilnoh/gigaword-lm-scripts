@@ -1268,7 +1268,7 @@ sub idf_word($)
     }
 
     my $word = $_[0]; 
-    die "no term" unless($word); 
+    die "no term" unless(defined($word)); 
     
     my $c = get_document_count($word); 
     return log10( $total_doc_count / $c); 
