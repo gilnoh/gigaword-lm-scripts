@@ -31,7 +31,7 @@ use WebService::Solr::Query;
 
 our @ISA = qw(Exporter);
 our @EXPORT = qw(condprob_h_given_t P_t_joint P_t_index $APPROXIMATE_WITH_TOP_N_HITS call_splitta calc_ppl); 
-our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word mean_best_wordPMI $USE_CACHE_ON_SPLITTA $USE_CACHE_ON_COLL_MODEL); 
+our @EXPORT_OK = qw(set_num_thread P_coll P_doc solr_query get_path_from_docid $COLLECTION_MODEL $DEBUG $DOCUMENT_INDEX_DIR $NOHIT_L0_FILL $SOLR_URL export_hash_to_file $TEMP_DIR get_document_count wordPMI word_condprob $total_doc_count log10 mean_allword_pmi product_best_word_condprob idf_word mean_best_wordPMI $USE_CACHE_ON_SPLITTA $USE_CACHE_ON_COLL_MODEL KL_divergence); 
 
 ###
 ### Configurable values. Mostly Okay with the default!
@@ -849,6 +849,7 @@ sub P_t_index
 # output (returns in one array):
 # P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence,
 # P_collection(t), P_model(t), count_nonOOV_words (t), count_sentence (t)
+# KL_divergence(h||t), KL_divergence(t||h) 
 
 sub condprob_h_given_t
 {
@@ -962,6 +963,8 @@ sub condprob_h_given_t
     # This must be guaranteeded!
     print STDERR "Calculating the weighted sum\n";
     my $P_h_given_t = weighted_sum(\@text, \@hypo);
+    my $KLD_h_t = KL_divergence(\@text, \@hypo); 
+    my $KLD_t_h = KL_divergence(\@hypo, \@text); 
     #print @text, @hypo;     #dcode
     my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
     my $count_h_sent = count_sentence($hypothesis); 
@@ -971,16 +974,16 @@ sub condprob_h_given_t
 
     # collection prob, model prob (Without context), model prob with cond, wcount, scount 
     print STDERR "$P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent\n"; 
+    print STDERR "$KLD_h_t, $KLD_t_h\n"; 
 
 # return in this order: 
 # P_collection(h), P_model(h), P_model(h|t), count_nonOOV_words, count_sentence,
-# (TODO), P_collection(t), P_model(t), count_nonOOV_words (t), count_sentence (t
+# P_collection(t), P_model(t), count_nonOOV_words (t), count_sentence (t), 
+# KLD(h||t), KLD(t||h), 
 
 
     return ($P_h_coll, $P_h, $P_h_given_t, $nonOOV_len_h, $count_h_sent, 
-            $P_t_coll, $P_t, $nonOOV_len_t, $count_t_sent); 
-
-
+            $P_t_coll, $P_t, $nonOOV_len_t, $count_t_sent, $KLD_h_t, $KLD_t_h); 
 }
 
 
@@ -1373,17 +1376,32 @@ sub mean_best_wordPMI
 #      (which is generally true for all CLM models) 
 #  -b) It must satisfy: sum_i(P(i)) = 1 and sum_i(Q(i)) = 1.  
 #      
-# Note that b) must be satisfied. 
-# $distribution_1 and $distribution_2 thus must be a proper P(d_i | text). 
-# (not that of P_doc_{i}(text)). 
+# Note that b) must be satisfied.  
+# which means; 
+#  $distribution_1 and $distribution_2 thus must be a proper P(d_i | text). 
+#  (not that of P_doc_{i}(text)). 
+# This code forces b) by normalize; assuming that the code is called 
+# with P_doc{i} (text) on all i where i is each doc. 
+# where ---  P(d_i | text) = P(text | d_i) / sum_alli( P(text | d_i) )
 
 sub KL_divergence
 {
+    print STDERR "KLD calc ...\n"; 
+
     my @dist1 = @{$_[0]}; 
     my @dist2 = @{$_[1]}; 
 
     # integrity check 
     die "Sorry; KL_divergence can't be defined unless the event spaces are equal" unless (scalar (@dist1) == scalar(@dist2)); 
+
+    # normalize (b, of above comment) 
+    my $sum_logprob_dist1 = logprob_sumall(@dist1); 
+    my $sum_logprob_dist2 = logprob_sumall(@dist2); 
+    for (my $j=0; $j < scalar(@dist1); $j++)
+    {
+        $dist1[$j] = $dist1[$j] - $sum_logprob_dist1; 
+        $dist2[$j] = $dist2[$j] - $sum_logprob_dist2; 
+    }
 
     my $sum = 0; 
     for (my $i=0; $i < scalar (@dist1); $i++)
