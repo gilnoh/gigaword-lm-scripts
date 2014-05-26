@@ -7,6 +7,23 @@ Please see the following document to run the minimal experiments.
 
 === 
 
+Memo on multiple-instance running. (for now) 
+
+- Most of the codes are safe to be run from multiple instances. The
+  *only* exceptions for now are: 
+  + call_splitta() uses fixed file name. cannot be called from
+  multiple instances.   
+  + Two caches (USE_CACHE_ON_SPLITTA, USE_CACHE_ON_COLL_MODEL) are not
+  safe from multiple instance access. 
+
+- So what to do? Simple. Fill the caches first. cache_runner_* scripts
+  are there to do this for you (cache_runner_x.pl). Once the two caches
+  are filled in, all codes are multiple-instance access safe. (and
+  that's why not updated the codes to be instance safe --- like
+  locking etc). 
+
+=== 
+
 List of access scripts 
 
 * Main modules 
