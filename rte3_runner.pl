@@ -39,7 +39,7 @@ use Benchmark qw(:all);
 #use proto_condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file $SOLR_URL); 
 use condprob qw(:DEFAULT set_num_thread $DEBUG export_hash_to_file $SOLR_URL calc_ppl); 
 
-my $lambda = 0.9;
+my $lambda = 0.5;
 #my $TRAINFILE = "./testdata/English_dev.xml";
 #my $TESTFILE = "./testdata/English_test.xml";
 my $TEMP_DIR = "./temp";
