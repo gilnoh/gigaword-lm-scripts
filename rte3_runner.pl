@@ -77,7 +77,7 @@ my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
 #}
 
 ## print header (CVS format, first line as column names) 
-print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t), PPL(t), PPL(h), PPL(h|t), PPLgain,";
+print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t), PPL(t), PPL(h), PPL(h|t), PPLgain, KLD(h||t), KLD(t||h), KLD_both,";
 print "\n"; 
 
 # now select one
@@ -95,7 +95,7 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   $hypo = lc($h_aref->[$id]) unless($hypo); 
   print STDERR "text: $text\n"; 
   print STDERR "hypo: $hypo\n"; 
-  my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents, $collection_p_t, $model_p_t, $t_words, $t_sents) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document", $RUN_ID);
+  my ($collection_p_h, $model_p_h, $model_p_h_given_t, $h_words, $h_sents, $collection_p_t, $model_p_t, $t_words, $t_sents, $KLD_h_t, $KLD_t_h) = condprob_h_given_t($hypo, $text, $lambda, "./models/collection/collection.model", "./models/document", $RUN_ID);
 
   # #my $bb = "bb_val(TBD)";   # (BB value?  =  PPL( h | t ) / PPL(t / t) )
   # my $target_ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents);
@@ -127,10 +127,10 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   my $h_ppl = calc_ppl($model_p_h, $h_words, $h_sents); 
   my $h_given_t_ppl = calc_ppl($model_p_h_given_t, $h_words, $h_sents); 
   my $ppl_gain = ($h_ppl - $h_given_t_ppl) / $h_ppl; # -1 ~ 1 value
-
+  my $KLD_sum = $KLD_h_t + $KLD_t_h; 
 
   # all prepared. print 
-  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, $out_p_model_h_given_t, $out_pmi_h_t, $t_ppl, $h_ppl, $h_given_t_ppl, $ppl_gain,"; 
+  print "$pair_id, $d_aref->[$id], $out_p_coll_h, $out_p_model_h, $out_p_coll_t, $out_p_model_t, $out_p_model_h_given_t, $out_pmi_h_t, $t_ppl, $h_ppl, $h_given_t_ppl, $ppl_gain, -$KLD_h_t, -$KLD_t_h, -$KLD_sum"; 
   print "\n"; 
 
 

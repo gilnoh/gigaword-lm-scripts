@@ -7,7 +7,7 @@ use strict;
 use warnings; 
 use Exporter;
 our @ISA = qw(Exporter); 
-our @EXPORT = qw(lambda_sum2 lambda_sum weighted_sum mean); 
+our @EXPORT = qw(lambda_sum2 lambda_sum weighted_sum mean logprob_sumall); 
 
 my $OCTAVE_COMMAND="octave -q "; 
 my $OCTAVE_EVAL_OPTION = "--eval "; 
@@ -95,6 +95,7 @@ sub weighted_sum_native
 	{
 	    $col1_sum = $doc_logprob; 
 	}
+        else
 	{
 	    $col1_sum = logprob_sum($col1_sum, $doc_logprob); 
 	}
@@ -172,6 +173,7 @@ sub weighted_sum_native2
 	{
 	    $col1_sum = $doc_logprob; 
 	}
+        else
 	{
 	    $col1_sum = logprob_sum($col1_sum, $doc_logprob); 
 	}
@@ -196,6 +198,24 @@ sub weighted_sum_native2
     return $weighted_sum;  
 }
 
+# get an array of logprob (base 10), sum all logprob, and return the logprob
+sub logprob_sumall
+{
+    my $sum = 0; 
+    
+    foreach my $logp (@_)
+    {
+        if ($sum == 0)
+        {
+            $sum = $logp; 
+        }
+        else
+        {
+            $sum = logprob_sum($sum, $logp); 
+        }
+    }
+    return $sum; 
+}
 
 # base 10, sum of log probability 
 sub logprob_sum
