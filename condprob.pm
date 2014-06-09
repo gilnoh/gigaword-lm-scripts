@@ -1259,6 +1259,11 @@ sub product_best_word_condprob
     print STDERR "\n"; 
     print STDERR "final log prob: $final_logprob / $count_effective_words\n"; 
     return $final_logprob / $count_effective_words; 
+
+    # CONSIDER - TODO? 
+    # add two more values as wantarray context 
+    # b) idf-weighted sum (like that of PMI) 
+    # c) final_logprob itself (without normalization) 
 }
 
 ##
