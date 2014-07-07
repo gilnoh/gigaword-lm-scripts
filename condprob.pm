@@ -1184,6 +1184,10 @@ sub mean_allword_pmi
 ## gets two sentences s1 & s2. 
 ## for each word in s2, gets best P(w2|w1) with a word from s1. 
 ## product best P(w2|w1) 
+# TODO consider, (maybe?) 
+#   adding idf-weighted sum (like that of PMI) as 3rd want-array return value
+#   (by using something like @weight_each_h_word) 
+
 sub product_best_word_condprob
 {
     my $sentT = $_[0];  
@@ -1258,12 +1262,13 @@ sub product_best_word_condprob
     #dcode 
     print STDERR "\n"; 
     print STDERR "final log prob: $final_logprob / $count_effective_words\n"; 
-    return $final_logprob / $count_effective_words; 
-
-    # CONSIDER - TODO? 
-    # add two more values as wantarray context 
-    # b) idf-weighted sum (like that of PMI) 
-    # c) final_logprob itself (without normalization) 
+    my $norm_final_logprob = $final_logprob / $count_effective_words; 
+    if (wantarray())
+    {
+        return ($norm_final_logprob, $final_logprob); 
+    }
+    return $norm_final_logprob; 
+    
 }
 
 ##

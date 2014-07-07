@@ -41,7 +41,7 @@ my ($t_aref, $h_aref, $d_aref) = read_rte_data($RTEFILE);
 ## print header (CVS format, first line as column names) 
 #print "id, gold, P_coll(h), P_model(h), P_coll(t), P_model(t), P_model(h|t), PMI(h;t),";
 #print "\n"; 
-print "id, gold, meanPMI, prod bestCondProd, mean bestPMI, wgt-mean bestPMI,"; 
+print "id, gold, meanPMI, norm-prod bestCondProd, raw-prod bestCondProd, mean bestPMI, wgt-mean bestPMI"; 
 print "\n"; 
 
 # now select one
@@ -61,10 +61,10 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
   print STDERR "hypo: $hypo\n"; 
 
   my $meanPMI = mean_allword_pmi($text, $hypo); 
-  my $word_logprob = product_best_word_condprob($text, $hypo); 
+  my ($word_logprob_norm, $word_logprob_raw) = product_best_word_condprob($text, $hypo);  
   my ($mean_best_PMI, $weighted_mean_best_PMI) = mean_best_wordPMI($text, $hypo); 
   # all prepared. print 
-  print "$pair_id, $d_aref->[$id], $meanPMI, $word_logprob, $mean_best_PMI, $weighted_mean_best_PMI,";
+  print "$pair_id, $d_aref->[$id], $meanPMI, $word_logprob_norm, $word_logprob_raw, $mean_best_PMI, $weighted_mean_best_PMI";
   print "\n"; 
 }
 # time stamp
