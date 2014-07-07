@@ -38,7 +38,7 @@ die "end id must be bigger than start" if ($END_ID < $START_ID);
 
 
 ## print CSV header 
-print "id, gold, meanPMI, prod bestCondProb, mean bestPMI, wgt-mean bestPMI,"; 
+print "id, gold, meanPMI, prod-norm bestCondProb, prod-raw bestCondProb, mean bestPMI, wgt-mean bestPMI"; 
 print "\n"; 
 ## 
 
@@ -63,9 +63,12 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
     print STDERR "hypo: $hypo\n"; 
 
     my $meanPMI = mean_allword_pmi($text, $hypo); 
-    my $word_logprob1 = product_best_word_condprob($text, $hypo); 
-    my $word_logprob2 = product_best_word_condprob($hypo, $text); # both direction
-    my $word_logprob = ($word_logprob1 + $word_logprob2) / 2; 
+    my ($word_logprob1_norm, $word_logprob1_raw) = product_best_word_condprob($text, $hypo); 
+    my ($word_logprob2_norm, $word_logprob2_raw) = product_best_word_condprob($hypo, $text); # both directions
+
+    my $word_logprob_norm = ($word_logprob1_norm + $word_logprob2_norm) / 2; 
+    my $word_logprob_raw = ($word_logprob1_raw + $word_logprob2_raw) / 2; 
+
     my ($mean_best_PMI_1, $weighted_mean_best_PMI_1) = mean_best_wordPMI($text, $hypo); 
     my ($mean_best_PMI_2, $weighted_mean_best_PMI_2) = mean_best_wordPMI($hypo, $text); 
     my $mean_best_PMI = ($mean_best_PMI_1 + $mean_best_PMI_2) / 2; 
@@ -74,7 +77,7 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 
 
     # all prepared. print 
-    print "$pair_id, $gold_aref->[$id], $meanPMI, $word_logprob, $mean_best_PMI, $weighted_mean_best_PMI, "; 
+    print "$pair_id, $gold_aref->[$id], $meanPMI, $word_logprob_norm, $word_logprob_raw, $mean_best_PMI, $weighted_mean_best_PMI"; 
     print "\n"; 
 
 }
