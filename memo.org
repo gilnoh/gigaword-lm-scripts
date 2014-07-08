@@ -1,3 +1,22 @@
+* Design of simple, linear-interpolated Multivariate Bernoulli
+
+** Basic equation 
+- PI_for_all_terms ( lambda x P_doc("term") + (1-lambda) x P_coll("term") )
+
+*** P_doc("term") 
+- 1 if the doc includes the term.  
+- 0 if the doc does not have that. 
+
+*** P_coll("term") 
+- MLE; that is, count(num of doc with term) / count all docs
+
+*** Excluded terms 
+- All stop words simply are excluded from the calculation. 
+- All OOV words are also simply excluded from the calculation. 
+
+*** MAYBE? 
+- term can be extended to other features, such as bi-gram, and so on ... 
+
 * Splitta bug(?) 
 
 - somehow it generates some strange outputs. 
