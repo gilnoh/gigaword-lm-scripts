@@ -196,7 +196,7 @@ sub ppl_one_doc
 	    $content = $later_half; 
 	}
 
-	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, $lambda "./models/collection/collection.model", "./models/document", $instance_id);
+	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, $lambda, "./models/collection/collection.model", "./models/document", $instance_id);
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
@@ -226,7 +226,7 @@ sub ppl_one_doc
 	    $context = $context . "\n" . $later_half; 
 	    $content = $first_half; 
 
-	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, $lambda "./models/collection/collection.model", "./models/document", $instance_id);
+	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, $lambda, "./models/collection/collection.model", "./models/document", $instance_id);
 
 	    print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
