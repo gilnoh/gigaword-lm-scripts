@@ -25,6 +25,8 @@ our $SELECT_CONTEXT = \&prev_one;
 # all $SELECT_CONTEXT should accept the following form of args 
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
+# lambda 
+my $lambda = 0.5;
 
 # - half sentence flag. 
 our $HALF_SENTENCE_IN_CONTEXT = 0;
@@ -194,7 +196,7 @@ sub ppl_one_doc
 	    $content = $later_half; 
 	}
 
-	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
+	my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, $lambda "./models/collection/collection.model", "./models/document", $instance_id);
 
 	print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
@@ -224,7 +226,7 @@ sub ppl_one_doc
 	    $context = $context . "\n" . $later_half; 
 	    $content = $first_half; 
 
-	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, 0.5, "./models/collection/collection.model", "./models/document", $instance_id);
+	    my ($P_coll, $P_model, $P_model_conditioned, $count_nonOOV, $count_sent  ) = condprob_h_given_t($content, $context, $lambda "./models/collection/collection.model", "./models/document", $instance_id);
 
 	    print "$P_coll \t $P_model \t $P_model_conditioned \t $count_nonOOV \t $count_sent\n"; 
 
