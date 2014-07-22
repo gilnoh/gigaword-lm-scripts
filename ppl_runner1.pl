@@ -6,7 +6,7 @@
 use warnings; 
 use strict; 
 use Benchmark qw(:all); 
-use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $NOHIT_L0_FILL export_hash_to_file); 
+use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS $NOHIT_L0_FILL export_hash_to_file $SOLR_URL $DEBUG); 
 
 ## configurable values 
 ## 
@@ -26,7 +26,7 @@ our $SELECT_CONTEXT = \&prev_one;
 # > select_context_method_name(doc_array_ref, sent_num) 
 # e.g.  $SELECT_CONTEXT->($arr_ref, 35); 
 # lambda 
-my $lambda = 0.5;
+my $lambda = 0.2;
 
 # - half sentence flag. 
 our $HALF_SENTENCE_IN_CONTEXT = 0;
