@@ -37,9 +37,9 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
     print STDERR "Working on Pair $pair_id. \na) filling tokenization cache\n"; 
     my $id = $pair_id - 1; 
     print STDERR "\t.";
-    my $text = call_splitta($t_aref->[$id]);
+    my $text = call_splitta($t_aref->[$id], "cache_run_rte3");
     print STDERR "\t."; 
-    my $hypo = call_splitta($h_aref->[$id]);
+    my $hypo = call_splitta($h_aref->[$id], "cache_run_rte3");
 
     warn "SPLITTA failed! ==> fallback to lc(string).\n" unless($text and $hypo); 
     $text = lc($t_aref->[$id]) unless($text); 

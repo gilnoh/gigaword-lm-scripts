@@ -1,3 +1,6 @@
+#### WARNING: this code is deprecated. use rte3_runner.pl instead. 
+#### 
+
 # this simple script gets one data file (RTE5 like EXCI format), and 
 # run P_h_t() over that problem, and outputs the result as a CSV file. 
 

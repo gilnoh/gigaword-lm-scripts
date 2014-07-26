@@ -22,8 +22,10 @@ use Exporter;
 use srilm_call; # qw(read_debug3_p call_ngram);
 use octave_call;
 use Carp;
-use DB_File; # for caching P_coll
+use DB_File; # for caching P_coll and tokenizer result 
+use Fcntl qw(:flock); 
 use List::Util qw(sum); 
+use File::Temp qw(tempfile tempdir); 
 
 use WebService::Solr;
 use WebService::Solr::Document;
@@ -98,23 +100,11 @@ my $all_model_top_path; # Associated value to @all_models. (@all_models does not
 
 # berkely db for LM-collectino model cacheing 
 my %COLL_MODEL_CACHE; 
-
-# TODO: unsafe for multiple-writing access!
-# move tie to actual access location with lock. 
-if ($USE_CACHE_ON_COLL_MODEL)
-{
-    tie %COLL_MODEL_CACHE, "DB_File", "cache_coll_model.db"; 
-}
+my $COLL_MODEL_CACHE_FILE = "cache_coll_model.db"; 
 
 # berkely db for splitta tokenizer result cacheing 
 my %SPLITTA_RESULT_CACHE; 
 our $SPLITTA_CACHE_FILE = "cache_splitta_result.db"; 
-
-# if ($USE_CACHE_ON_SPLITTA)
-# {
-#     tie %SPLITTA_RESULT_CACHE, "DB_File", "cache_splitta_result.db"; 
-# }
-
 
 ### 
 ### Utility methods 
@@ -126,16 +116,32 @@ our $SPLITTA_CACHE_FILE = "cache_splitta_result.db";
 # output: one string, tokenzied and sentence splitted. 
 #         (one sentence per line) 
 
-# TODO: can't run by multiple instances. (fixed file name) 
+# usage 
+# call_splitta($input_text); 
+#   $input_text : the text that should be tokenized. 
+#   $runname : any unique string to enable multiple run of splitta 
 sub call_splitta 
 {
     print STDERR "tokenization ..."; 
-    my $s = shift; 
+    my $s = $_[0]; 
+    my $runname = "defaultsplitta"; 
+    if ($_[1])
+    {
+        $runname = $_[1]; 
+        warn "using run name $runname\n"; 
+    }
+    else
+    {
+        warn "WARN: no runname (2nd argument) given to the tokenizer method. Input file name to the underlying tokenizer will be the default: $runname\n"; 
+    }
 
     if ($USE_CACHE_ON_SPLITTA)
     {
+        # tie cache in 
+        #open (LOCK, ">testfile") or die; 
+        open (LOCK, ">$SPLITTA_CACHE_FILE.lock") or die; 
+        flock(LOCK, LOCK_SH) or die; 
 
-        #my %SPLITTA_RESULT_CACHE; 
         tie %SPLITTA_RESULT_CACHE, "DB_File", $SPLITTA_CACHE_FILE;
 
         # first check cache 
@@ -143,25 +149,35 @@ sub call_splitta
         {
             print STDERR "(cache hit)\n"; 
             my $result = $SPLITTA_RESULT_CACHE{$s}; 
+            
+            # cache out 
             untie %SPLITTA_RESULT_CACHE; 
+            close(LOCK);
+ 
             return $result; 
         }
-        # there is no cache for this. 
+
+        # CACHE OUT 
         untie %SPLITTA_RESULT_CACHE; 
+        close(LOCK); 
     }
 
 
     # write a temp file
-    my $file = $TEMP_DIR . "/splitta_input.txt"; 
+    #my $file = $TEMP_DIR . "/splitta_input.txt"; 
+    my $file = $TEMP_DIR . "/" . $runname . "_input.txt"; 
     open OUTFILE, ">", $file; 
     print OUTFILE $s; 
     close OUTFILE; 
     
     # my $splitted_output = "$temp_dir" . $file_basename . ".splitted"; 
-    `python ./splitta/sbd.py -m ./splitta/model_nb -t -o $TEMP_DIR/splitted.txt $file 2> /dev/null`;
+    my $result_file = $TEMP_DIR . "/" . $runname . "_splitted.txt"; 
+    #`python ./splitta/sbd.py -m ./splitta/model_nb -t -o $TEMP_DIR/splitted.txt $file 2> /dev/null`;
+    `python ./splitta/sbd.py -m ./splitta/model_nb -t -o $result_file $file 2> /dev/null`;
     print STDERR " done\n"; 
 
-    open INFILE, "<", $TEMP_DIR . "/splitted.txt"; 
+    #open INFILE, "<", $TEMP_DIR . "/splitted.txt"; 
+    open INFILE, "<", $result_file; 
     my $splitted=""; 
     while(<INFILE>)
     {
@@ -181,9 +197,17 @@ sub call_splitta
     my $result = lc($splitted); 
     if ($USE_CACHE_ON_SPLITTA)
     {
+        #tie in 
+        open (LOCK, ">$SPLITTA_CACHE_FILE.lock") or die; 
+        flock(LOCK, LOCK_EX) or die;         
         tie %SPLITTA_RESULT_CACHE, "DB_File", $SPLITTA_CACHE_FILE; 
+
+        # store in cache 
         $SPLITTA_RESULT_CACHE{$s} = $result; 
+
+        #untie 
         untie %SPLITTA_RESULT_CACHE; 
+        close(LOCK); 
     }
     return $result; 
 }
@@ -279,20 +303,35 @@ sub P_coll
     # if in cache. 
     if ($USE_CACHE_ON_COLL_MODEL)
     {
+        # tie-in
+        open (LOCK, ">$COLL_MODEL_CACHE_FILE.lock") or die; 
+        flock (LOCK, LOCK_SH) or die; 
+        tie %COLL_MODEL_CACHE, "DB_File", $COLL_MODEL_CACHE_FILE; 
+
+        # check cache... 
         if (defined $COLL_MODEL_CACHE{$sent})
         {
-            # d out
+            # cache hit. 
             print STDERR "(result found in cache)\n"; 
             my $val = $COLL_MODEL_CACHE{$sent};  
             my @arr = split ("\n", $val); 
             @collection_seq = @arr; 
 
             # need to do this, since P_doc relies on this 
-            # (ugly code, I know, but)
             make_ngram_input_file($sent); 
+
+            # tie-out
+            untie %COLL_MODEL_CACHE; 
+            close(LOCK); 
 
             return @collection_seq; 
         }
+
+        # tie-out
+        untie %COLL_MODEL_CACHE; 
+        close(LOCK); 
+        
+
     }
 
     # from srilm_call.pm
@@ -301,9 +340,18 @@ sub P_coll
 
     if ($USE_CACHE_ON_COLL_MODEL)
     {
+        # tie-in
+        open (LOCK, ">$COLL_MODEL_CACHE_FILE.lock") or die; 
+        flock (LOCK, LOCK_EX) or die; 
+        tie %COLL_MODEL_CACHE, "DB_File", $COLL_MODEL_CACHE_FILE; 
+
         # store it in the cache. 
         my $val = join("\n", @collection_seq); 
         $COLL_MODEL_CACHE{$sent} = $val; 
+
+        # tie-out 
+        untie %COLL_MODEL_CACHE; 
+        close(LOCK); 
     }
     return @collection_seq;
 }

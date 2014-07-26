@@ -30,7 +30,7 @@ my $datasize = scalar (@{$gold_aref});
 
 my $START_ID = $ARGV[1] + 0;
 my $END_ID = $ARGV[2] + 0;
-my $RUN_ID = $ARGV[3]; 
+my $RUN_ID = "msrpc_baseline"; 
 
 die "start id out of bounds" if ($START_ID < 1 or $START_ID > $datasize);
 die "end id out of bounds" if ($END_ID < 1 or $END_ID > $datasize);
@@ -47,8 +47,8 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 {
     my $id = $pair_id - 1; # id actually is starting from 0.
 
-    my $text = call_splitta($t_aref->[$id]);
-    my $hypo = call_splitta($h_aref->[$id]);
+    my $text = call_splitta($t_aref->[$id], $RUN_ID);
+    my $hypo = call_splitta($h_aref->[$id], $RUN_ID);
 
     print STDERR "Processing id $pair_id;\n";
     warn "SPLITTA failed! ==> fallback to lc(string).\n" unless($text and $hypo); 

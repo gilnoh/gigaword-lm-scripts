@@ -46,8 +46,8 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 {
     my $id = $pair_id - 1; # id actually is starting from 0.
 
-    my $text = call_splitta($t_aref->[$id]);
-    my $hypo = call_splitta($h_aref->[$id]);
+    my $text = call_splitta($t_aref->[$id], $RUN_ID);
+    my $hypo = call_splitta($h_aref->[$id], $RUN_ID);
 
     print STDERR "Processing id $pair_id;\n";
     warn "SPLITTA failed! ==> fallback to lc(string).\n" unless($text and $hypo); 

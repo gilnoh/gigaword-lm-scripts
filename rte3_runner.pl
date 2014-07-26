@@ -85,8 +85,8 @@ for (my $pair_id = $START_ID; $pair_id <= $END_ID; $pair_id++)
 {
   my $id = $pair_id - 1; # id actually is starting from 0.
 
-  my $text = call_splitta($t_aref->[$id]);
-  my $hypo = call_splitta($h_aref->[$id]);
+  my $text = call_splitta($t_aref->[$id], $RUN_ID);
+  my $hypo = call_splitta($h_aref->[$id], $RUN_ID);
   print STDERR "Processing id $pair_id;\n";
 
   # if splitta fails: (RTE3 dev 141, hypo) 
@@ -143,44 +143,6 @@ print STDERR "the code took:", timestr($td), "\n";
 ###
 ###
 ###
-
-
-
-# call splitta for tokenization ... 
-# sub call_splitta 
-# {
-#     print STDERR "tokenization ..."; 
-#     my $s = shift; 
-
-#     # write a temp file
-#     my $file = $TEMP_DIR . "/splitta_input.txt"; 
-#     open OUTFILE, ">", $file; 
-#     print OUTFILE $s; 
-#     close OUTFILE; 
-    
-#     # my $splitted_output = "$temp_dir" . $file_basename . ".splitted"; 
-#     `python ./splitta/sbd.py -m ./splitta/model_nb -t -o $TEMP_DIR/splitted.txt $file 2> /dev/null`;
-#     print STDERR " done\n"; 
-
-#     open INFILE, "<", $TEMP_DIR . "/splitted.txt"; 
-#     my $splitted=""; 
-#     while(<INFILE>)
-#     {
-# 	# NOTE: this process must be the same as training data generated
-# 	# in gigaword_split_file.pl 
-
-# 	# fixing tokenization error of Splitta (the end of sentence) 
-# 	# case 1) Period (\w.$) at the end  -> (\w .$) 
-# 	s/\.$/ \. /; 
-# 	# case 2) Period space quote (\w. " $) at the end. -> (\w . " $) 
-# 	s/\. " $/ \. " /;
-
-# 	$splitted .= $_; 
-#     }
-#     close INFILE; 
-
-#     return lc($splitted); 
-# }
 
 
 # reading EOP RTE file. 

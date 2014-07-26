@@ -4,6 +4,10 @@ use strict;
 use Benchmark qw(:all); 
 use condprob qw(:DEFAULT set_num_thread $DEBUG $APPROXIMATE_WITH_TOP_N_HITS export_hash_to_file); 
 
+
+### WARNING: this code cannot be ran with multiple instance. 
+
+
 ## currently 
 ## check afpall f and afp2010(gigaword) f... 
 ## compare them. 
