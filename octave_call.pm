@@ -250,6 +250,11 @@ sub mean($)
 
 sub log10 {
     my $n = shift;
+    if ($n == 0) # sanity check ---  doesn't make sense. 
+    {
+        warn "WARNING: 0 value passed to log10, thus the calculation was ignored. YOU CANNOT TRUST result of this one!"; 
+        return 0; # maybe throw something? 
+    }
     return log($n)/log(10);
 }
 

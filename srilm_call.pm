@@ -12,8 +12,7 @@ our @EXPORT = qw(set_ngram_input_file make_ngram_input_file read_debug3_p call_n
 
 our $NGRAM_EXECUTABLE = "ngram"; 
 our $NGRAM_DEBUGOPTION = "-debug 3"; # a must for us 
-our $NGRAM_INPUT_FILE = "./models/ngram_input.txt"; ## we use a fixed name. ## careful not to change the file, when running multiple threads. 
-
+our $NGRAM_INPUT_FILE = "./models/ngram_input.txt"; ## this is default value, and will be overridden by run-id, in most cases. (e.g. multiple instance running)
 
 sub set_ngram_input_file($)
 {
@@ -23,7 +22,6 @@ sub set_ngram_input_file($)
     # document model calls (threds, etc) 
     $NGRAM_INPUT_FILE = $_[0]; 
 }
-
 
 sub call_ngram($;$$) {
     # call ngram with some options. 
