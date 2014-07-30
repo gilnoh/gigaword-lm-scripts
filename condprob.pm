@@ -1011,8 +1011,10 @@ sub condprob_h_given_t
     # This must be guaranteeded!
     print STDERR "Calculating the weighted sum\n";
     my $P_h_given_t = weighted_sum(\@text, \@hypo);
-    my $KLD_h_t = KL_divergence(\@text, \@hypo); 
-    my $KLD_t_h = KL_divergence(\@hypo, \@text); 
+    
+    # PPL run: temporary blocking KLD calculation. saving time for PPL runs. 
+    my $KLD_h_t = 0; # KL_divergence(\@text, \@hypo); 
+    my $KLD_t_h = 0; #KL_divergence(\@hypo, \@text); 
     #print @text, @hypo;     #dcode
     my $P_pw_h_given_t = $P_h_given_t / $nonOOV_len_h;
     my $count_h_sent = count_sentence($hypothesis); 
