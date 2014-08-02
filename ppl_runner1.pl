@@ -322,6 +322,21 @@ sub prev_one
 	return $aref->[$sent_index - 1]; 
     }
 }
+
+sub prev_one_is
+{ 
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index == 0) {
+    	return ""; 
+	#return $aref->[0]; # or next one? 
+    }
+    else 
+    {
+	return ( ($aref->[$sent_index - 1]) . "\n" . ($aref->[$sent_index]) ) ; 
+    }
+}
+
 sub prev_two
 {
     my $aref = shift; 
@@ -333,6 +348,22 @@ sub prev_two
 	my $context = "";
 	$context .= $aref->[$sent_index - 2] . "\n"; 
 	$context .= $aref->[$sent_index - 1] . "\n"; 
+	return $context; 
+    }
+}
+
+sub prev_two_is 
+{
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index < 2) {
+	return ""; 
+    }
+    else {
+	my $context = "";
+	$context .= $aref->[$sent_index - 2] . "\n"; 
+	$context .= $aref->[$sent_index - 1] . "\n"; 
+        $context .= $aref->[$sent_index]; 
 	return $context; 
     }
 }
@@ -352,6 +383,24 @@ sub prev_three
 	return $context; 
     }
 }
+
+sub prev_three_is
+{
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index < 3) {
+	return ""; 
+    }
+    else {
+	my $context = "";
+	$context .= $aref->[$sent_index - 3] . "\n"; 
+	$context .= $aref->[$sent_index - 2] . "\n"; 
+	$context .= $aref->[$sent_index - 1] . "\n"; 
+        $context .= $aref->[$sent_index]; 
+	return $context; 
+    }
+}
+
 
 sub first_one 
 {
