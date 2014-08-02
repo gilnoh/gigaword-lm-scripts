@@ -384,6 +384,24 @@ sub prev_three
     }
 }
 
+sub prev_four 
+{
+    my $aref = shift; 
+    my $sent_index = shift; 
+    if ($sent_index < 4) {
+	return ""; 
+    }
+    else {
+	my $context = "";
+	$context .= $aref->[$sent_index - 4] . "\n"; 
+	$context .= $aref->[$sent_index - 3] . "\n"; 
+	$context .= $aref->[$sent_index - 2] . "\n"; 
+	$context .= $aref->[$sent_index - 1] . "\n"; 
+	return $context; 
+    }
+}
+
+
 sub prev_three_is
 {
     my $aref = shift; 
